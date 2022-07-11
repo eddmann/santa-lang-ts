@@ -1,0 +1,25 @@
+{
+  "dependencies": {
+    "esbuild": "^0.14.42",
+    "esbuild-jest": "^0.5.0",
+    "immutable": "^4.1.0",
+    "jest": "^28.1.0"
+  },
+  "devDependencies": {
+    "pkg": "^5.3.1"
+  },
+  "scripts": {
+    "build": "esbuild src/cli.ts --bundle --platform=node --target=node16.15.0 --outfile=build/cli.js && pkg build/cli.js --target node16.15.0-macos-x64 --output dist/santa-cli",
+    "test": "jest"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": [
+        "esbuild-jest",
+        {
+          "sourcemap": true
+        }
+      ]
+    }
+  }
+}
