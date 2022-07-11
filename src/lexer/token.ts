@@ -1,0 +1,68 @@
+export enum TokenKind {
+  Illegal = 'ILLEGAL',
+  EOF = 'EOF',
+  Identifier = 'IDENTIFIER',
+  Integer = 'INTEGER',
+  Decimal = 'DECIMAL',
+  Str = 'STRING',
+  Assign = '=',
+  Plus = '+',
+  Minus = '-',
+  Bang = '!',
+  Asterisk = '*',
+  Slash = '/',
+  Modulo = '%',
+  LessThan = '<',
+  GreaterThan = '>',
+  Equal = '==',
+  NotEqual = '!=',
+  Comma = ',',
+  Semicolon = ';',
+  Colon = ':',
+  LParen = '(',
+  RParen = ')',
+  LBrace = '{',
+  HashLBrace = '#{',
+  RBrace = '}',
+  LBracket = '[',
+  RBracket = ']',
+  Underscore = '_',
+  Dot = '.',
+  DotDot = '..',
+  Backtick = '`',
+  Hash = '#',
+  Pipe = '|',
+  PipePipe = '||',
+  Amp = '&',
+  AmpAmp = '&&',
+  PipeGreater = '|>',
+  GreaterGreater = '>>',
+  Mutable = 'MUTABLE',
+  Match = 'MATCH',
+  Let = 'LET',
+  True = 'TRUE',
+  False = 'FALSE',
+  If = 'IF',
+  Else = 'ELSE',
+  Return = 'RETURN',
+  Break = 'BREAK',
+}
+
+export type Token = {
+  kind: TokenKind;
+  literal: string;
+  line: number;
+  column: number;
+};
+
+export const keywords: { [keyword: string]: TokenKind } = {
+  let: TokenKind.Let,
+  mut: TokenKind.Mutable,
+  true: TokenKind.True,
+  false: TokenKind.False,
+  if: TokenKind.If,
+  else: TokenKind.Else,
+  return: TokenKind.Return,
+  break: TokenKind.Break,
+  match: TokenKind.Match,
+};
