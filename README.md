@@ -10,7 +10,7 @@ However, there comes a time in each calendar that I grow to dislike some aspect 
 So I had an idea... why not give this whole programming langauge design a go.
 That way if I grow to dislike this language, I only have myself to blame!
 
-Welcome `santa-lang`, my tree-walking interpreted programming language designed to help tackle Advent of Code problems.
+Welcome `santa-lang`, my [tree-walking interpreted](<https://en.wikipedia.org/wiki/Interpreter_(computing)>) programming language designed to help tackle Advent of Code problems.
 
 ## Examples
 
@@ -34,6 +34,13 @@ let x = 1;
 x = 2; // Variable x is not mutable
 
 let mut x = 1;
+x = 2;
+
+let [x, y, _, ..z] = [1, 2, 3, 4, 5];
+[x, y, z]; // [1, 2, [4, 5]]
+x = 2; // Variable x is not mutable
+
+let mut [x, y] = [1, 2];
 x = 2;
 ```
 
@@ -116,30 +123,30 @@ let fibonacci = |n| match n {
 These fundamental functions come part of the standard library, however, they can be reimplemented on-top of the language itself like so:
 
 ```
-let map = |fn, xs| match xs {
+let map = |fn, list| match list {
   [] { [] }
-  [x] { [fn(x)] }
-  [x, ..xs] { [fn(x)] + map(fn, xs) }
+  [head] { [fn(head)] }
+  [head, ..tail] { [fn(head)] + map(fn, tail) }
 };
 ```
 
 ```
-let filter = |fn, xs| match xs {
+let filter = |fn, list| match list {
   [] { [] }
-  [x] if fn(x) { [x] }
-  [x, ..xs] if fn(x) { [x] + filter(fn, xs) }
-  [_, ..xs] { filter(fn, xs) }
+  [head] if fn(head) { [head] }
+  [head, ..tail] if fn(head) { [head] + filter(fn, tail) }
+  [_, ..tail] { filter(fn, tail) }
 };
 ```
 
 ```
-let reduce = |fn, initial, xs| {
-  let recur = |acc, xs| match xs {
+let reduce = |fn, initial, list| {
+  let recur = |acc, list| match list {
     [] { initial }
-    [x] { fn(acc, x) }
-    [x, ..xs] { recur(fn(acc, x), xs) }
+    [head] { fn(acc, head) }
+    [head, ..tail] { recur(fn(acc, head), tail) }
   };
-  recur(initial, xs);
+  recur(initial, list);
 };
 ```
 
@@ -147,3 +154,4 @@ let reduce = |fn, initial, xs| {
 
 - [Writing An Interpreter In Go](https://interpreterbook.com/)
 - [Monkeylang](https://monkeylang.org/)
+- [Crafting Interpreters](https://craftinginterpreters.com/)
