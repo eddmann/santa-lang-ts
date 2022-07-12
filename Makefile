@@ -9,6 +9,10 @@ install:
 test:
 	@$(DOCKER) $(IMAGE) yarn test
 
+.PHONY: build
+build:
+	@$(DOCKER) $(IMAGE) yarn build
+
 .PHONY: shell
 shell:
 	@$(DOCKER) -it $(IMAGE) sh
