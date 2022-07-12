@@ -117,6 +117,32 @@ const not: O.BuiltinFuncTemplate = {
   },
 };
 
+const assert: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.IdentifierGlob,
+      value: 'assertions',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    let assertions = environment.getVariable('assertions').items;
+
+    let message = '';
+    if (assertions.last() instanceof O.Str) {
+      message = assertions.last().value;
+      assertions = assertions.pop();
+    }
+
+    for (const predicate of assertions) {
+      if (!isTruthy(predicate)) {
+        return new O.Err('Assertion failed' + (message ? ': ' + message : ''));
+      }
+    }
+
+    return O.NIL;
+  },
+};
+
 export default {
   '<': lessThan,
   '>': greaterThan,
@@ -125,4 +151,5 @@ export default {
   '&&': and,
   '||': or,
   'unary_!': not,
+  assert,
 };
