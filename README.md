@@ -1,3 +1,5 @@
+<p align="center"><img src="docs/logo.png" alt="santa-lang" width="500px" /></p>
+
 # santa-lang
 
 An functional, C-like programming language for solving Advent of Code problems.
