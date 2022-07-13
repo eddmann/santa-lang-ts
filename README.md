@@ -126,7 +126,7 @@ These fundamental functions come part of the standard library, however, they can
 let map = |fn, list| match list {
   [] { [] }
   [head] { [fn(head)] }
-  [head, ..tail] { [fn(head)] + map(fn, tail) }
+  [head, ..tail] { [fn(head), ..map(fn, tail)] }
 };
 ```
 
@@ -134,7 +134,7 @@ let map = |fn, list| match list {
 let filter = |fn, list| match list {
   [] { [] }
   [head] if fn(head) { [head] }
-  [head, ..tail] if fn(head) { [head] + filter(fn, tail) }
+  [head, ..tail] if fn(head) { [head, ..filter(fn, tail)] }
   [_, ..tail] { filter(fn, tail) }
 };
 ```
@@ -155,3 +155,4 @@ let reduce = |fn, initial, list| {
 - [Writing An Interpreter In Go](https://interpreterbook.com/)
 - [Monkeylang](https://monkeylang.org/)
 - [Crafting Interpreters](https://craftinginterpreters.com/)
+- [AST Explorer](https://astexplorer.net/)
