@@ -2,13 +2,11 @@ export enum ASTKind {
   Program = 'PROGRAM',
   Assignment = 'ASSIGNMENT',
   Let = 'LET',
-  LetListDestructure = 'LET_LIST_DESTRUCTURE',
   Return = 'RETURN',
   Break = 'BREAK',
   BlockStatement = 'BLOCK_STATEMENT',
   Section = 'SECTION',
   Identifier = 'IDENTIFIER',
-  IdentifierGlob = 'IDENTIFIER_GLOB',
   IdentifierListDestructure = 'IDENTIFIER_LIST_DESTRUCTURE',
   IfExpression = 'IF_EXPRESSION',
   MatchExpression = 'MATCH_EXPRESSION',
@@ -27,6 +25,10 @@ export enum ASTKind {
   ListLiteral = 'LIST_LITERAL',
   SetLiteral = 'SET_LITERAL',
   RangeLiteral = 'RANGE_LITERAL',
+  ListDestructurePattern = 'LIST_DESTRUCTURE_PATTERN',
+  ListMatchPattern = 'LIST_MATCH_PATTERN',
+  RestElement = 'REST_ELEMENT',
+  SpreadElement = 'SPREAD_ELEMENT',
   FunctionThread = 'FUNCTION_THEAD',
   FunctionComposition = 'FUNCTION_COMPOSITON',
 }
@@ -37,7 +39,6 @@ export type Statement =
   | BlockStatement
   | ExpressionStatement
   | LetStatement
-  | LetListDestructureStatement
   | ReturnStatment
   | BreakStatment
   | SectionStatement;
@@ -51,7 +52,6 @@ export type Expression =
   | CallExpression
   | HashLiteral
   | Identifier
-  | IdentifierGlob
   | IfExpression
   | MatchExpression
   | PrefixExpression
@@ -63,7 +63,11 @@ export type Expression =
   | Decimal
   | Placeholder
   | Str
-  | Bool;
+  | Bool
+  | RestElement
+  | SpreadElement
+  | ListDestructurePattern
+  | ListMatchPattern;
 
 export type Callable =
   | Identifier
@@ -73,7 +77,7 @@ export type Callable =
   | PrefixExpression
   | FunctionComposition;
 
-export type Identifiable = Identifier | IdentifierGlob | IdentifierListDestructure;
+export type Identifiable = ListDestructurePattern | Identifier | Placeholder | RestElement;
 
 export type Program = {
   kind: ASTKind.Program;
@@ -96,16 +100,9 @@ export type ExpressionStatement = {
   expression: Expression;
 };
 
-export type LetListDestructureStatement = {
-  kind: ASTKind.LetListDestructure;
-  names: (Identifiable | Placeholder)[];
-  value: Expression;
-  isMutable: boolean;
-};
-
 export type LetStatement = {
   kind: ASTKind.Let;
-  name: Identifier;
+  name: ListDestructurePattern | Identifier;
   value: Expression;
   isMutable: boolean;
 };
@@ -123,7 +120,7 @@ export type ReturnStatment = {
 
 export type BreakStatment = {
   kind: ASTKind.Break;
-  value: Expression;
+  value: Expression | null;
 };
 
 export type Integer = {
@@ -161,19 +158,9 @@ export type Identifier = {
   value: string;
 };
 
-export type IdentifierListDestructure = {
-  kind: ASTKind.IdentifierListDestructure;
-  values: Identifiable[];
-};
-
-export type IdentifierGlob = {
-  kind: ASTKind.IdentifierGlob;
-  value: string;
-};
-
 export type ListLiteral = {
   kind: ASTKind.ListLiteral;
-  elements: Expression[];
+  elements: (Expression | SpreadElement)[];
 };
 
 export type SetLiteral = {
@@ -196,7 +183,7 @@ export type PrefixExpression = {
 export type InfixExpression = {
   kind: ASTKind.InfixExpression;
   function: Identifier;
-  arguments: [Expression, Expression];
+  arguments: [left: Expression, right: Expression];
 };
 
 export type FunctionLiteral = {
@@ -228,20 +215,50 @@ export type MatchExpression = {
 };
 
 export type MatchCase = {
-  pattern: Expression;
+  pattern: MatchPattern;
   guard: Expression | null;
   consequence: BlockStatement;
+};
+
+export type MatchPattern =
+  | Identifier
+  | Placeholder
+  | Str
+  | Bool
+  | Decimal
+  | Integer
+  | ListMatchPattern
+  | RestElement;
+
+export type ListMatchPattern = {
+  kind: ASTKind.ListMatchPattern;
+  elements: MatchPattern[];
 };
 
 export type IfExpression = {
   kind: ASTKind.IfExpression;
   condition: Expression;
   consequence: BlockStatement;
-  alternative?: BlockStatement;
+  alternative: BlockStatement | null;
 };
 
 export type IndexExpression = {
   kind: ASTKind.IndexExpression;
   item: Expression;
   index: Expression;
+};
+
+export type ListDestructurePattern = {
+  kind: ASTKind.ListDestructurePattern;
+  elements: Identifiable[];
+};
+
+export type RestElement = {
+  kind: ASTKind.RestElement;
+  argument: Identifier;
+};
+
+export type SpreadElement = {
+  kind: ASTKind.SpreadElement;
+  value: Expression;
 };

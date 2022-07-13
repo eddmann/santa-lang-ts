@@ -168,7 +168,7 @@ test('match expression with list destructing', () => {
           subject: { kind: 'IDENTIFIER', value: 'x' },
           cases: [
             {
-              pattern: { kind: 'LIST_LITERAL', elements: [] },
+              pattern: { kind: 'LIST_MATCH_PATTERN', elements: [] },
               guard: null,
               consequence: {
                 kind: 'BLOCK_STATEMENT',
@@ -178,7 +178,10 @@ test('match expression with list destructing', () => {
               },
             },
             {
-              pattern: { kind: 'LIST_LITERAL', elements: [{ kind: 'IDENTIFIER', value: 'x' }] },
+              pattern: {
+                kind: 'LIST_MATCH_PATTERN',
+                elements: [{ kind: 'IDENTIFIER', value: 'x' }],
+              },
               guard: null,
               consequence: {
                 kind: 'BLOCK_STATEMENT',
@@ -189,10 +192,10 @@ test('match expression with list destructing', () => {
             },
             {
               pattern: {
-                kind: 'LIST_LITERAL',
+                kind: 'LIST_MATCH_PATTERN',
                 elements: [
                   { kind: 'IDENTIFIER', value: 'x' },
-                  { kind: 'IDENTIFIER_GLOB', value: 'xs' },
+                  { kind: 'REST_ELEMENT', argument: { kind: 'IDENTIFIER', value: 'xs' } },
                 ],
               },
               guard: null,
@@ -394,13 +397,13 @@ test('function literal with parameter destructuring', () => {
           parameters: [
             { kind: 'IDENTIFIER', value: 'x' },
             {
-              kind: 'IDENTIFIER_LIST_DESTRUCTURE',
-              values: [
+              kind: 'LIST_DESTRUCTURE_PATTERN',
+              elements: [
                 { kind: 'IDENTIFIER', value: 'y' },
-                { kind: 'IDENTIFIER_GLOB', value: 'z' },
+                { kind: 'REST_ELEMENT', argument: { kind: 'IDENTIFIER', value: 'z' } },
               ],
             },
-            { kind: 'IDENTIFIER_GLOB', value: 'rest' },
+            { kind: 'REST_ELEMENT', argument: { kind: 'IDENTIFIER', value: 'rest' } },
           ],
           body: {
             kind: 'BLOCK_STATEMENT',
@@ -569,20 +572,22 @@ test('let destructuring', () => {
     kind: 'PROGRAM',
     statements: [
       {
-        isMutable: false,
-        kind: 'LET_LIST_DESTRUCTURE',
-        names: [
-          { kind: 'IDENTIFIER', value: 'a' },
-          { kind: 'IDENTIFIER', value: 'b' },
-          {
-            kind: 'IDENTIFIER_LIST_DESTRUCTURE',
-            values: [
-              { kind: 'IDENTIFIER', value: 'c' },
-              { kind: 'IDENTIFIER', value: 'd' },
-            ],
-          },
-          { kind: 'IDENTIFIER_GLOB', value: 'e' },
-        ],
+        kind: 'LET',
+        name: {
+          kind: 'LIST_DESTRUCTURE_PATTERN',
+          elements: [
+            { kind: 'IDENTIFIER', value: 'a' },
+            { kind: 'IDENTIFIER', value: 'b' },
+            {
+              kind: 'LIST_DESTRUCTURE_PATTERN',
+              elements: [
+                { kind: 'IDENTIFIER', value: 'c' },
+                { kind: 'IDENTIFIER', value: 'd' },
+              ],
+            },
+            { kind: 'REST_ELEMENT', argument: { kind: 'IDENTIFIER', value: 'e' } },
+          ],
+        },
         value: {
           kind: 'LIST_LITERAL',
           elements: [
@@ -596,6 +601,40 @@ test('let destructuring', () => {
               ],
             },
             { kind: 'INTEGER', value: 5 },
+          ],
+        },
+        isMutable: false,
+      },
+    ],
+  });
+});
+
+test('list spread', () => {
+  const source = '[1, ..xs, ..[1, 2, 3]]';
+
+  const ast = parse(source);
+
+  expect(ast).toEqual({
+    kind: 'PROGRAM',
+    statements: [
+      {
+        kind: 'EXPRESSION',
+        expression: {
+          kind: 'LIST_LITERAL',
+          elements: [
+            { kind: 'INTEGER', value: 1 },
+            { kind: 'SPREAD_ELEMENT', value: { kind: 'IDENTIFIER', value: 'xs' } },
+            {
+              kind: 'SPREAD_ELEMENT',
+              value: {
+                kind: 'LIST_LITERAL',
+                elements: [
+                  { kind: 'INTEGER', value: 1 },
+                  { kind: 'INTEGER', value: 2 },
+                  { kind: 'INTEGER', value: 3 },
+                ],
+              },
+            },
           ],
         },
       },

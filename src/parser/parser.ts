@@ -23,7 +23,7 @@ type ExpressionParser = Partial<{
 }>;
 
 export class ParserError extends Error {
-  constructor(message: string, public token: TokenKind) {
+  constructor(message: string, public token: Token) {
     super(message);
     Object.setPrototypeOf(this, ParserError.prototype);
   }
@@ -148,7 +148,7 @@ export default class Parser {
     this.peekToken = this.lexer.nextToken();
   }
 
-  parse(): AST.Program {
+  public parse(): AST.Program {
     const statements: AST.Statement[] = [];
 
     while (this.curToken.kind !== TokenKind.EOF) {
@@ -179,40 +179,25 @@ export default class Parser {
     }
   }
 
-  private parseLetStatement(): AST.LetStatement | AST.LetListDestructureStatement {
+  private parseLetStatement(): AST.LetStatement {
     const isMutable = this.peekTokenIs(TokenKind.Mutable);
     if (isMutable) {
       this.nextToken();
     }
 
-    if (this.peekTokenIs(TokenKind.Identifier)) {
-      this.nextToken();
+    this.nextToken();
 
-      const name: AST.Identifier = {
-        kind: AST.ASTKind.Identifier,
-        value: this.curToken.literal,
-      };
-
-      this.expectPeek(TokenKind.Assign);
-      this.nextToken();
-
-      const value = this.parseExpression(Precedence.Lowest);
-
-      if (this.peekTokenIs(TokenKind.Semicolon)) {
-        this.nextToken();
-      }
-
-      return {
-        kind: AST.ASTKind.Let,
-        name,
-        value,
-        isMutable,
-      };
+    let name: AST.ListDestructurePattern | AST.Identifier;
+    if (this.curTokenIs(TokenKind.Identifier)) {
+      name = this.parseIdentifier();
+    } else if (this.curTokenIs(TokenKind.LBracket)) {
+      name = this.parseListDestructurePattern();
+    } else {
+      throw new ParserError(
+        `Expected token to be ${TokenKind.Identifier} or ${TokenKind.LBracket}, but received ${this.curToken.kind}`,
+        this.curToken
+      );
     }
-
-    this.expectPeek(TokenKind.LBracket);
-
-    const names = this.parseFunctionParameters(TokenKind.RBracket);
 
     this.expectPeek(TokenKind.Assign);
     this.nextToken();
@@ -224,29 +209,12 @@ export default class Parser {
     }
 
     return {
-      kind: AST.ASTKind.LetListDestructure,
-      names,
+      kind: AST.ASTKind.Let,
+      name,
       value,
       isMutable,
     };
   }
-
-  private parseAssignment = (left: AST.Expression): AST.AssignmentExpression => {
-    if (left.kind !== AST.ASTKind.Identifier) {
-      throw new ParserError(
-        `Expected assignment to be an identifier, but received ${left.kind}`,
-        this.curToken
-      );
-    }
-
-    this.nextToken();
-
-    return {
-      kind: AST.ASTKind.Assignment,
-      name: left,
-      value: this.parseExpression(Precedence.Lowest),
-    };
-  };
 
   private parseReturnStatement(): AST.ReturnStatment {
     this.nextToken();
@@ -266,8 +234,9 @@ export default class Parser {
   private parseBreakStatement(): AST.BreakStatment {
     this.nextToken();
 
-    const value =
-      this.expressionParser[this.curToken.kind] && this.parseExpression(Precedence.Lowest);
+    const value = this.expressionParser[this.curToken.kind]
+      ? this.parseExpression(Precedence.Lowest)
+      : null;
 
     if (this.peekTokenIs(TokenKind.Semicolon)) {
       this.nextToken();
@@ -285,27 +254,21 @@ export default class Parser {
     this.nextToken();
     this.nextToken();
 
-    if (this.curTokenIs(TokenKind.LBrace)) {
-      const section = this.parseBlockStatement();
+    const section: AST.BlockStatement = this.curTokenIs(TokenKind.LBrace)
+      ? this.parseBlockStatement()
+      : {
+          kind: AST.ASTKind.BlockStatement,
+          statements: [this.parseExpressionStatement()],
+        };
 
-      if (this.peekTokenIs(TokenKind.Semicolon)) {
-        this.nextToken();
-      }
-
-      return {
-        kind: AST.ASTKind.Section,
-        name,
-        section,
-      };
+    if (this.peekTokenIs(TokenKind.Semicolon)) {
+      this.nextToken();
     }
 
     return {
       kind: AST.ASTKind.Section,
       name,
-      section: {
-        kind: AST.ASTKind.BlockStatement,
-        statements: [this.parseExpressionStatement()],
-      },
+      section,
     };
   }
 
@@ -403,6 +366,23 @@ export default class Parser {
     };
   };
 
+  private parseAssignment = (left: AST.Expression): AST.AssignmentExpression => {
+    if (left.kind !== AST.ASTKind.Identifier) {
+      throw new ParserError(
+        `Expected token to be ${TokenKind.Identifier}, but received ${left.kind}`,
+        this.curToken
+      );
+    }
+
+    this.nextToken();
+
+    return {
+      kind: AST.ASTKind.Assignment,
+      name: left,
+      value: this.parseExpression(Precedence.Lowest),
+    };
+  };
+
   private parseGroupedExpression = (): AST.Expression => {
     this.nextToken();
 
@@ -416,7 +396,7 @@ export default class Parser {
   private parseCallExpression = (left: AST.Expression): AST.CallExpression => {
     if (!this.isCallable(left)) {
       throw new ParserError(
-        `Invocation expected callable, but received ${left.kind}`,
+        `Invocation expected CALLABLE, but received ${left.kind}`,
         this.curToken
       );
     }
@@ -429,21 +409,23 @@ export default class Parser {
   };
 
   private parseExpressionList(end: TokenKind): AST.Expression[] {
-    const list: AST.Expression[] = [];
-
     if (this.peekTokenIs(end)) {
       this.nextToken();
-      return list;
+      return [];
     }
 
     this.nextToken();
 
+    const expressions: AST.Expression[] = [];
+
     if (this.curTokenIs(TokenKind.DotDot)) {
       this.nextToken();
-      const xs = this.parseExpression(Precedence.Lowest);
-      list.push({ kind: AST.ASTKind.IdentifierGlob, value: xs.value });
+      expressions.push({
+        kind: AST.ASTKind.SpreadElement,
+        value: this.parseExpression(Precedence.Lowest),
+      });
     } else {
-      list.push(this.parseExpression(Precedence.Lowest));
+      expressions.push(this.parseExpression(Precedence.Lowest));
     }
 
     while (this.peekTokenIs(TokenKind.Comma)) {
@@ -452,17 +434,19 @@ export default class Parser {
 
       if (this.curTokenIs(TokenKind.DotDot)) {
         this.nextToken();
-        const xs = this.parseExpression(Precedence.Lowest);
-        list.push({ kind: AST.ASTKind.IdentifierGlob, value: xs.value });
+        expressions.push({
+          kind: AST.ASTKind.SpreadElement,
+          value: this.parseExpression(Precedence.Lowest),
+        });
         continue;
       }
 
-      list.push(this.parseExpression(Precedence.Lowest));
+      expressions.push(this.parseExpression(Precedence.Lowest));
     }
 
     this.expectPeek(end);
 
-    return list;
+    return expressions;
   }
 
   private parseIfExpression = (): AST.IfExpression => {
@@ -490,7 +474,7 @@ export default class Parser {
       kind: AST.ASTKind.IfExpression,
       condition,
       consequence,
-      alternative: undefined,
+      alternative: null,
     };
   };
 
@@ -508,6 +492,64 @@ export default class Parser {
     };
   };
 
+  private parseMatchListPattern = (): AST.ListMatchPattern => {
+    this.nextToken();
+
+    if (this.curTokenIs(TokenKind.RBracket)) {
+      return {
+        kind: AST.ASTKind.ListMatchPattern,
+        elements: [],
+      };
+    }
+
+    const elements: AST.MatchPattern[] = [this.parseMatchPattern()];
+
+    while (this.peekTokenIs(TokenKind.Comma)) {
+      this.nextToken();
+      this.nextToken();
+      elements.push(this.parseMatchPattern());
+    }
+
+    this.expectPeek(TokenKind.RBracket);
+
+    return {
+      kind: AST.ASTKind.ListMatchPattern,
+      elements,
+    };
+  };
+
+  private parseMatchPattern = (): AST.MatchPattern => {
+    const patterns = {
+      [TokenKind.Identifier]: this.parseIdentifier,
+      [TokenKind.True]: this.parseBooleon,
+      [TokenKind.False]: this.parseBooleon,
+      [TokenKind.Integer]: this.parseInteger,
+      [TokenKind.Decimal]: this.parseDecimal,
+      [TokenKind.Str]: this.parseString,
+      [TokenKind.Underscore]: this.parsePlaceholder,
+      [TokenKind.LBracket]: this.parseMatchListPattern,
+      [TokenKind.DotDot]: () => {
+        this.nextToken();
+        return {
+          kind: AST.ASTKind.RestElement,
+          argument: {
+            kind: AST.ASTKind.Identifier,
+            value: this.curToken.literal,
+          },
+        };
+      },
+    };
+
+    if (patterns[this.curToken.kind]) {
+      return patterns[this.curToken.kind]();
+    }
+
+    throw new ParserError(
+      `Unable to use ${this.curToken.kind} within a match pattern`,
+      this.curToken
+    );
+  };
+
   private parseMatchExpression = (): AST.MatchExpression => {
     this.nextToken();
 
@@ -519,7 +561,7 @@ export default class Parser {
     const cases: AST.MatchCase[] = [];
 
     while (!this.curTokenIs(TokenKind.RBrace)) {
-      const pattern = this.parseExpression(Precedence.Lowest);
+      const pattern = this.parseMatchPattern();
 
       let guard: AST.Expression | null = null;
       if (this.peekTokenIs(TokenKind.If)) {
@@ -552,12 +594,10 @@ export default class Parser {
     };
   };
 
-  private parseIdentifier = (): AST.Identifier => {
-    return {
-      kind: AST.ASTKind.Identifier,
-      value: this.curToken.literal,
-    };
-  };
+  private parseIdentifier = (): AST.Identifier => ({
+    kind: AST.ASTKind.Identifier,
+    value: this.curToken.literal,
+  });
 
   private parseBooleon = (): AST.Bool => ({
     kind: AST.ASTKind.Bool,
@@ -588,26 +628,19 @@ export default class Parser {
       ? []
       : this.parseFunctionParameters(TokenKind.Pipe);
 
-    if (this.peekTokenIs(TokenKind.LBrace)) {
-      this.nextToken();
-      const body = this.parseBlockStatement();
-
-      return {
-        kind: AST.ASTKind.FunctionLiteral,
-        parameters,
-        body,
-      };
-    }
-
     this.nextToken();
+
+    const body: AST.BlockStatement = this.curTokenIs(TokenKind.LBrace)
+      ? this.parseBlockStatement()
+      : {
+          kind: AST.ASTKind.BlockStatement,
+          statements: [this.parseExpressionStatement()],
+        };
 
     return {
       kind: AST.ASTKind.FunctionLiteral,
       parameters,
-      body: {
-        kind: AST.ASTKind.BlockStatement,
-        statements: [this.parseExpressionStatement()],
-      },
+      body,
     };
   };
 
@@ -650,6 +683,11 @@ export default class Parser {
   private parseSetLiteral = (): AST.SetLiteral => ({
     kind: AST.ASTKind.SetLiteral,
     elements: this.parseExpressionList(TokenKind.RBrace),
+  });
+
+  private parseListDestructurePattern = (): AST.ListDestructurePattern => ({
+    kind: AST.ASTKind.ListDestructurePattern,
+    elements: this.parseFunctionParameters(TokenKind.RBracket),
   });
 
   private parseRangeLiteral = (left: AST.Expression): AST.RangeLiteral => {
@@ -698,35 +736,19 @@ export default class Parser {
     return parameters;
   };
 
-  private parseFunctionThread = (left: AST.Expression): AST.FunctionThread => {
-    const functions: AST.Callable[] = [this.parseFunctionChain()];
-
-    while (this.peekTokenIs(TokenKind.PipeGreater)) {
-      this.nextToken();
-      functions.push(this.parseFunctionChain());
-    }
-
-    return {
-      kind: AST.ASTKind.FunctionThread,
-      initial: left,
-      functions,
-    };
-  };
-
   private parseFunctionParameter = (): AST.Identifiable => {
     if (this.curTokenIs(TokenKind.LBracket)) {
-      const values = this.parseFunctionParameters(TokenKind.RBracket);
-      return {
-        kind: AST.ASTKind.IdentifierListDestructure,
-        values,
-      };
+      return this.parseListDestructurePattern();
     }
 
     if (this.curTokenIs(TokenKind.DotDot)) {
       this.nextToken();
       return {
-        kind: AST.ASTKind.IdentifierGlob,
-        value: this.curToken.literal,
+        kind: AST.ASTKind.RestElement,
+        argument: {
+          kind: AST.ASTKind.Identifier,
+          value: this.curToken.literal,
+        },
       };
     }
 
@@ -736,19 +758,35 @@ export default class Parser {
     };
   };
 
-  private parseFunctionComposition = (left: AST.Expression): AST.FunctionComposition => {
-    if (!this.isCallable(left)) {
-      throw new ParserError(
-        `Function composition expected callable, but received ${left.kind}`,
-        this.curToken
-      );
+  private parseFunctionThread = (left: AST.Expression): AST.FunctionThread => {
+    const functions: AST.Callable[] = [this.parseCallable()];
+
+    while (this.peekTokenIs(TokenKind.PipeGreater)) {
+      this.nextToken();
+      functions.push(this.parseCallable());
     }
 
-    const functions: AST.Callable[] = [left, this.parseFunctionChain()];
+    if (this.peekTokenIs(TokenKind.Semicolon)) {
+      this.nextToken();
+    }
+
+    return {
+      kind: AST.ASTKind.FunctionThread,
+      initial: left,
+      functions,
+    };
+  };
+
+  private parseFunctionComposition = (left: AST.Expression): AST.FunctionComposition => {
+    if (!this.isCallable(left)) {
+      throw new ParserError(`Expected callable, but received ${left.kind}`, this.curToken);
+    }
+
+    const functions: AST.Callable[] = [left, this.parseCallable()];
 
     while (this.peekTokenIs(TokenKind.GreaterGreater)) {
       this.nextToken();
-      functions.push(this.parseFunctionChain());
+      functions.push(this.parseCallable());
     }
 
     if (this.peekTokenIs(TokenKind.Semicolon)) {
@@ -761,16 +799,13 @@ export default class Parser {
     };
   };
 
-  private parseFunctionChain = (): AST.Callable => {
+  private parseCallable = (): AST.Callable => {
     this.nextToken();
 
     const result = this.parseExpression(Precedence.Identifier);
 
     if (!this.isCallable(result)) {
-      throw new ParserError(
-        `Function composition expected callable, but received ${result.kind}`,
-        this.curToken
-      );
+      throw new ParserError(`Expected callable, but received ${result.kind}`, this.curToken);
     }
 
     return result;

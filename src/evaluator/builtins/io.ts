@@ -4,8 +4,11 @@ import O from '../object';
 const puts: O.BuiltinFuncTemplate = {
   parameters: [
     {
-      kind: AST.ASTKind.IdentifierGlob,
-      value: 'values',
+      kind: AST.ASTKind.RestElement,
+      argument: {
+        kind: AST.ASTKind.Identifier,
+        value: 'values',
+      },
     },
   ],
   body: (environment: O.Environment) => {

@@ -52,7 +52,7 @@ test('let assignment', () => {
 
 test('mutable let assignment', () => {
   const source = `
-    let mut x = 1; 
+    let mut x = 1;
     x = 2;
     x
   `;
@@ -107,6 +107,17 @@ test('mutable let list destructing', () => {
   const result = doEvaluate(source);
 
   expect(result.inspect()).toEqual('[100, 2, [3, 4]]');
+});
+
+test('list spread', () => {
+  const source = `
+    let x = [2, 3];
+    [1, ..x, ..["a", "b", "c"]];
+  `;
+
+  const result = doEvaluate(source);
+
+  expect(result.inspect()).toEqual('[1, 2, 3, "a", "b", "c"]');
 });
 
 test('function literal with block statement', () => {
@@ -182,7 +193,7 @@ test('call expression', () => {
 test('infix call expression', () => {
   const source = `
     let add = |x, y| { x + y };
-    3 \`add\` 4  
+    3 \`add\` 4
   `;
 
   const result = doEvaluate(source);
@@ -194,6 +205,18 @@ test('curried call expression', () => {
   const source = `
     let add = |x, y| { x + y };
     add(6)(1);
+  `;
+
+  const result = doEvaluate(source);
+
+  expect(result).toEqual(new O.Integer(7));
+});
+
+test('call expression with spread', () => {
+  const source = `
+    let add = |x, y| { x + y };
+    let xs = [3, 4]
+    add(..xs);
   `;
 
   const result = doEvaluate(source);

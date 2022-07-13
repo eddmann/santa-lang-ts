@@ -185,8 +185,11 @@ const zip: O.BuiltinFuncTemplate = {
       value: 'collection',
     },
     {
-      kind: AST.ASTKind.IdentifierGlob,
-      value: 'collections',
+      kind: AST.ASTKind.RestElement,
+      argument: {
+        kind: AST.ASTKind.Identifier,
+        value: 'collections',
+      },
     },
   ],
   body: (environment: O.Environment) => {

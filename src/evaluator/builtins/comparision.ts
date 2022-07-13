@@ -120,8 +120,11 @@ const not: O.BuiltinFuncTemplate = {
 const assert: O.BuiltinFuncTemplate = {
   parameters: [
     {
-      kind: AST.ASTKind.IdentifierGlob,
-      value: 'assertions',
+      kind: AST.ASTKind.RestElement,
+      argument: {
+        kind: AST.ASTKind.Identifier,
+        value: 'assertions',
+      },
     },
   ],
   body: (environment: O.Environment) => {

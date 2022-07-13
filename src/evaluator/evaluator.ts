@@ -38,6 +38,15 @@ const evalExpressions = (expressions: AST.Expression[], environment: O.Environme
       return [evaluated];
     }
 
+    if (expression.kind === AST.ASTKind.SpreadElement) {
+      if (!(evaluated instanceof O.List)) {
+        return [new O.Err(`Expected ${AST.ASTKind.SpreadElement} to be a list`)];
+      }
+
+      result.push(...evaluated.items);
+      continue;
+    }
+
     result.push(evaluated);
   }
 
@@ -169,15 +178,12 @@ const evalCallExpression = (node: AST.CallExpression, environment: O.Environment
 
   const hasPlaceholder = args.some(arg => arg instanceof O.Placeholder);
 
-  if (fn instanceof O.Func && (node.arguments.length < fn.parameters.length || hasPlaceholder)) {
+  if (fn instanceof O.Func && (args.length < fn.parameters.length || hasPlaceholder)) {
     const { environment, parameters } = extendFunctionEnv(fn, args);
     return new O.Func(parameters, fn.body, environment);
   }
 
-  if (
-    fn instanceof O.BuiltinFunc &&
-    (node.arguments.length < fn.parameters.length || hasPlaceholder)
-  ) {
+  if (fn instanceof O.BuiltinFunc && (args.length < fn.parameters.length || hasPlaceholder)) {
     const { environment, parameters } = extendFunctionEnv(fn, args);
     return new O.BuiltinFunc(parameters, fn.body, environment);
   }
@@ -188,7 +194,7 @@ const evalCallExpression = (node: AST.CallExpression, environment: O.Environment
 const extendFunctionEnv = (
   fn: O.Func | O.BuiltinFunc,
   args: O.Obj[]
-): { environment: Environment; parameters: AST.Identifiable[] } | Err => {
+): { environment: Environment; parameters: AST.Identifiable[] } | O.Err => {
   const environment = new O.Environment(fn.environment);
   const parameters = fn.parameters;
 
@@ -205,17 +211,17 @@ const extendFunctionEnv = (
       continue;
     }
 
-    if (parameters[i].kind === AST.ASTKind.IdentifierListDestructure) {
-      destructureListIntoEnv(parameters[i].values, false, args[i], environment);
+    if (parameters[i].kind === AST.ASTKind.ListDestructurePattern) {
+      destructureListPatternIntoEnv(parameters[i], false, args[i], environment);
       continue;
     }
 
-    if (parameters[i].kind === AST.ASTKind.IdentifierGlob) {
-      environment.declareVariable(parameters[i].value, new O.List(args.slice(i)), false);
+    if (parameters[i].kind === AST.ASTKind.RestElement) {
+      environment.declareVariable(parameters[i].argument.value, new O.List(args.slice(i)), false);
       break;
     }
 
-    return new O.Err(`Unable to destructure parameter: ${parameters[i].kind}`);
+    return new O.Err(`Unable to parse parameter: ${parameters[i].kind}`);
   }
 
   return { environment, parameters: [...placeholderParams, ...parameters.slice(args.length)] };
@@ -252,15 +258,12 @@ const evalInfixExpression = (node: AST.InfixExpression, environment: O.Environme
 
   const hasPlaceholder = args.some(arg => arg instanceof O.Placeholder);
 
-  if (fn instanceof O.Func && (node.arguments.length < fn.parameters.length || hasPlaceholder)) {
+  if (fn instanceof O.Func && (args.length < fn.parameters.length || hasPlaceholder)) {
     const { environment, parameters } = extendFunctionEnv(fn, args);
     return new O.Func(parameters, fn.body, environment);
   }
 
-  if (
-    fn instanceof O.BuiltinFunc &&
-    (node.arguments.length < fn.parameters.length || hasPlaceholder)
-  ) {
+  if (fn instanceof O.BuiltinFunc && (args.length < fn.parameters.length || hasPlaceholder)) {
     const { environment, parameters } = extendFunctionEnv(fn, args);
     return new O.BuiltinFunc(parameters, fn.body, environment);
   }
@@ -313,14 +316,10 @@ const evalMatchExpression = (node: AST.MatchExpression, environment: O.Environme
       return evaluate(case_.consequence, environment);
     }
 
-    if (case_.pattern.kind === AST.ASTKind.ListLiteral) {
-      if (!(subject instanceof O.List)) {
-        continue;
-      }
-
+    if (case_.pattern.kind === AST.ASTKind.ListMatchPattern) {
       try {
         const matchEnvironment = new O.Environment(environment);
-        patternMatchListIntoEnv(case_.pattern.elements, subject, matchEnvironment);
+        matchListPatternIntoEnv(case_.pattern, subject, matchEnvironment);
 
         if (case_.guard) {
           const result = evaluate(case_.guard, matchEnvironment);
@@ -423,25 +422,25 @@ const evalFunctionComposition = (
     environment
   );
 
-const destructureListIntoEnv = (
-  identifiers: (AST.Identifiable | AST.Placeholder)[],
+const destructureListPatternIntoEnv = (
+  { elements }: AST.ListDestructurePattern,
   isMutable: boolean,
   value: O.List,
   environment: O.Environment
 ): O.Err | O.List => {
-  for (let i = 0; i < identifiers.length; i++) {
-    if (identifiers[i].kind === AST.ASTKind.Placeholder) {
+  for (let i = 0; i < elements.length; i++) {
+    if (elements[i].kind === AST.ASTKind.Placeholder) {
       continue;
     }
 
-    if (identifiers[i].kind === AST.ASTKind.Identifier) {
-      environment.declareVariable(identifiers[i].value, value.get(new O.Integer(i)), isMutable);
+    if (elements[i].kind === AST.ASTKind.Identifier) {
+      environment.declareVariable(elements[i].value, value.get(new O.Integer(i)), isMutable);
       continue;
     }
 
-    if (identifiers[i].kind === AST.ASTKind.IdentifierListDestructure) {
-      destructureListIntoEnv(
-        identifiers[i].values,
+    if (elements[i].kind === AST.ASTKind.ListDestructurePattern) {
+      destructureListPatternIntoEnv(
+        elements[i],
         isMutable,
         value.get(new O.Integer(i)),
         environment
@@ -449,16 +448,16 @@ const destructureListIntoEnv = (
       continue;
     }
 
-    if (identifiers[i].kind === AST.ASTKind.IdentifierGlob) {
+    if (elements[i].kind === AST.ASTKind.RestElement) {
       environment.declareVariable(
-        identifiers[i].value,
+        elements[i].argument.value,
         value.get(O.Range.fromRange(i, Infinity)),
         isMutable
       );
       break;
     }
 
-    return new O.Err(`Unable to destructure list item: ${identifiers[i].kind}`);
+    return new O.Err(`Unable to destructure list item: ${elements[i].kind}`);
   }
 
   return value;
@@ -466,63 +465,63 @@ const destructureListIntoEnv = (
 
 class NoPatternMatchError extends Error {}
 
-const patternMatchListIntoEnv = (
-  identifiers: (AST.Identifier | AST.Placeholder | AST.ListLiteral | AST.IdentifierGlob)[],
+const matchListPatternIntoEnv = (
+  { elements }: AST.ListMatchPattern,
   value: O.List,
   environment: O.Environment
 ): void => {
-  if (identifiers.length === 0 && value.items.size === 0) {
+  if (elements.length === 0 && value.items.size === 0) {
     return;
   }
 
-  if (identifiers.length === 0 && value.items.size > 0) {
+  if (elements.length === 0 && value.items.size > 0) {
     throw new NoPatternMatchError();
   }
 
-  if (identifiers.length > 0 && value.items.size === 0) {
+  if (elements.length > 0 && value.items.size === 0) {
     throw new NoPatternMatchError();
   }
 
   let i = 0;
-  for (i = 0; i < identifiers.length; i++) {
+  for (i = 0; i < elements.length; i++) {
     if (i >= value.items.size) {
       throw new NoPatternMatchError();
     }
 
-    if (identifiers[i].kind === AST.ASTKind.Placeholder) {
+    if (elements[i].kind === AST.ASTKind.Placeholder) {
       continue;
     }
 
-    if (identifiers[i].kind === AST.ASTKind.Identifier) {
-      environment.declareVariable(identifiers[i].value, value.get(new O.Integer(i)), false);
+    if (elements[i].kind === AST.ASTKind.Identifier) {
+      environment.declareVariable(elements[i].value, value.get(new O.Integer(i)), false);
       continue;
     }
 
-    if (identifiers[i].kind === AST.ASTKind.ListLiteral) {
-      patternMatchListIntoEnv(identifiers[i].elements, value.get(new O.Integer(i)), environment);
+    if (elements[i].kind === AST.ASTKind.ListMatchPattern) {
+      matchListPatternIntoEnv(elements[i], value.get(new O.Integer(i)), environment);
       continue;
     }
 
-    if (identifiers[i].kind === AST.ASTKind.IdentifierGlob) {
+    if (elements[i].kind === AST.ASTKind.RestElement) {
       environment.declareVariable(
-        identifiers[i].value,
+        elements[i].argument.value,
         value.get(O.Range.fromRange(i, Infinity)),
         false
       );
       return;
     }
 
-    const nvalue = evaluate(identifiers[i], environment);
+    const literal = evaluate(elements[i], environment);
 
-    if (isError(nvalue)) {
-      throw new Error(nvalue);
+    if (isError(literal)) {
+      throw new Error(literal);
     }
 
-    if (value.get(new O.Integer(i)).equals(nvalue)) {
+    if (value.get(new O.Integer(i)).equals(literal)) {
       continue;
     }
 
-    throw new NoPatternMatchError('');
+    throw new NoPatternMatchError();
   }
 
   if (i < value.items.size) {
@@ -591,25 +590,15 @@ export const evaluate = (node: AST.Node, environment: O.Environment): O.Obj => {
         return value;
       }
 
+      if (node.name.kind === AST.ASTKind.ListDestructurePattern) {
+        return destructureListPatternIntoEnv(node.name, node.isMutable, value, environment);
+      }
+
       if (value instanceof O.Func) {
         value.environment.declareVariable(node.name.value, value, false);
       }
 
       return environment.declareVariable(node.name.value, value, node.isMutable);
-    }
-
-    case AST.ASTKind.LetListDestructure: {
-      const value = evaluate(node.value, environment);
-
-      if (isError(value)) {
-        return value;
-      }
-
-      if (!(value instanceof O.List)) {
-        return new O.Err('Expected a list to destructure');
-      }
-
-      return destructureListIntoEnv(node.names, node.isMutable, value, environment);
     }
 
     case AST.ASTKind.Assignment: {
@@ -651,6 +640,9 @@ export const evaluate = (node: AST.Node, environment: O.Environment): O.Obj => {
 
     case AST.ASTKind.FunctionComposition:
       return evalFunctionComposition(node, environment);
+
+    case AST.ASTKind.SpreadElement:
+      return evaluate(node.value, environment);
 
     default:
       return new O.Err(`Unknown node type: ${node.kind}`);
