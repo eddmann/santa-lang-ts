@@ -15,16 +15,16 @@ export enum ASTKind {
   Placeholder = 'PLACEHOLDER',
   Str = 'STRING',
   Bool = 'BOOLEAN',
+  FunctionLiteral = 'FUNCTION_LITERAL',
   CallExpression = 'CALL_EXPRESSION',
   IndexExpression = 'INDEX_EXPRESSION',
   PrefixExpression = 'PREFIX_EXPRESSION',
   InfixExpression = 'INFIX_EXPRESSION',
   ExpressionStatement = 'EXPRESSION',
-  FunctionLiteral = 'FUNCTION_LITERAL',
-  HashLiteral = 'HASH_LITERAL',
-  ListLiteral = 'LIST_LITERAL',
-  SetLiteral = 'SET_LITERAL',
-  RangeLiteral = 'RANGE_LITERAL',
+  HashExpression = 'HASH_EXPRESSION',
+  ListExpression = 'LIST_EXPRESSION',
+  SetExpression = 'SET_EXPRESSION',
+  RangeExpression = 'RANGE_EXPRESSION',
   ListDestructurePattern = 'LIST_DESTRUCTURE_PATTERN',
   ListMatchPattern = 'LIST_MATCH_PATTERN',
   RestElement = 'REST_ELEMENT',
@@ -44,13 +44,13 @@ export type Statement =
   | SectionStatement;
 
 export type Expression =
-  | ListLiteral
-  | SetLiteral
-  | RangeLiteral
+  | ListExpression
+  | SetExpression
+  | RangeExpression
   | FunctionLiteral
   | IndexExpression
   | CallExpression
-  | HashLiteral
+  | HashExpression
   | Identifier
   | IfExpression
   | MatchExpression
@@ -147,8 +147,8 @@ export type Bool = {
   value: boolean;
 };
 
-export type RangeLiteral = {
-  kind: ASTKind.RangeLiteral;
+export type RangeExpression = {
+  kind: ASTKind.RangeExpression;
   start: Expression;
   end: Expression;
 };
@@ -158,13 +158,13 @@ export type Identifier = {
   value: string;
 };
 
-export type ListLiteral = {
-  kind: ASTKind.ListLiteral;
+export type ListExpression = {
+  kind: ASTKind.ListExpression;
   elements: (Expression | SpreadElement)[];
 };
 
-export type SetLiteral = {
-  kind: ASTKind.SetLiteral;
+export type SetExpression = {
+  kind: ASTKind.SetExpression;
   elements: Expression[];
 };
 
@@ -203,8 +203,8 @@ export type FunctionComposition = {
   functions: Callable[];
 };
 
-export type HashLiteral = {
-  kind: ASTKind.HashLiteral;
+export type HashExpression = {
+  kind: ASTKind.HashExpression;
   pairs: [key: Expression, value: Expression][];
 };
 

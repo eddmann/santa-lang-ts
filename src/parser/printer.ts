@@ -1,10 +1,10 @@
-import { ASTKind, HashLiteral, IfExpression, Node } from './ast';
+import { ASTKind, HashExpression, IfExpression, Node } from './ast';
 
 function print(node: Node): string {
   switch (node.kind) {
-    case ASTKind.ListLiteral:
+    case ASTKind.ListExpression:
       return `[${node.elements.map(print).join(', ')}]`;
-    case ASTKind.SetLiteral:
+    case ASTKind.SetExpression:
       return `{${node.elements.map(print).join(', ')}}`;
     case ASTKind.BlockStatement:
       return node.statements.map(print).join('\n');
@@ -30,7 +30,7 @@ function print(node: Node): string {
       const params = node.parameters.map(print).join(', ');
       return `|${params}| {\n  ${print(node.body)}\n}`;
     }
-    case ASTKind.HashLiteral:
+    case ASTKind.HashExpression:
       return printHash(node);
     case ASTKind.Identifier:
       return node.value;
@@ -69,7 +69,7 @@ function printIfExpression({ condition, consequence, alternative }: IfExpression
   return `if ${print(condition)} {\n  ${print(consequence)}\n}` + alternativeString;
 }
 
-function printHash(node: HashLiteral): string {
+function printHash(node: HashExpression): string {
   const pairs = [];
 
   for (let i = 0; i < node.pairs.length; i += 2) {

@@ -53,7 +53,10 @@ const evalExpressions = (expressions: AST.Expression[], environment: O.Environme
   return result;
 };
 
-const evalListLiteral = (node: AST.ListLiteral, environment: O.Environment): O.List | O.Err => {
+const evalListExpression = (
+  node: AST.ListExpression,
+  environment: O.Environment
+): O.List | O.Err => {
   const elements = evalExpressions(node.elements, environment);
 
   const first = elements[0];
@@ -64,7 +67,10 @@ const evalListLiteral = (node: AST.ListLiteral, environment: O.Environment): O.L
   return new O.List(elements);
 };
 
-const evalHashLiteral = (node: AST.HashLiteral, environment: O.Environment): O.Hash | O.Err => {
+const evalHashExpression = (
+  node: AST.HashExpression,
+  environment: O.Environment
+): O.Hash | O.Err => {
   const pairs: [O.Obj, O.Obj][] = [];
 
   for (const pair of node.pairs) {
@@ -81,7 +87,7 @@ const evalHashLiteral = (node: AST.HashLiteral, environment: O.Environment): O.H
   return new O.Hash(pairs);
 };
 
-const evalSetLiteral = (node: AST.SetLiteral, environment: O.Environment): O.Set | O.Err => {
+const evalSetExpression = (node: AST.SetExpression, environment: O.Environment): O.Set | O.Err => {
   const elements = evalExpressions(node.elements, environment);
 
   const first = elements[0];
@@ -92,7 +98,10 @@ const evalSetLiteral = (node: AST.SetLiteral, environment: O.Environment): O.Set
   return new O.Set(elements);
 };
 
-const evalRangeLiteral = (node: AST.RangeLiteral, environment: O.Environment): O.Range | O.Err => {
+const evalRangeExpression = (
+  node: AST.RangeExpression,
+  environment: O.Environment
+): O.Range | O.Err => {
   const start = evaluate(node.start, environment);
   if (isError(start)) {
     return start;
@@ -555,17 +564,17 @@ export const evaluate = (node: AST.Node, environment: O.Environment): O.Obj => {
     case AST.ASTKind.Placeholder:
       return O.PLACEHOLDER;
 
-    case AST.ASTKind.ListLiteral:
-      return evalListLiteral(node, environment);
+    case AST.ASTKind.ListExpression:
+      return evalListExpression(node, environment);
 
-    case AST.ASTKind.HashLiteral:
-      return evalHashLiteral(node, environment);
+    case AST.ASTKind.HashExpression:
+      return evalHashExpression(node, environment);
 
-    case AST.ASTKind.SetLiteral:
-      return evalSetLiteral(node, environment);
+    case AST.ASTKind.SetExpression:
+      return evalSetExpression(node, environment);
 
-    case AST.ASTKind.RangeLiteral:
-      return evalRangeLiteral(node, environment);
+    case AST.ASTKind.RangeExpression:
+      return evalRangeExpression(node, environment);
 
     case AST.ASTKind.IndexExpression:
       return evalIndexExpression(node, environment);

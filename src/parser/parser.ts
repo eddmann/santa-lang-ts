@@ -50,7 +50,7 @@ export default class Parser {
       [TokenKind.DotDot]: {
         precedence: Precedence.Sum,
         prefix: this.parseIdentifier,
-        infix: this.parseRangeLiteral,
+        infix: this.parseRangeExpression,
       },
       [TokenKind.Bang]: { precedence: Precedence.Equals, prefix: this.parsePrefixExpression },
       [TokenKind.Plus]: {
@@ -130,11 +130,11 @@ export default class Parser {
         infix: this.parseInfixExpression,
       },
       [TokenKind.If]: { precedence: Precedence.Identifier, prefix: this.parseIfExpression },
-      [TokenKind.HashLBrace]: { precedence: Precedence.Lowest, prefix: this.parseHashLiteral },
-      [TokenKind.LBrace]: { precedence: Precedence.Lowest, prefix: this.parseSetLiteral },
+      [TokenKind.HashLBrace]: { precedence: Precedence.Lowest, prefix: this.parseHashExpression },
+      [TokenKind.LBrace]: { precedence: Precedence.Lowest, prefix: this.parseSetExpression },
       [TokenKind.LBracket]: {
         precedence: Precedence.Index,
-        prefix: this.parseListLiteral,
+        prefix: this.parseListExpression,
         infix: this.parseIndexExpression,
       },
       [TokenKind.Assign]: {
@@ -644,7 +644,7 @@ export default class Parser {
     };
   };
 
-  private parseHashLiteral = (): AST.HashLiteral => {
+  private parseHashExpression = (): AST.HashExpression => {
     const pairs: [AST.Expression, AST.Expression][] = [];
 
     while (!this.peekTokenIs(TokenKind.RBrace)) {
@@ -670,18 +670,18 @@ export default class Parser {
     this.expectPeek(TokenKind.RBrace);
 
     return {
-      kind: AST.ASTKind.HashLiteral,
+      kind: AST.ASTKind.HashExpression,
       pairs,
     };
   };
 
-  private parseListLiteral = (): AST.ListLiteral => ({
-    kind: AST.ASTKind.ListLiteral,
+  private parseListExpression = (): AST.ListExpression => ({
+    kind: AST.ASTKind.ListExpression,
     elements: this.parseExpressionList(TokenKind.RBracket),
   });
 
-  private parseSetLiteral = (): AST.SetLiteral => ({
-    kind: AST.ASTKind.SetLiteral,
+  private parseSetExpression = (): AST.SetExpression => ({
+    kind: AST.ASTKind.SetExpression,
     elements: this.parseExpressionList(TokenKind.RBrace),
   });
 
@@ -690,14 +690,14 @@ export default class Parser {
     elements: this.parseFunctionParameters(TokenKind.RBracket),
   });
 
-  private parseRangeLiteral = (left: AST.Expression): AST.RangeLiteral => {
+  private parseRangeExpression = (left: AST.Expression): AST.RangeExpression => {
     if (
       !this.peekTokenIs(TokenKind.Identifier) &&
       !this.peekTokenIs(TokenKind.Integer) &&
       !this.peekTokenIs(TokenKind.Minus)
     ) {
       return {
-        kind: AST.ASTKind.RangeLiteral,
+        kind: AST.ASTKind.RangeExpression,
         start: left,
         end: {
           kind: AST.ASTKind.Integer,
@@ -709,7 +709,7 @@ export default class Parser {
     this.nextToken();
 
     return {
-      kind: AST.ASTKind.RangeLiteral,
+      kind: AST.ASTKind.RangeExpression,
       start: left,
       end: this.parseExpression(Precedence.Identifier),
     };

@@ -438,7 +438,7 @@ test('list literal', () => {
       {
         kind: 'EXPRESSION',
         expression: {
-          kind: 'LIST_LITERAL',
+          kind: 'LIST_EXPRESSION',
           elements: [
             { kind: 'INTEGER', value: 1 },
             { kind: 'DECIMAL', value: 2.5 },
@@ -461,12 +461,12 @@ test('hash literal', () => {
       {
         kind: 'EXPRESSION',
         expression: {
-          kind: 'HASH_LITERAL',
+          kind: 'HASH_EXPRESSION',
           pairs: [
             [
               { kind: 'STRING', value: 'hello' },
               {
-                kind: 'HASH_LITERAL',
+                kind: 'HASH_EXPRESSION',
                 pairs: [
                   [
                     { kind: 'STRING', value: 'x' },
@@ -481,7 +481,7 @@ test('hash literal', () => {
             ],
             [
               {
-                kind: 'LIST_LITERAL',
+                kind: 'LIST_EXPRESSION',
                 elements: [
                   { kind: 'INTEGER', value: 1 },
                   { kind: 'INTEGER', value: 2 },
@@ -507,7 +507,7 @@ test('set literal', () => {
       {
         kind: 'EXPRESSION',
         expression: {
-          kind: 'SET_LITERAL',
+          kind: 'SET_EXPRESSION',
           elements: [
             { kind: 'INTEGER', value: 1 },
             { kind: 'INTEGER', value: 2 },
@@ -589,12 +589,12 @@ test('let destructuring', () => {
           ],
         },
         value: {
-          kind: 'LIST_LITERAL',
+          kind: 'LIST_EXPRESSION',
           elements: [
             { kind: 'INTEGER', value: 1 },
             { kind: 'INTEGER', value: 2 },
             {
-              kind: 'LIST_LITERAL',
+              kind: 'LIST_EXPRESSION',
               elements: [
                 { kind: 'INTEGER', value: 3 },
                 { kind: 'INTEGER', value: 4 },
@@ -620,14 +620,14 @@ test('list spread', () => {
       {
         kind: 'EXPRESSION',
         expression: {
-          kind: 'LIST_LITERAL',
+          kind: 'LIST_EXPRESSION',
           elements: [
             { kind: 'INTEGER', value: 1 },
             { kind: 'SPREAD_ELEMENT', value: { kind: 'IDENTIFIER', value: 'xs' } },
             {
               kind: 'SPREAD_ELEMENT',
               value: {
-                kind: 'LIST_LITERAL',
+                kind: 'LIST_EXPRESSION',
                 elements: [
                   { kind: 'INTEGER', value: 1 },
                   { kind: 'INTEGER', value: 2 },
@@ -710,7 +710,7 @@ test('bounded range', () => {
       {
         kind: 'EXPRESSION',
         expression: {
-          kind: 'RANGE_LITERAL',
+          kind: 'RANGE_EXPRESSION',
           start: { kind: 'INTEGER', value: 1 },
           end: { kind: 'INTEGER', value: 10 },
         },
@@ -730,7 +730,7 @@ test('unbounded range', () => {
       {
         kind: 'EXPRESSION',
         expression: {
-          kind: 'RANGE_LITERAL',
+          kind: 'RANGE_EXPRESSION',
           start: { kind: 'INTEGER', value: 1 },
           end: { kind: 'INTEGER', value: Infinity },
         },
@@ -750,7 +750,7 @@ test('range using identifier', () => {
       {
         kind: 'EXPRESSION',
         expression: {
-          kind: 'RANGE_LITERAL',
+          kind: 'RANGE_EXPRESSION',
           start: { kind: 'INTEGER', value: 0 },
           end: { kind: 'IDENTIFIER', value: 'x' },
         },
@@ -922,7 +922,7 @@ test('function threading with call expression', () => {
         expression: {
           kind: 'FUNCTION_THEAD',
           initial: {
-            kind: 'LIST_LITERAL',
+            kind: 'LIST_EXPRESSION',
             elements: [
               { kind: 'INTEGER', value: 1 },
               { kind: 'INTEGER', value: 2 },
@@ -1123,7 +1123,7 @@ test('indexing', () => {
           kind: 'INDEX_EXPRESSION',
           item: { kind: 'IDENTIFIER', value: 'list' },
           index: {
-            kind: 'RANGE_LITERAL',
+            kind: 'RANGE_EXPRESSION',
             start: { kind: 'INTEGER', value: 2 },
             end: { kind: 'INTEGER', value: 5 },
           },
@@ -1135,7 +1135,7 @@ test('indexing', () => {
           kind: 'INDEX_EXPRESSION',
           item: { kind: 'IDENTIFIER', value: 'list' },
           index: {
-            kind: 'RANGE_LITERAL',
+            kind: 'RANGE_EXPRESSION',
             start: {
               kind: 'PREFIX_EXPRESSION',
               function: { kind: 'IDENTIFIER', value: 'unary_-' },
@@ -1151,7 +1151,7 @@ test('indexing', () => {
           kind: 'INDEX_EXPRESSION',
           item: { kind: 'IDENTIFIER', value: 'list' },
           index: {
-            kind: 'RANGE_LITERAL',
+            kind: 'RANGE_EXPRESSION',
             start: { kind: 'INTEGER', value: 0 },
             end: {
               kind: 'PREFIX_EXPRESSION',
