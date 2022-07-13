@@ -2,6 +2,8 @@
 
 An functional, C-like programming language for solving Advent of Code problems.
 
+_Influenced by:_ Rust, JavaScript, F#, Scala
+
 ## Why?
 
 Over the past several years I have been slowly working through the previous Advent of Code calendars.
@@ -150,7 +152,7 @@ let reduce = |fn, initial, list| {
 };
 ```
 
-## Inspiration
+## Resources
 
 - [Writing An Interpreter In Go](https://interpreterbook.com/)
 - [Monkeylang](https://monkeylang.org/)
