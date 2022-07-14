@@ -146,7 +146,7 @@ let filter = |fn, list| match list {
 ```
 let reduce = |fn, initial, list| {
   let recur = |acc, list| match list {
-    [] { initial }
+    [] { acc }
     [head] { fn(acc, head) }
     [head, ..tail] { recur(fn(acc, head), tail) }
   };
