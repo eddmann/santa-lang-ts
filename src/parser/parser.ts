@@ -171,6 +171,8 @@ export default class Parser {
         return this.parseReturnStatement();
       case TokenKind.Break:
         return this.parseBreakStatement();
+      case TokenKind.Comment:
+        return this.parseComment();
       case TokenKind.Identifier:
         if (this.peekTokenIs(TokenKind.Colon)) {
           return this.parseSectionStatement();
@@ -562,6 +564,11 @@ export default class Parser {
     const cases: AST.MatchCase[] = [];
 
     while (!this.curTokenIs(TokenKind.RBrace)) {
+      if (this.curTokenIs(TokenKind.Comment)) {
+        this.nextToken();
+        continue;
+      }
+
       const pattern = this.parseMatchPattern();
 
       let guard: AST.Expression | null = null;
@@ -626,6 +633,11 @@ export default class Parser {
 
   private parseNil = (): AST.Nil => ({
     kind: AST.ASTKind.Nil,
+  });
+
+  private parseComment = (): AST.Comment => ({
+    kind: AST.ASTKind.Comment,
+    value: this.curToken.literal,
   });
 
   private parseFunctionLiteral = (): AST.FunctionLiteral => {

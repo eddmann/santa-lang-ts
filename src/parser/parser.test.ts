@@ -64,6 +64,24 @@ test('nil', () => {
   });
 });
 
+test('comments', () => {
+  const source = `
+    1 // sample comment one
+    // sample comment two
+  `;
+
+  const ast = parse(source);
+
+  expect(ast).toEqual({
+    kind: 'PROGRAM',
+    statements: [
+      { expression: { kind: 'INTEGER', value: 1 }, kind: 'EXPRESSION' },
+      { kind: 'COMMENT', value: ' sample comment one' },
+      { kind: 'COMMENT', value: ' sample comment two' },
+    ],
+  });
+});
+
 test('infix function call', () => {
   const source = 'one `add` two';
 

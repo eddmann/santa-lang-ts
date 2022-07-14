@@ -69,6 +69,22 @@ test('nil', () => {
   ]);
 });
 
+test('comments', () => {
+  const source = `
+    1 // sample comment one
+    // sample comment two
+  `;
+
+  const tokens = tokenize(source);
+
+  expect(tokens).toEqual([
+    { column: 4, kind: 'INTEGER', line: 2, literal: '1' },
+    { column: 8, kind: 'COMMENT', line: 2, literal: ' sample comment one' },
+    { column: 6, kind: 'COMMENT', line: 3, literal: ' sample comment two' },
+    { column: 2, kind: 'EOF', line: 4, literal: '' },
+  ]);
+});
+
 test('function literal with block statement', () => {
   const source = '|x, y| { x + y; }';
 

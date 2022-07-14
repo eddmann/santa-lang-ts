@@ -61,6 +61,11 @@ export default class Lexer {
         return this.createToken(TokenKind.Asterisk);
 
       case TokenKind.Slash:
+        if (this.peekChar() === TokenKind.Slash) {
+          this.readChar();
+          return this.createToken(TokenKind.Comment, this.readComment());
+        }
+
         return this.createToken(TokenKind.Slash);
 
       case TokenKind.Modulo:
@@ -247,6 +252,18 @@ export default class Lexer {
       isDecimal ? TokenKind.Decimal : TokenKind.Integer,
       this.source.slice(start, this.position + 1)
     );
+  }
+
+  private readComment(): string {
+    this.readChar();
+
+    const startPosition = this.position;
+
+    while (this.peekChar() && this.peekChar() !== '\n' && this.peekChar() !== '\r') {
+      this.readChar();
+    }
+
+    return this.source.slice(startPosition, this.position + 1);
   }
 
   private readChar(): void {

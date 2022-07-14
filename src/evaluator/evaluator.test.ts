@@ -50,6 +50,20 @@ test('nil', () => {
   expect(result).toEqual(O.NIL);
 });
 
+test('comments', () => {
+  const source = `
+    let x = || {
+      1 // sample comment one
+    };
+    // sample comment two
+    x();
+  `;
+
+  const result = doEvaluate(source);
+
+  expect(result).toEqual(new O.Integer(1));
+});
+
 test('let assignment', () => {
   const source = 'let x = 1; x';
 

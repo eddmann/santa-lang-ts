@@ -5,6 +5,7 @@ export enum TokenKind {
   Integer = 'INTEGER',
   Decimal = 'DECIMAL',
   Str = 'STRING',
+  Comment = 'COMMENT',
   Assign = '=',
   Plus = '+',
   Minus = '-',
