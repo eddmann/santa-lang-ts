@@ -1,4 +1,4 @@
-<p align="center"><img src="docs/logo.png" alt="santa-lang" width="500px" /></p>
+<p align="center"><img src="docs/logo-3.png" alt="santa-lang" width="400px" /></p>
 
 # santa-lang
 
