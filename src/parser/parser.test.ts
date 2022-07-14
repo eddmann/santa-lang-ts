@@ -53,6 +53,17 @@ test('boolean', () => {
   });
 });
 
+test('nil', () => {
+  const source = 'nil';
+
+  const ast = parse(source);
+
+  expect(ast).toEqual({
+    kind: 'PROGRAM',
+    statements: [{ expression: { kind: 'NIL' }, kind: 'EXPRESSION' }],
+  });
+});
+
 test('infix function call', () => {
   const source = 'one `add` two';
 

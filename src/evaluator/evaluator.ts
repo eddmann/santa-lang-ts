@@ -566,6 +566,9 @@ export const evaluate = (node: AST.Node, environment: O.Environment): O.Obj => {
     case AST.ASTKind.Placeholder:
       return O.PLACEHOLDER;
 
+    case AST.ASTKind.Nil:
+      return O.NIL;
+
     case AST.ASTKind.ListExpression:
       return evalListExpression(node, environment);
 

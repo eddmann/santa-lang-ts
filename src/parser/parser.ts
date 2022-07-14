@@ -47,6 +47,7 @@ export default class Parser {
       [TokenKind.Decimal]: { precedence: Precedence.Identifier, prefix: this.parseDecimal },
       [TokenKind.Str]: { precedence: Precedence.Identifier, prefix: this.parseString },
       [TokenKind.Underscore]: { precedence: Precedence.Identifier, prefix: this.parsePlaceholder },
+      [TokenKind.Nil]: { precedence: Precedence.Identifier, prefix: this.parseNil },
       [TokenKind.DotDot]: {
         precedence: Precedence.Sum,
         prefix: this.parseIdentifier,
@@ -621,6 +622,10 @@ export default class Parser {
 
   private parsePlaceholder = (): AST.Placeholder => ({
     kind: AST.ASTKind.Placeholder,
+  });
+
+  private parseNil = (): AST.Nil => ({
+    kind: AST.ASTKind.Nil,
   });
 
   private parseFunctionLiteral = (): AST.FunctionLiteral => {

@@ -42,6 +42,14 @@ test('false boolean', () => {
   expect(result).toEqual(O.FALSE);
 });
 
+test('nil', () => {
+  const source = 'nil';
+
+  const result = doEvaluate(source);
+
+  expect(result).toEqual(O.NIL);
+});
+
 test('let assignment', () => {
   const source = 'let x = 1; x';
 

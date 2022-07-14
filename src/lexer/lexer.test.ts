@@ -58,6 +58,17 @@ test('boolean', () => {
   ]);
 });
 
+test('nil', () => {
+  const source = 'nil';
+
+  const tokens = tokenize(source);
+
+  expect(tokens).toEqual([
+    { column: 1, kind: 'NIL', line: 1, literal: 'nil' },
+    { column: 4, kind: 'EOF', line: 1, literal: '' },
+  ]);
+});
+
 test('function literal with block statement', () => {
   const source = '|x, y| { x + y; }';
 

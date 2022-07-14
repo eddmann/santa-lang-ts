@@ -46,6 +46,7 @@ export enum TokenKind {
   Else = 'ELSE',
   Return = 'RETURN',
   Break = 'BREAK',
+  Nil = 'NIL',
 }
 
 export type Token = {
@@ -65,4 +66,5 @@ export const keywords: { [keyword: string]: TokenKind } = {
   return: TokenKind.Return,
   break: TokenKind.Break,
   match: TokenKind.Match,
+  nil: TokenKind.Nil,
 };

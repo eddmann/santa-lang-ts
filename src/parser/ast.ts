@@ -13,6 +13,7 @@ export enum ASTKind {
   Integer = 'INTEGER',
   Decimal = 'DECIMAL',
   Placeholder = 'PLACEHOLDER',
+  Nil = 'NIL',
   Str = 'STRING',
   Bool = 'BOOLEAN',
   FunctionLiteral = 'FUNCTION_LITERAL',
@@ -64,6 +65,7 @@ export type Expression =
   | Placeholder
   | Str
   | Bool
+  | Nil
   | RestElement
   | SpreadElement
   | ListDestructurePattern
@@ -135,6 +137,10 @@ export type Decimal = {
 
 export type Placeholder = {
   kind: ASTKind.Placeholder;
+};
+
+export type Nil = {
+  kind: ASTKind.Nil;
 };
 
 export type Str = {
