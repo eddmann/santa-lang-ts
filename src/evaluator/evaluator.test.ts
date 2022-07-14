@@ -561,22 +561,18 @@ describe('literal match expression', () => {
     {
       source: 'sut("1")',
       expected: '"1"',
-      description: '',
     },
     {
       source: 'sut(2)',
       expected: '"2"',
-      description: '',
     },
     {
       source: 'sut(3.5)',
       expected: '"3"',
-      description: '',
     },
     {
       source: 'sut([4])',
       expected: '["4", [4]]',
-      description: '',
     },
   ];
 
@@ -607,52 +603,42 @@ describe('list match expression', () => {
     {
       source: 'sut([])',
       expected: '["1"]',
-      description: '',
     },
     {
       source: 'sut([[1], [2], [3]])',
       expected: '["2", 1, [2], [3]]',
-      description: '',
     },
     {
       source: 'sut([[2], [3], [4]])',
       expected: '["3", [2], [3], [4]]',
-      description: '',
     },
     {
       source: 'sut([1])',
       expected: '["4", 1]',
-      description: '',
     },
     {
       source: 'sut([2])',
       expected: '["5", 2]',
-      description: '',
     },
     {
       source: 'sut([1, 2])',
       expected: '["6", 1, 2]',
-      description: '',
     },
     {
       source: 'sut([2, 3])',
       expected: '["7", 2, 3]',
-      description: '',
     },
     {
       source: 'sut([2, 1, 3, 4])',
       expected: '["8", 2, 1, [3, 4]]',
-      description: '',
     },
     {
       source: 'sut([1, 2, 3, 4])',
       expected: '["9", 1, 2, [3, 4]]',
-      description: '',
     },
     {
       source: 'sut("")',
       expected: '"10"',
-      description: '',
     },
   ];
 
@@ -661,6 +647,18 @@ describe('list match expression', () => {
       expect(doEvaluate(`${sut} ${source}`).inspect()).toEqual(expected);
     });
   });
+});
+
+test('unexhaustive match returns nil', () => {
+  const source = `
+    match "unknown" {
+      "hello" { "1" }
+      1 { "2" }
+      2.0 { "3" }
+    };
+  `;
+
+  expect(doEvaluate(source).inspect()).toEqual('nil');
 });
 
 describe('match expression with guards', () => {

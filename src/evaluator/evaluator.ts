@@ -359,6 +359,8 @@ const evalMatchExpression = (node: AST.MatchExpression, environment: O.Environme
 
     return evaluate(case_.consequence, environment);
   }
+
+  return O.NIL;
 };
 
 const evalIndexExpression = (node: AST.IndexExpression, environment: Environment): O.Obj => {
