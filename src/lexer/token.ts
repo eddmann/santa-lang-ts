@@ -55,6 +55,7 @@ export type Token = {
   literal: string;
   line: number;
   column: number;
+  position: [start: number, end: number];
 };
 
 export const keywords: { [keyword: string]: TokenKind } = {
