@@ -14,7 +14,7 @@ const evalProgram = (statements: AST.Statement[], environment: O.Environment): O
   let result: O.Obj = O.NIL;
 
   for (const statement of statements) {
-    if (statement.kind === AST.ASTKind.Comment) {
+    if (statement.kind === AST.ASTKind.CommentStatement) {
       continue;
     }
 
@@ -145,7 +145,7 @@ const evalStatements = (statements: AST.Statement[], environment: O.Environment)
   let result: O.Obj = O.NIL;
 
   for (const statement of statements) {
-    if (statement.kind === AST.ASTKind.Comment) {
+    if (statement.kind === AST.ASTKind.CommentStatement) {
       continue;
     }
 

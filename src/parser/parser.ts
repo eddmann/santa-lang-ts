@@ -635,8 +635,8 @@ export default class Parser {
     kind: AST.ASTKind.Nil,
   });
 
-  private parseComment = (): AST.Comment => ({
-    kind: AST.ASTKind.Comment,
+  private parseComment = (): AST.CommentStatement => ({
+    kind: AST.ASTKind.CommentStatement,
     value: this.curToken.literal,
   });
 

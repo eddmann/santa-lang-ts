@@ -16,7 +16,7 @@ export enum ASTKind {
   Nil = 'NIL',
   Str = 'STRING',
   Bool = 'BOOLEAN',
-  Comment = 'COMMENT',
+  CommentStatement = 'COMMENT',
   FunctionLiteral = 'FUNCTION_LITERAL',
   CallExpression = 'CALL_EXPRESSION',
   IndexExpression = 'INDEX_EXPRESSION',
@@ -44,7 +44,7 @@ export type Statement =
   | ReturnStatment
   | BreakStatment
   | SectionStatement
-  | Comment;
+  | CommentStatement;
 
 export type Expression =
   | ListExpression
@@ -155,8 +155,8 @@ export type Bool = {
   value: boolean;
 };
 
-export type Comment = {
-  kind: ASTKind.Comment;
+export type CommentStatement = {
+  kind: ASTKind.CommentStatement;
   value: string;
 };
 
