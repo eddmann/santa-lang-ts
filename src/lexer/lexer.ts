@@ -5,8 +5,8 @@ type SourceChar = string | null;
 export default class Lexer {
   position: number = -1;
   char: SourceChar = null;
-  line: number = 1;
-  column: number = 1;
+  line: number = 0;
+  column: number = 0;
 
   constructor(private source: string) {
     this.readChar();

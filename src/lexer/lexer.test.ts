@@ -6,8 +6,8 @@ test('integer', () => {
   const tokens = tokenize(source);
 
   expect(tokens).toEqual([
-    { kind: 'INTEGER', literal: '1', line: 1, column: 1 },
-    { kind: 'EOF', literal: '', line: 1, column: 2 },
+    { kind: 'INTEGER', literal: '1', line: 0, column: 0 },
+    { kind: 'EOF', literal: '', line: 0, column: 1 },
   ]);
 });
 
@@ -17,8 +17,8 @@ test('decimal', () => {
   const tokens = tokenize(source);
 
   expect(tokens).toEqual([
-    { kind: 'DECIMAL', literal: '1.5', line: 1, column: 1 },
-    { kind: 'EOF', literal: '', line: 1, column: 4 },
+    { kind: 'DECIMAL', literal: '1.5', line: 0, column: 0 },
+    { kind: 'EOF', literal: '', line: 0, column: 3 },
   ]);
 });
 
@@ -28,8 +28,8 @@ test('string', () => {
   const tokens = tokenize(source);
 
   expect(tokens).toEqual([
-    { kind: 'STRING', literal: 'Hello, world!', line: 1, column: 3 },
-    { kind: 'EOF', literal: '', line: 1, column: 16 },
+    { kind: 'STRING', literal: 'Hello, world!', line: 0, column: 2 },
+    { kind: 'EOF', literal: '', line: 0, column: 15 },
   ]);
 });
 
@@ -39,8 +39,8 @@ test('string with escape characters', () => {
   const tokens = tokenize(source);
 
   expect(tokens).toEqual([
-    { kind: 'STRING', literal: '\b \f \r \n \t \\ "', line: 1, column: 10 },
-    { kind: 'EOF', literal: '', line: 1, column: 23 },
+    { kind: 'STRING', literal: '\b \f \r \n \t \\ "', line: 0, column: 9 },
+    { kind: 'EOF', literal: '', line: 0, column: 22 },
   ]);
 });
 
@@ -50,11 +50,11 @@ test('boolean', () => {
   const tokens = tokenize(source);
 
   expect(tokens).toEqual([
-    { kind: 'TRUE', literal: 'true', line: 1, column: 1 },
-    { kind: ';', literal: ';', line: 1, column: 5 },
-    { kind: 'FALSE', literal: 'false', line: 1, column: 7 },
-    { kind: ';', literal: ';', line: 1, column: 12 },
-    { kind: 'EOF', literal: '', line: 1, column: 13 },
+    { kind: 'TRUE', literal: 'true', line: 0, column: 0 },
+    { kind: ';', literal: ';', line: 0, column: 4 },
+    { kind: 'FALSE', literal: 'false', line: 0, column: 6 },
+    { kind: ';', literal: ';', line: 0, column: 11 },
+    { kind: 'EOF', literal: '', line: 0, column: 12 },
   ]);
 });
 
@@ -64,8 +64,8 @@ test('nil', () => {
   const tokens = tokenize(source);
 
   expect(tokens).toEqual([
-    { kind: 'NIL', literal: 'nil', line: 1, column: 1 },
-    { kind: 'EOF', literal: '', line: 1, column: 4 },
+    { kind: 'NIL', literal: 'nil', line: 0, column: 0 },
+    { kind: 'EOF', literal: '', line: 0, column: 3 },
   ]);
 });
 
@@ -78,10 +78,10 @@ test('comments', () => {
   const tokens = tokenize(source);
 
   expect(tokens).toEqual([
-    { kind: 'INTEGER', literal: '1', line: 2, column: 4 },
-    { kind: 'COMMENT', literal: ' sample comment one', line: 2, column: 8 },
-    { kind: 'COMMENT', literal: ' sample comment two', line: 3, column: 6 },
-    { kind: 'EOF', literal: '', line: 4, column: 2 },
+    { kind: 'INTEGER', literal: '1', line: 1, column: 4 },
+    { kind: 'COMMENT', literal: ' sample comment one', line: 1, column: 8 },
+    { kind: 'COMMENT', literal: ' sample comment two', line: 2, column: 6 },
+    { kind: 'EOF', literal: '', line: 3, column: 2 },
   ]);
 });
 
@@ -91,18 +91,18 @@ test('function literal with block statement', () => {
   const tokens = tokenize(source);
 
   expect(tokens).toEqual([
-    { kind: '|', literal: '|', line: 1, column: 1 },
-    { kind: 'IDENTIFIER', literal: 'x', line: 1, column: 2 },
-    { kind: ',', literal: ',', line: 1, column: 3 },
-    { kind: 'IDENTIFIER', literal: 'y', line: 1, column: 5 },
-    { kind: '|', literal: '|', line: 1, column: 6 },
-    { kind: '{', literal: '{', line: 1, column: 8 },
-    { kind: 'IDENTIFIER', literal: 'x', line: 1, column: 10 },
-    { kind: '+', literal: '+', line: 1, column: 12 },
-    { kind: 'IDENTIFIER', literal: 'y', line: 1, column: 14 },
-    { kind: ';', literal: ';', line: 1, column: 15 },
-    { kind: '}', literal: '}', line: 1, column: 17 },
-    { kind: 'EOF', literal: '', line: 1, column: 18 },
+    { kind: '|', literal: '|', line: 0, column: 0 },
+    { kind: 'IDENTIFIER', literal: 'x', line: 0, column: 1 },
+    { kind: ',', literal: ',', line: 0, column: 2 },
+    { kind: 'IDENTIFIER', literal: 'y', line: 0, column: 4 },
+    { kind: '|', literal: '|', line: 0, column: 5 },
+    { kind: '{', literal: '{', line: 0, column: 7 },
+    { kind: 'IDENTIFIER', literal: 'x', line: 0, column: 9 },
+    { kind: '+', literal: '+', line: 0, column: 11 },
+    { kind: 'IDENTIFIER', literal: 'y', line: 0, column: 13 },
+    { kind: ';', literal: ';', line: 0, column: 14 },
+    { kind: '}', literal: '}', line: 0, column: 16 },
+    { kind: 'EOF', literal: '', line: 0, column: 17 },
   ]);
 });
 
@@ -112,15 +112,15 @@ test('function literal with expression statement', () => {
   const tokens = tokenize(source);
 
   expect(tokens).toEqual([
-    { kind: '|', literal: '|', line: 1, column: 1 },
-    { kind: 'IDENTIFIER', literal: 'x', line: 1, column: 2 },
-    { kind: ',', literal: ',', line: 1, column: 3 },
-    { kind: 'IDENTIFIER', literal: 'y', line: 1, column: 5 },
-    { kind: '|', literal: '|', line: 1, column: 6 },
-    { kind: 'IDENTIFIER', literal: 'x', line: 1, column: 8 },
-    { kind: '+', literal: '+', line: 1, column: 10 },
-    { kind: 'IDENTIFIER', literal: 'y', line: 1, column: 12 },
-    { kind: 'EOF', literal: '', line: 1, column: 13 },
+    { kind: '|', literal: '|', line: 0, column: 0 },
+    { kind: 'IDENTIFIER', literal: 'x', line: 0, column: 1 },
+    { kind: ',', literal: ',', line: 0, column: 2 },
+    { kind: 'IDENTIFIER', literal: 'y', line: 0, column: 4 },
+    { kind: '|', literal: '|', line: 0, column: 5 },
+    { kind: 'IDENTIFIER', literal: 'x', line: 0, column: 7 },
+    { kind: '+', literal: '+', line: 0, column: 9 },
+    { kind: 'IDENTIFIER', literal: 'y', line: 0, column: 11 },
+    { kind: 'EOF', literal: '', line: 0, column: 12 },
   ]);
 });
 
@@ -130,29 +130,29 @@ test('match expression', () => {
   const tokens = tokenize(source);
 
   expect(tokens).toEqual([
-    { kind: 'MATCH', literal: 'match', line: 1, column: 1 },
-    { kind: 'IDENTIFIER', literal: 'x', line: 1, column: 7 },
-    { kind: '{', literal: '{', line: 1, column: 9 },
-    { kind: 'INTEGER', literal: '1', line: 1, column: 11 },
-    { kind: '{', literal: '{', line: 1, column: 13 },
-    { kind: 'STRING', literal: 'one', line: 1, column: 17 },
-    { kind: '}', literal: '}', line: 1, column: 21 },
-    { kind: '[', literal: '[', line: 1, column: 23 },
-    { kind: 'IDENTIFIER', literal: 'e', line: 1, column: 24 },
-    { kind: ']', literal: ']', line: 1, column: 25 },
-    { kind: 'IF', literal: 'if', line: 1, column: 27 },
-    { kind: 'IDENTIFIER', literal: 'e', line: 1, column: 30 },
-    { kind: '==', literal: '==', line: 1, column: 32 },
-    { kind: 'INTEGER', literal: '2', line: 1, column: 35 },
-    { kind: '{', literal: '{', line: 1, column: 37 },
-    { kind: 'STRING', literal: 'two', line: 1, column: 41 },
-    { kind: '}', literal: '}', line: 1, column: 45 },
-    { kind: '_', literal: '_', line: 1, column: 47 },
-    { kind: '{', literal: '{', line: 1, column: 49 },
-    { kind: 'STRING', literal: 'three', line: 1, column: 53 },
-    { kind: '}', literal: '}', line: 1, column: 59 },
-    { kind: '}', literal: '}', line: 1, column: 61 },
-    { kind: 'EOF', literal: '', line: 1, column: 62 },
+    { kind: 'MATCH', literal: 'match', line: 0, column: 0 },
+    { kind: 'IDENTIFIER', literal: 'x', line: 0, column: 6 },
+    { kind: '{', literal: '{', line: 0, column: 8 },
+    { kind: 'INTEGER', literal: '1', line: 0, column: 10 },
+    { kind: '{', literal: '{', line: 0, column: 12 },
+    { kind: 'STRING', literal: 'one', line: 0, column: 16 },
+    { kind: '}', literal: '}', line: 0, column: 20 },
+    { kind: '[', literal: '[', line: 0, column: 22 },
+    { kind: 'IDENTIFIER', literal: 'e', line: 0, column: 23 },
+    { kind: ']', literal: ']', line: 0, column: 24 },
+    { kind: 'IF', literal: 'if', line: 0, column: 26 },
+    { kind: 'IDENTIFIER', literal: 'e', line: 0, column: 29 },
+    { kind: '==', literal: '==', line: 0, column: 31 },
+    { kind: 'INTEGER', literal: '2', line: 0, column: 34 },
+    { kind: '{', literal: '{', line: 0, column: 36 },
+    { kind: 'STRING', literal: 'two', line: 0, column: 40 },
+    { kind: '}', literal: '}', line: 0, column: 44 },
+    { kind: '_', literal: '_', line: 0, column: 46 },
+    { kind: '{', literal: '{', line: 0, column: 48 },
+    { kind: 'STRING', literal: 'three', line: 0, column: 52 },
+    { kind: '}', literal: '}', line: 0, column: 58 },
+    { kind: '}', literal: '}', line: 0, column: 60 },
+    { kind: 'EOF', literal: '', line: 0, column: 61 },
   ]);
 });
 
@@ -162,12 +162,12 @@ test('infix backtick call', () => {
   const tokens = tokenize(source);
 
   expect(tokens).toEqual([
-    { kind: 'IDENTIFIER', literal: 'one', line: 1, column: 1 },
-    { kind: '`', literal: '`', line: 1, column: 5 },
-    { kind: 'IDENTIFIER', literal: 'add', line: 1, column: 6 },
-    { kind: '`', literal: '`', line: 1, column: 9 },
-    { kind: 'IDENTIFIER', literal: 'two', line: 1, column: 11 },
-    { kind: 'EOF', literal: '', line: 1, column: 14 },
+    { kind: 'IDENTIFIER', literal: 'one', line: 0, column: 0 },
+    { kind: '`', literal: '`', line: 0, column: 4 },
+    { kind: 'IDENTIFIER', literal: 'add', line: 0, column: 5 },
+    { kind: '`', literal: '`', line: 0, column: 8 },
+    { kind: 'IDENTIFIER', literal: 'two', line: 0, column: 10 },
+    { kind: 'EOF', literal: '', line: 0, column: 13 },
   ]);
 });
 
@@ -177,17 +177,17 @@ test('partial application placeholder', () => {
   const tokens = tokenize(source);
 
   expect(tokens).toEqual([
-    { kind: '_', literal: '_', line: 1, column: 1 },
-    { kind: '+', literal: '+', line: 1, column: 3 },
-    { kind: 'INTEGER', literal: '2', line: 1, column: 5 },
-    { kind: ';', literal: ';', line: 1, column: 6 },
-    { kind: '+', literal: '+', line: 1, column: 8 },
-    { kind: '(', literal: '(', line: 1, column: 9 },
-    { kind: '_', literal: '_', line: 1, column: 10 },
-    { kind: ',', literal: ',', line: 1, column: 11 },
-    { kind: 'INTEGER', literal: '2', line: 1, column: 13 },
-    { kind: ')', literal: ')', line: 1, column: 14 },
-    { kind: 'EOF', literal: '', line: 1, column: 15 },
+    { kind: '_', literal: '_', line: 0, column: 0 },
+    { kind: '+', literal: '+', line: 0, column: 2 },
+    { kind: 'INTEGER', literal: '2', line: 0, column: 4 },
+    { kind: ';', literal: ';', line: 0, column: 5 },
+    { kind: '+', literal: '+', line: 0, column: 7 },
+    { kind: '(', literal: '(', line: 0, column: 8 },
+    { kind: '_', literal: '_', line: 0, column: 9 },
+    { kind: ',', literal: ',', line: 0, column: 10 },
+    { kind: 'INTEGER', literal: '2', line: 0, column: 12 },
+    { kind: ')', literal: ')', line: 0, column: 13 },
+    { kind: 'EOF', literal: '', line: 0, column: 14 },
   ]);
 });
 
@@ -197,20 +197,20 @@ test('function literal with parameter destructuring', () => {
   const tokens = tokenize(source);
 
   expect(tokens).toEqual([
-    { kind: '|', literal: '|', line: 1, column: 1 },
-    { kind: 'IDENTIFIER', literal: 'x', line: 1, column: 2 },
-    { kind: ',', literal: ',', line: 1, column: 3 },
-    { kind: '[', literal: '[', line: 1, column: 5 },
-    { kind: 'IDENTIFIER', literal: 'y', line: 1, column: 6 },
-    { kind: ',', literal: ',', line: 1, column: 7 },
-    { kind: '..', literal: '..', line: 1, column: 9 },
-    { kind: 'IDENTIFIER', literal: 'z', line: 1, column: 11 },
-    { kind: ']', literal: ']', line: 1, column: 12 },
-    { kind: '|', literal: '|', line: 1, column: 13 },
-    { kind: 'IDENTIFIER', literal: 'x', line: 1, column: 15 },
-    { kind: '+', literal: '+', line: 1, column: 17 },
-    { kind: 'IDENTIFIER', literal: 'y', line: 1, column: 19 },
-    { kind: 'EOF', literal: '', line: 1, column: 20 },
+    { kind: '|', literal: '|', line: 0, column: 0 },
+    { kind: 'IDENTIFIER', literal: 'x', line: 0, column: 1 },
+    { kind: ',', literal: ',', line: 0, column: 2 },
+    { kind: '[', literal: '[', line: 0, column: 4 },
+    { kind: 'IDENTIFIER', literal: 'y', line: 0, column: 5 },
+    { kind: ',', literal: ',', line: 0, column: 6 },
+    { kind: '..', literal: '..', line: 0, column: 8 },
+    { kind: 'IDENTIFIER', literal: 'z', line: 0, column: 10 },
+    { kind: ']', literal: ']', line: 0, column: 11 },
+    { kind: '|', literal: '|', line: 0, column: 12 },
+    { kind: 'IDENTIFIER', literal: 'x', line: 0, column: 14 },
+    { kind: '+', literal: '+', line: 0, column: 16 },
+    { kind: 'IDENTIFIER', literal: 'y', line: 0, column: 18 },
+    { kind: 'EOF', literal: '', line: 0, column: 19 },
   ]);
 });
 
@@ -220,14 +220,14 @@ test('list literal', () => {
   const tokens = tokenize(source);
 
   expect(tokens).toEqual([
-    { kind: '[', literal: '[', line: 1, column: 1 },
-    { kind: 'INTEGER', literal: '1', line: 1, column: 2 },
-    { kind: ',', literal: ',', line: 1, column: 3 },
-    { kind: 'DECIMAL', literal: '2.5', line: 1, column: 5 },
-    { kind: ',', literal: ',', line: 1, column: 8 },
-    { kind: 'STRING', literal: 'hello', line: 1, column: 12 },
-    { kind: ']', literal: ']', line: 1, column: 17 },
-    { kind: 'EOF', literal: '', line: 1, column: 18 },
+    { kind: '[', literal: '[', line: 0, column: 0 },
+    { kind: 'INTEGER', literal: '1', line: 0, column: 1 },
+    { kind: ',', literal: ',', line: 0, column: 2 },
+    { kind: 'DECIMAL', literal: '2.5', line: 0, column: 4 },
+    { kind: ',', literal: ',', line: 0, column: 7 },
+    { kind: 'STRING', literal: 'hello', line: 0, column: 11 },
+    { kind: ']', literal: ']', line: 0, column: 16 },
+    { kind: 'EOF', literal: '', line: 0, column: 17 },
   ]);
 });
 
@@ -237,26 +237,26 @@ test('hash literal', () => {
   const tokens = tokenize(source);
 
   expect(tokens).toEqual([
-    { kind: '#{', literal: '#{', line: 1, column: 1 },
-    { kind: 'STRING', literal: 'hello', line: 1, column: 5 },
-    { kind: ':', literal: ':', line: 1, column: 10 },
-    { kind: '{', literal: '{', line: 1, column: 12 },
-    { kind: 'IDENTIFIER', literal: 'x', line: 1, column: 13 },
-    { kind: '}', literal: '}', line: 1, column: 14 },
-    { kind: ',', literal: ',', line: 1, column: 15 },
-    { kind: 'INTEGER', literal: '1', line: 1, column: 17 },
-    { kind: ':', literal: ':', line: 1, column: 18 },
-    { kind: 'STRING', literal: '2', line: 1, column: 22 },
-    { kind: ',', literal: ',', line: 1, column: 23 },
-    { kind: '[', literal: '[', line: 1, column: 25 },
-    { kind: 'INTEGER', literal: '1', line: 1, column: 26 },
-    { kind: ',', literal: ',', line: 1, column: 27 },
-    { kind: 'INTEGER', literal: '2', line: 1, column: 29 },
-    { kind: ']', literal: ']', line: 1, column: 30 },
-    { kind: ':', literal: ':', line: 1, column: 31 },
-    { kind: 'DECIMAL', literal: '1.4', line: 1, column: 33 },
-    { kind: '}', literal: '}', line: 1, column: 36 },
-    { kind: 'EOF', literal: '', line: 1, column: 37 },
+    { kind: '#{', literal: '#{', line: 0, column: 0 },
+    { kind: 'STRING', literal: 'hello', line: 0, column: 4 },
+    { kind: ':', literal: ':', line: 0, column: 9 },
+    { kind: '{', literal: '{', line: 0, column: 11 },
+    { kind: 'IDENTIFIER', literal: 'x', line: 0, column: 12 },
+    { kind: '}', literal: '}', line: 0, column: 13 },
+    { kind: ',', literal: ',', line: 0, column: 14 },
+    { kind: 'INTEGER', literal: '1', line: 0, column: 16 },
+    { kind: ':', literal: ':', line: 0, column: 17 },
+    { kind: 'STRING', literal: '2', line: 0, column: 21 },
+    { kind: ',', literal: ',', line: 0, column: 22 },
+    { kind: '[', literal: '[', line: 0, column: 24 },
+    { kind: 'INTEGER', literal: '1', line: 0, column: 25 },
+    { kind: ',', literal: ',', line: 0, column: 26 },
+    { kind: 'INTEGER', literal: '2', line: 0, column: 28 },
+    { kind: ']', literal: ']', line: 0, column: 29 },
+    { kind: ':', literal: ':', line: 0, column: 30 },
+    { kind: 'DECIMAL', literal: '1.4', line: 0, column: 32 },
+    { kind: '}', literal: '}', line: 0, column: 35 },
+    { kind: 'EOF', literal: '', line: 0, column: 36 },
   ]);
 });
 
@@ -266,14 +266,14 @@ test('set literal', () => {
   const tokens = tokenize(source);
 
   expect(tokens).toEqual([
-    { kind: '{', literal: '{', line: 1, column: 1 },
-    { kind: 'INTEGER', literal: '1', line: 1, column: 2 },
-    { kind: ',', literal: ',', line: 1, column: 3 },
-    { kind: 'INTEGER', literal: '2', line: 1, column: 5 },
-    { kind: ',', literal: ',', line: 1, column: 6 },
-    { kind: 'INTEGER', literal: '3', line: 1, column: 8 },
-    { kind: '}', literal: '}', line: 1, column: 9 },
-    { kind: 'EOF', literal: '', line: 1, column: 10 },
+    { kind: '{', literal: '{', line: 0, column: 0 },
+    { kind: 'INTEGER', literal: '1', line: 0, column: 1 },
+    { kind: ',', literal: ',', line: 0, column: 2 },
+    { kind: 'INTEGER', literal: '2', line: 0, column: 4 },
+    { kind: ',', literal: ',', line: 0, column: 5 },
+    { kind: 'INTEGER', literal: '3', line: 0, column: 7 },
+    { kind: '}', literal: '}', line: 0, column: 8 },
+    { kind: 'EOF', literal: '', line: 0, column: 9 },
   ]);
 });
 
@@ -283,10 +283,10 @@ test('bounded range', () => {
   const tokens = tokenize(source);
 
   expect(tokens).toEqual([
-    { kind: 'INTEGER', literal: '1', line: 1, column: 2 },
-    { kind: '..', literal: '..', line: 1, column: 3 },
-    { kind: 'INTEGER', literal: '10', line: 1, column: 5 },
-    { kind: 'EOF', literal: '', line: 1, column: 7 },
+    { kind: 'INTEGER', literal: '1', line: 0, column: 1 },
+    { kind: '..', literal: '..', line: 0, column: 2 },
+    { kind: 'INTEGER', literal: '10', line: 0, column: 4 },
+    { kind: 'EOF', literal: '', line: 0, column: 6 },
   ]);
 });
 
@@ -296,9 +296,9 @@ test('unbounded range', () => {
   const tokens = tokenize(source);
 
   expect(tokens).toEqual([
-    { kind: 'INTEGER', literal: '1', line: 1, column: 2 },
-    { kind: '..', literal: '..', line: 1, column: 3 },
-    { kind: 'EOF', literal: '', line: 1, column: 5 },
+    { kind: 'INTEGER', literal: '1', line: 0, column: 1 },
+    { kind: '..', literal: '..', line: 0, column: 2 },
+    { kind: 'EOF', literal: '', line: 0, column: 4 },
   ]);
 });
 
@@ -308,15 +308,15 @@ test('section', () => {
   const tokens = tokenize(source);
 
   expect(tokens).toEqual([
-    { kind: 'IDENTIFIER', literal: 'section_one', line: 1, column: 1 },
-    { kind: ':', literal: ':', line: 1, column: 12 },
-    { kind: '{', literal: '{', line: 1, column: 14 },
-    { kind: '}', literal: '}', line: 1, column: 15 },
-    { kind: ';', literal: ';', line: 1, column: 16 },
-    { kind: 'IDENTIFIER', literal: 'section_two', line: 1, column: 18 },
-    { kind: ':', literal: ':', line: 1, column: 29 },
-    { kind: 'STRING', literal: 'sample', line: 1, column: 33 },
-    { kind: 'EOF', literal: '', line: 1, column: 39 },
+    { kind: 'IDENTIFIER', literal: 'section_one', line: 0, column: 0 },
+    { kind: ':', literal: ':', line: 0, column: 11 },
+    { kind: '{', literal: '{', line: 0, column: 13 },
+    { kind: '}', literal: '}', line: 0, column: 14 },
+    { kind: ';', literal: ';', line: 0, column: 15 },
+    { kind: 'IDENTIFIER', literal: 'section_two', line: 0, column: 17 },
+    { kind: ':', literal: ':', line: 0, column: 28 },
+    { kind: 'STRING', literal: 'sample', line: 0, column: 32 },
+    { kind: 'EOF', literal: '', line: 0, column: 38 },
   ]);
 });
 
@@ -326,14 +326,14 @@ test('section with sub-section', () => {
   const tokens = tokenize(source);
 
   expect(tokens).toEqual([
-    { kind: 'IDENTIFIER', literal: 'section_one', line: 1, column: 1 },
-    { kind: ':', literal: ':', line: 1, column: 12 },
-    { kind: '{', literal: '{', line: 1, column: 14 },
-    { kind: 'IDENTIFIER', literal: 'section_two', line: 1, column: 16 },
-    { kind: ':', literal: ':', line: 1, column: 27 },
-    { kind: 'STRING', literal: 'sample', line: 1, column: 31 },
-    { kind: '}', literal: '}', line: 1, column: 38 },
-    { kind: 'EOF', literal: '', line: 1, column: 39 },
+    { kind: 'IDENTIFIER', literal: 'section_one', line: 0, column: 0 },
+    { kind: ':', literal: ':', line: 0, column: 11 },
+    { kind: '{', literal: '{', line: 0, column: 13 },
+    { kind: 'IDENTIFIER', literal: 'section_two', line: 0, column: 15 },
+    { kind: ':', literal: ':', line: 0, column: 26 },
+    { kind: 'STRING', literal: 'sample', line: 0, column: 30 },
+    { kind: '}', literal: '}', line: 0, column: 37 },
+    { kind: 'EOF', literal: '', line: 0, column: 38 },
   ]);
 });
 
@@ -343,37 +343,37 @@ test('assignment', () => {
   const tokens = tokenize(source);
 
   expect(tokens).toEqual([
-    { kind: 'LET', literal: 'let', line: 1, column: 1 },
-    { kind: 'IDENTIFIER', literal: 'x', line: 1, column: 5 },
-    { kind: '=', literal: '=', line: 1, column: 7 },
-    { kind: 'INTEGER', literal: '1', line: 1, column: 9 },
-    { kind: ';', literal: ';', line: 1, column: 10 },
-    { kind: 'LET', literal: 'let', line: 1, column: 12 },
-    { kind: 'MUTABLE', literal: 'mut', line: 1, column: 16 },
-    { kind: 'IDENTIFIER', literal: 'y', line: 1, column: 20 },
-    { kind: '=', literal: '=', line: 1, column: 22 },
-    { kind: 'INTEGER', literal: '1', line: 1, column: 24 },
-    { kind: ';', literal: ';', line: 1, column: 25 },
-    { kind: 'LET', literal: 'let', line: 1, column: 27 },
-    { kind: '[', literal: '[', line: 1, column: 31 },
-    { kind: 'IDENTIFIER', literal: 'x', line: 1, column: 32 },
-    { kind: ',', literal: ',', line: 1, column: 33 },
-    { kind: 'IDENTIFIER', literal: 'y', line: 1, column: 35 },
-    { kind: ',', literal: ',', line: 1, column: 36 },
-    { kind: '..', literal: '..', line: 1, column: 38 },
-    { kind: 'IDENTIFIER', literal: 'z', line: 1, column: 40 },
-    { kind: ']', literal: ']', line: 1, column: 41 },
-    { kind: '=', literal: '=', line: 1, column: 43 },
-    { kind: '[', literal: '[', line: 1, column: 45 },
-    { kind: 'INTEGER', literal: '1', line: 1, column: 46 },
-    { kind: ',', literal: ',', line: 1, column: 47 },
-    { kind: 'INTEGER', literal: '2', line: 1, column: 49 },
-    { kind: ',', literal: ',', line: 1, column: 50 },
-    { kind: 'INTEGER', literal: '3', line: 1, column: 52 },
-    { kind: ',', literal: ',', line: 1, column: 53 },
-    { kind: 'INTEGER', literal: '4', line: 1, column: 55 },
-    { kind: ']', literal: ']', line: 1, column: 56 },
-    { kind: 'EOF', literal: '', line: 1, column: 57 },
+    { kind: 'LET', literal: 'let', line: 0, column: 0 },
+    { kind: 'IDENTIFIER', literal: 'x', line: 0, column: 4 },
+    { kind: '=', literal: '=', line: 0, column: 6 },
+    { kind: 'INTEGER', literal: '1', line: 0, column: 8 },
+    { kind: ';', literal: ';', line: 0, column: 9 },
+    { kind: 'LET', literal: 'let', line: 0, column: 11 },
+    { kind: 'MUTABLE', literal: 'mut', line: 0, column: 15 },
+    { kind: 'IDENTIFIER', literal: 'y', line: 0, column: 19 },
+    { kind: '=', literal: '=', line: 0, column: 21 },
+    { kind: 'INTEGER', literal: '1', line: 0, column: 23 },
+    { kind: ';', literal: ';', line: 0, column: 24 },
+    { kind: 'LET', literal: 'let', line: 0, column: 26 },
+    { kind: '[', literal: '[', line: 0, column: 30 },
+    { kind: 'IDENTIFIER', literal: 'x', line: 0, column: 31 },
+    { kind: ',', literal: ',', line: 0, column: 32 },
+    { kind: 'IDENTIFIER', literal: 'y', line: 0, column: 34 },
+    { kind: ',', literal: ',', line: 0, column: 35 },
+    { kind: '..', literal: '..', line: 0, column: 37 },
+    { kind: 'IDENTIFIER', literal: 'z', line: 0, column: 39 },
+    { kind: ']', literal: ']', line: 0, column: 40 },
+    { kind: '=', literal: '=', line: 0, column: 42 },
+    { kind: '[', literal: '[', line: 0, column: 44 },
+    { kind: 'INTEGER', literal: '1', line: 0, column: 45 },
+    { kind: ',', literal: ',', line: 0, column: 46 },
+    { kind: 'INTEGER', literal: '2', line: 0, column: 48 },
+    { kind: ',', literal: ',', line: 0, column: 49 },
+    { kind: 'INTEGER', literal: '3', line: 0, column: 51 },
+    { kind: ',', literal: ',', line: 0, column: 52 },
+    { kind: 'INTEGER', literal: '4', line: 0, column: 54 },
+    { kind: ']', literal: ']', line: 0, column: 55 },
+    { kind: 'EOF', literal: '', line: 0, column: 56 },
   ]);
 });
 
@@ -383,18 +383,18 @@ test('if expression', () => {
   const tokens = tokenize(source);
 
   expect(tokens).toEqual([
-    { kind: 'IF', literal: 'if', line: 1, column: 1 },
-    { kind: 'INTEGER', literal: '0', line: 1, column: 4 },
-    { kind: '<', literal: '<', line: 1, column: 6 },
-    { kind: 'INTEGER', literal: '5', line: 1, column: 8 },
-    { kind: '{', literal: '{', line: 1, column: 10 },
-    { kind: 'INTEGER', literal: '1', line: 1, column: 12 },
-    { kind: '}', literal: '}', line: 1, column: 14 },
-    { kind: 'ELSE', literal: 'else', line: 1, column: 16 },
-    { kind: '{', literal: '{', line: 1, column: 21 },
-    { kind: 'INTEGER', literal: '2', line: 1, column: 23 },
-    { kind: '}', literal: '}', line: 1, column: 25 },
-    { kind: 'EOF', literal: '', line: 1, column: 26 },
+    { kind: 'IF', literal: 'if', line: 0, column: 0 },
+    { kind: 'INTEGER', literal: '0', line: 0, column: 3 },
+    { kind: '<', literal: '<', line: 0, column: 5 },
+    { kind: 'INTEGER', literal: '5', line: 0, column: 7 },
+    { kind: '{', literal: '{', line: 0, column: 9 },
+    { kind: 'INTEGER', literal: '1', line: 0, column: 11 },
+    { kind: '}', literal: '}', line: 0, column: 13 },
+    { kind: 'ELSE', literal: 'else', line: 0, column: 15 },
+    { kind: '{', literal: '{', line: 0, column: 20 },
+    { kind: 'INTEGER', literal: '2', line: 0, column: 22 },
+    { kind: '}', literal: '}', line: 0, column: 24 },
+    { kind: 'EOF', literal: '', line: 0, column: 25 },
   ]);
 });
 
@@ -404,13 +404,13 @@ test('call expression', () => {
   const tokens = tokenize(source);
 
   expect(tokens).toEqual([
-    { kind: 'IDENTIFIER', literal: 'add', line: 1, column: 1 },
-    { kind: '(', literal: '(', line: 1, column: 4 },
-    { kind: 'INTEGER', literal: '1', line: 1, column: 5 },
-    { kind: ',', literal: ',', line: 1, column: 6 },
-    { kind: 'INTEGER', literal: '2', line: 1, column: 8 },
-    { kind: ')', literal: ')', line: 1, column: 9 },
-    { kind: 'EOF', literal: '', line: 1, column: 10 },
+    { kind: 'IDENTIFIER', literal: 'add', line: 0, column: 0 },
+    { kind: '(', literal: '(', line: 0, column: 3 },
+    { kind: 'INTEGER', literal: '1', line: 0, column: 4 },
+    { kind: ',', literal: ',', line: 0, column: 5 },
+    { kind: 'INTEGER', literal: '2', line: 0, column: 7 },
+    { kind: ')', literal: ')', line: 0, column: 8 },
+    { kind: 'EOF', literal: '', line: 0, column: 9 },
   ]);
 });
 
@@ -423,17 +423,17 @@ let b = 1.5;
   const tokens = tokenize(source);
 
   expect(tokens).toEqual([
-    { kind: 'LET', literal: 'let', line: 1, column: 1 },
-    { kind: 'IDENTIFIER', literal: 'a', line: 1, column: 5 },
-    { kind: '=', literal: '=', line: 1, column: 7 },
-    { kind: 'INTEGER', literal: '1', line: 1, column: 9 },
-    { kind: ';', literal: ';', line: 1, column: 10 },
-    { kind: 'LET', literal: 'let', line: 2, column: 0 },
-    { kind: 'IDENTIFIER', literal: 'b', line: 2, column: 4 },
-    { kind: '=', literal: '=', line: 2, column: 6 },
-    { kind: 'DECIMAL', literal: '1.5', line: 2, column: 8 },
-    { kind: ';', literal: ';', line: 2, column: 11 },
-    { kind: 'EOF', literal: '', line: 2, column: 12 },
+    { kind: 'LET', literal: 'let', line: 0, column: 0 },
+    { kind: 'IDENTIFIER', literal: 'a', line: 0, column: 4 },
+    { kind: '=', literal: '=', line: 0, column: 6 },
+    { kind: 'INTEGER', literal: '1', line: 0, column: 8 },
+    { kind: ';', literal: ';', line: 0, column: 9 },
+    { kind: 'LET', literal: 'let', line: 1, column: 0 },
+    { kind: 'IDENTIFIER', literal: 'b', line: 1, column: 4 },
+    { kind: '=', literal: '=', line: 1, column: 6 },
+    { kind: 'DECIMAL', literal: '1.5', line: 1, column: 8 },
+    { kind: ';', literal: ';', line: 1, column: 11 },
+    { kind: 'EOF', literal: '', line: 1, column: 12 },
   ]);
 });
 
@@ -443,11 +443,11 @@ test('minus with negative value', () => {
   const tokens = tokenize(source);
 
   expect(tokens).toEqual([
-    { kind: 'INTEGER', literal: '1', line: 1, column: 1 },
-    { kind: '-', literal: '-', line: 1, column: 3 },
-    { kind: '-', literal: '-', line: 1, column: 5 },
-    { kind: 'INTEGER', literal: '2', line: 1, column: 6 },
-    { kind: 'EOF', literal: '', line: 1, column: 7 },
+    { kind: 'INTEGER', literal: '1', line: 0, column: 0 },
+    { kind: '-', literal: '-', line: 0, column: 2 },
+    { kind: '-', literal: '-', line: 0, column: 4 },
+    { kind: 'INTEGER', literal: '2', line: 0, column: 5 },
+    { kind: 'EOF', literal: '', line: 0, column: 6 },
   ]);
 });
 
@@ -457,10 +457,10 @@ test('function composition', () => {
   const tokens = tokenize(source);
 
   expect(tokens).toEqual([
-    { kind: 'IDENTIFIER', literal: 'inc', line: 1, column: 1 },
-    { kind: '>>', literal: '>>', line: 1, column: 5 },
-    { kind: 'IDENTIFIER', literal: 'dec', line: 1, column: 8 },
-    { kind: 'EOF', literal: '', line: 1, column: 11 },
+    { kind: 'IDENTIFIER', literal: 'inc', line: 0, column: 0 },
+    { kind: '>>', literal: '>>', line: 0, column: 4 },
+    { kind: 'IDENTIFIER', literal: 'dec', line: 0, column: 7 },
+    { kind: 'EOF', literal: '', line: 0, column: 10 },
   ]);
 });
 
@@ -470,12 +470,12 @@ test('function threading', () => {
   const tokens = tokenize(source);
 
   expect(tokens).toEqual([
-    { kind: 'INTEGER', literal: '1', line: 1, column: 1 },
-    { kind: '|>', literal: '|>', line: 1, column: 3 },
-    { kind: 'IDENTIFIER', literal: 'inc', line: 1, column: 6 },
-    { kind: '|>', literal: '|>', line: 1, column: 10 },
-    { kind: 'IDENTIFIER', literal: 'dec', line: 1, column: 13 },
-    { kind: 'EOF', literal: '', line: 1, column: 16 },
+    { kind: 'INTEGER', literal: '1', line: 0, column: 0 },
+    { kind: '|>', literal: '|>', line: 0, column: 2 },
+    { kind: 'IDENTIFIER', literal: 'inc', line: 0, column: 5 },
+    { kind: '|>', literal: '|>', line: 0, column: 9 },
+    { kind: 'IDENTIFIER', literal: 'dec', line: 0, column: 12 },
+    { kind: 'EOF', literal: '', line: 0, column: 15 },
   ]);
 });
 
@@ -485,44 +485,44 @@ test('indexing', () => {
   const tokens = tokenize(source);
 
   expect(tokens).toEqual([
-    { kind: 'IDENTIFIER', literal: 'list', line: 1, column: 1 },
-    { kind: '[', literal: '[', line: 1, column: 5 },
-    { kind: 'INTEGER', literal: '1', line: 1, column: 6 },
-    { kind: ']', literal: ']', line: 1, column: 7 },
-    { kind: ';', literal: ';', line: 1, column: 8 },
-    { kind: 'IDENTIFIER', literal: 'list', line: 1, column: 10 },
-    { kind: '[', literal: '[', line: 1, column: 14 },
-    { kind: '-', literal: '-', line: 1, column: 15 },
-    { kind: 'INTEGER', literal: '1', line: 1, column: 16 },
-    { kind: ']', literal: ']', line: 1, column: 17 },
-    { kind: ';', literal: ';', line: 1, column: 18 },
-    { kind: 'IDENTIFIER', literal: 'list', line: 1, column: 20 },
-    { kind: '[', literal: '[', line: 1, column: 24 },
-    { kind: 'INTEGER', literal: '2', line: 1, column: 26 },
-    { kind: '..', literal: '..', line: 1, column: 27 },
-    { kind: 'INTEGER', literal: '5', line: 1, column: 29 },
-    { kind: ']', literal: ']', line: 1, column: 30 },
-    { kind: ';', literal: ';', line: 1, column: 31 },
-    { kind: 'IDENTIFIER', literal: 'list', line: 1, column: 33 },
-    { kind: '[', literal: '[', line: 1, column: 37 },
-    { kind: '-', literal: '-', line: 1, column: 38 },
-    { kind: 'INTEGER', literal: '2', line: 1, column: 40 },
-    { kind: '..', literal: '..', line: 1, column: 41 },
-    { kind: ']', literal: ']', line: 1, column: 43 },
-    { kind: ';', literal: ';', line: 1, column: 44 },
-    { kind: 'IDENTIFIER', literal: 'list', line: 1, column: 46 },
-    { kind: '[', literal: '[', line: 1, column: 50 },
-    { kind: 'INTEGER', literal: '0', line: 1, column: 52 },
-    { kind: '..', literal: '..', line: 1, column: 53 },
-    { kind: '-', literal: '-', line: 1, column: 55 },
-    { kind: 'INTEGER', literal: '2', line: 1, column: 56 },
-    { kind: ']', literal: ']', line: 1, column: 57 },
-    { kind: ';', literal: ';', line: 1, column: 58 },
-    { kind: 'IDENTIFIER', literal: 'list', line: 1, column: 60 },
-    { kind: '[', literal: '[', line: 1, column: 64 },
-    { kind: 'STRING', literal: 'key', line: 1, column: 67 },
-    { kind: ']', literal: ']', line: 1, column: 70 },
-    { kind: 'EOF', literal: '', line: 1, column: 71 },
+    { kind: 'IDENTIFIER', literal: 'list', line: 0, column: 0 },
+    { kind: '[', literal: '[', line: 0, column: 4 },
+    { kind: 'INTEGER', literal: '1', line: 0, column: 5 },
+    { kind: ']', literal: ']', line: 0, column: 6 },
+    { kind: ';', literal: ';', line: 0, column: 7 },
+    { kind: 'IDENTIFIER', literal: 'list', line: 0, column: 9 },
+    { kind: '[', literal: '[', line: 0, column: 13 },
+    { kind: '-', literal: '-', line: 0, column: 14 },
+    { kind: 'INTEGER', literal: '1', line: 0, column: 15 },
+    { kind: ']', literal: ']', line: 0, column: 16 },
+    { kind: ';', literal: ';', line: 0, column: 17 },
+    { kind: 'IDENTIFIER', literal: 'list', line: 0, column: 19 },
+    { kind: '[', literal: '[', line: 0, column: 23 },
+    { kind: 'INTEGER', literal: '2', line: 0, column: 25 },
+    { kind: '..', literal: '..', line: 0, column: 26 },
+    { kind: 'INTEGER', literal: '5', line: 0, column: 28 },
+    { kind: ']', literal: ']', line: 0, column: 29 },
+    { kind: ';', literal: ';', line: 0, column: 30 },
+    { kind: 'IDENTIFIER', literal: 'list', line: 0, column: 32 },
+    { kind: '[', literal: '[', line: 0, column: 36 },
+    { kind: '-', literal: '-', line: 0, column: 37 },
+    { kind: 'INTEGER', literal: '2', line: 0, column: 39 },
+    { kind: '..', literal: '..', line: 0, column: 40 },
+    { kind: ']', literal: ']', line: 0, column: 42 },
+    { kind: ';', literal: ';', line: 0, column: 43 },
+    { kind: 'IDENTIFIER', literal: 'list', line: 0, column: 45 },
+    { kind: '[', literal: '[', line: 0, column: 49 },
+    { kind: 'INTEGER', literal: '0', line: 0, column: 51 },
+    { kind: '..', literal: '..', line: 0, column: 52 },
+    { kind: '-', literal: '-', line: 0, column: 54 },
+    { kind: 'INTEGER', literal: '2', line: 0, column: 55 },
+    { kind: ']', literal: ']', line: 0, column: 56 },
+    { kind: ';', literal: ';', line: 0, column: 57 },
+    { kind: 'IDENTIFIER', literal: 'list', line: 0, column: 59 },
+    { kind: '[', literal: '[', line: 0, column: 63 },
+    { kind: 'STRING', literal: 'key', line: 0, column: 66 },
+    { kind: ']', literal: ']', line: 0, column: 69 },
+    { kind: 'EOF', literal: '', line: 0, column: 70 },
   ]);
 });
 
