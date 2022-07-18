@@ -5,7 +5,6 @@ type SourceChar = string | null;
 export default class Lexer {
   position: number = -1;
   char: SourceChar = null;
-  tokenStartPosition: number = -1;
   line: number = 1;
   column: number = 1;
 
@@ -35,8 +34,6 @@ export default class Lexer {
   }
 
   private parseToken(): Token {
-    this.tokenStartPosition = this.position;
-
     switch (this.char) {
       case TokenKind.Assign:
         if (this.peekChar() === TokenKind.Assign) {
@@ -184,7 +181,6 @@ export default class Lexer {
       literal,
       line: this.line,
       column: this.column - literal.length,
-      position: [this.tokenStartPosition, this.position],
     };
   }
 
@@ -236,6 +232,7 @@ export default class Lexer {
   }
 
   private readNumberToken(): Token {
+    const startPosition = this.position;
     let isDecimal = false;
 
     while (this.isDigit(this.peekChar()) || this.peekChar() === TokenKind.Dot) {
@@ -244,7 +241,7 @@ export default class Lexer {
           this.position -= 1;
           return this.createToken(
             TokenKind.Integer,
-            this.source.slice(this.tokenStartPosition, this.position + 1)
+            this.source.slice(startPosition, this.position + 1)
           );
         }
 
@@ -256,18 +253,20 @@ export default class Lexer {
 
     return this.createToken(
       isDecimal ? TokenKind.Decimal : TokenKind.Integer,
-      this.source.slice(this.tokenStartPosition, this.position + 1)
+      this.source.slice(startPosition, this.position + 1)
     );
   }
 
   private readComment(): string {
     this.readChar();
 
+    const startPosition = this.position;
+
     while (this.peekChar() && this.peekChar() !== '\n' && this.peekChar() !== '\r') {
       this.readChar();
     }
 
-    return this.source.slice(this.tokenStartPosition + 2, this.position + 1);
+    return this.source.slice(startPosition, this.position + 1);
   }
 
   private readChar(): void {
