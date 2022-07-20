@@ -60,7 +60,7 @@ filter(2 != _, 1..5); // [1, 3, 4, 5]
 reduce(+, 0, 1..5); // 15
 ```
 
-### Function threading and composition
+### Function composition and threading
 
 ```
 let inc_dbl = _ + 1 >> |x| x * x;
@@ -85,6 +85,8 @@ contains([1, 2, 3], 3);
 
 ```
 1.. |> filter(|n| n % 2 == 0) |> take(5); // [2, 4, 6, 8, 10]
+
+zip(1.., 2..) |> map(|[x, y]| x * y) |> take(5); // [2, 6, 12, 20, 30]
 ```
 
 ### Recursion
@@ -120,6 +122,16 @@ let fibonacci = |n| match n {
   1 { 1 }
   n { fibonacci(n - 1) + fibonacci(n - 2) }
 };
+```
+
+### Spread and rest operators
+
+```
+let a = [2];
+let b = [1, ..a, 3]; // [1, 2, 3]
+
+let sum = |..xs| reduce(+, 0, xs);
+sum(1, 2, 3) == sum(..b) // 6
 ```
 
 ### Reimplementing `map`, `filter` and `reduce`
