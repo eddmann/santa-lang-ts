@@ -150,6 +150,8 @@ export default class Parser {
   }
 
   public parse(): AST.Program {
+    const source = this.captureSourceLocation();
+
     const statements: AST.Statement[] = [];
 
     while (this.curToken.kind !== TokenKind.EOF) {
@@ -160,6 +162,7 @@ export default class Parser {
     return {
       kind: AST.ASTKind.Program,
       statements,
+      source,
     };
   }
 
@@ -183,6 +186,8 @@ export default class Parser {
   }
 
   private parseLetStatement(): AST.LetStatement {
+    const source = this.captureSourceLocation();
+
     const isMutable = this.peekTokenIs(TokenKind.Mutable);
     if (isMutable) {
       this.nextToken();
@@ -216,10 +221,13 @@ export default class Parser {
       name,
       value,
       isMutable,
+      source,
     };
   }
 
   private parseReturnStatement(): AST.ReturnStatment {
+    const source = this.captureSourceLocation();
+
     this.nextToken();
 
     const returnValue = this.parseExpression(Precedence.Lowest);
@@ -231,10 +239,13 @@ export default class Parser {
     return {
       kind: AST.ASTKind.Return,
       returnValue,
+      source,
     };
   }
 
   private parseBreakStatement(): AST.BreakStatment {
+    const source = this.captureSourceLocation();
+
     this.nextToken();
 
     const value = this.expressionParser[this.curToken.kind]
@@ -248,10 +259,13 @@ export default class Parser {
     return {
       kind: AST.ASTKind.Break,
       value,
+      source,
     };
   }
 
   private parseSectionStatement(): AST.SectionStatement {
+    const source = this.captureSourceLocation();
+
     const name = this.parseIdentifier();
 
     this.nextToken();
@@ -272,10 +286,13 @@ export default class Parser {
       kind: AST.ASTKind.Section,
       name,
       section,
+      source,
     };
   }
 
   private parseBlockStatement(): AST.BlockStatement {
+    const source = this.captureSourceLocation();
+
     const statements: AST.Statement[] = [];
 
     this.nextToken();
@@ -288,10 +305,13 @@ export default class Parser {
     return {
       kind: AST.ASTKind.BlockStatement,
       statements,
+      source,
     };
   }
 
   private parseExpressionStatement(): AST.ExpressionStatement {
+    const source = this.captureSourceLocation();
+
     const expression = this.parseExpression(Precedence.Lowest);
 
     if (this.peekTokenIs(TokenKind.Semicolon)) {
@@ -301,6 +321,7 @@ export default class Parser {
     return {
       kind: AST.ASTKind.ExpressionStatement,
       expression,
+      source,
     };
   }
 
@@ -332,6 +353,8 @@ export default class Parser {
   }
 
   private parsePrefixExpression = (): AST.PrefixExpression => {
+    const source = this.captureSourceLocation();
+
     const expression = this.parseIdentifier();
 
     this.nextToken();
@@ -341,12 +364,16 @@ export default class Parser {
       function: {
         kind: AST.ASTKind.Identifier,
         value: `unary_${expression.value}`,
+        source: this.captureSourceLocation(),
       },
       argument: this.parseExpression(Precedence.Prefix),
+      source,
     };
   };
 
   private parseInfixExpression = (left: AST.Expression): AST.InfixExpression => {
+    const source = this.captureSourceLocation();
+
     const precedence = this.getPrecedence(this.curToken);
 
     let expression: AST.Expression;
@@ -366,6 +393,7 @@ export default class Parser {
       kind: AST.ASTKind.InfixExpression,
       function: expression,
       arguments: [left, right],
+      source,
     };
   };
 
@@ -377,12 +405,15 @@ export default class Parser {
       );
     }
 
+    const source = this.captureSourceLocation();
+
     this.nextToken();
 
     return {
       kind: AST.ASTKind.Assignment,
       name: left,
       value: this.parseExpression(Precedence.Lowest),
+      source,
     };
   };
 
@@ -404,10 +435,13 @@ export default class Parser {
       );
     }
 
+    const source = this.captureSourceLocation();
+
     return {
       kind: AST.ASTKind.CallExpression,
       function: left,
       arguments: this.parseExpressionList(TokenKind.RParen),
+      source,
     };
   };
 
@@ -422,10 +456,12 @@ export default class Parser {
     const expressions: AST.Expression[] = [];
 
     if (this.curTokenIs(TokenKind.DotDot)) {
+      const source = this.captureSourceLocation();
       this.nextToken();
       expressions.push({
         kind: AST.ASTKind.SpreadElement,
         value: this.parseExpression(Precedence.Lowest),
+        source,
       });
     } else {
       expressions.push(this.parseExpression(Precedence.Lowest));
@@ -436,10 +472,12 @@ export default class Parser {
       this.nextToken();
 
       if (this.curTokenIs(TokenKind.DotDot)) {
+        const source = this.captureSourceLocation();
         this.nextToken();
         expressions.push({
           kind: AST.ASTKind.SpreadElement,
           value: this.parseExpression(Precedence.Lowest),
+          source,
         });
         continue;
       }
@@ -453,6 +491,8 @@ export default class Parser {
   }
 
   private parseIfExpression = (): AST.IfExpression => {
+    const source = this.captureSourceLocation();
+
     this.nextToken();
 
     const condition = this.parseExpression(Precedence.Lowest);
@@ -470,6 +510,7 @@ export default class Parser {
         condition,
         consequence,
         alternative: this.parseBlockStatement(),
+        source,
       };
     }
 
@@ -478,10 +519,13 @@ export default class Parser {
       condition,
       consequence,
       alternative: null,
+      source,
     };
   };
 
   private parseIndexExpression = (left: AST.Expression): AST.IndexExpression => {
+    const source = this.captureSourceLocation();
+
     this.nextToken();
 
     const index = this.parseExpression(Precedence.Lowest);
@@ -492,16 +536,20 @@ export default class Parser {
       kind: AST.ASTKind.IndexExpression,
       item: left,
       index,
+      source,
     };
   };
 
   private parseMatchListPattern = (): AST.ListMatchPattern => {
+    const source = this.captureSourceLocation();
+
     this.nextToken();
 
     if (this.curTokenIs(TokenKind.RBracket)) {
       return {
         kind: AST.ASTKind.ListMatchPattern,
         elements: [],
+        source,
       };
     }
 
@@ -518,6 +566,7 @@ export default class Parser {
     return {
       kind: AST.ASTKind.ListMatchPattern,
       elements,
+      source,
     };
   };
 
@@ -539,6 +588,7 @@ export default class Parser {
             kind: AST.ASTKind.Identifier,
             value: this.curToken.literal,
           },
+          source: this.captureSourceLocation(),
         };
       },
     };
@@ -554,6 +604,8 @@ export default class Parser {
   };
 
   private parseMatchExpression = (): AST.MatchExpression => {
+    const source = this.captureSourceLocation();
+
     this.nextToken();
 
     const subject = this.parseExpression(Precedence.Lowest);
@@ -599,48 +651,59 @@ export default class Parser {
       kind: AST.ASTKind.MatchExpression,
       subject,
       cases,
+      source,
     };
   };
 
   private parseIdentifier = (): AST.Identifier => ({
     kind: AST.ASTKind.Identifier,
     value: this.curToken.literal,
+    source: this.captureSourceLocation(),
   });
 
   private parseBooleon = (): AST.Bool => ({
     kind: AST.ASTKind.Bool,
     value: this.curToken.kind === TokenKind.True,
+    source: this.captureSourceLocation(),
   });
 
   private parseInteger = (): AST.Integer => ({
     kind: AST.ASTKind.Integer,
     value: parseInt(this.curToken.literal, 10),
+    source: this.captureSourceLocation(),
   });
 
   private parseDecimal = (): AST.Decimal => ({
     kind: AST.ASTKind.Decimal,
     value: parseFloat(this.curToken.literal),
+    source: this.captureSourceLocation(),
   });
 
   private parseString = (): AST.Str => ({
     kind: AST.ASTKind.Str,
     value: this.curToken.literal,
+    source: this.captureSourceLocation(),
   });
 
   private parsePlaceholder = (): AST.Placeholder => ({
     kind: AST.ASTKind.Placeholder,
+    source: this.captureSourceLocation(),
   });
 
   private parseNil = (): AST.Nil => ({
     kind: AST.ASTKind.Nil,
+    source: this.captureSourceLocation(),
   });
 
   private parseComment = (): AST.CommentStatement => ({
     kind: AST.ASTKind.CommentStatement,
     value: this.curToken.literal,
+    source: this.captureSourceLocation(),
   });
 
   private parseFunctionLiteral = (): AST.FunctionLiteral => {
+    const source = this.captureSourceLocation();
+
     const parameters = this.curTokenIs(TokenKind.PipePipe)
       ? []
       : this.parseFunctionParameters(TokenKind.Pipe);
@@ -658,10 +721,13 @@ export default class Parser {
       kind: AST.ASTKind.FunctionLiteral,
       parameters,
       body,
+      source,
     };
   };
 
   private parseHashExpression = (): AST.HashExpression => {
+    const source = this.captureSourceLocation();
+
     const pairs: [AST.Expression, AST.Expression][] = [];
 
     while (!this.peekTokenIs(TokenKind.RBrace)) {
@@ -689,23 +755,39 @@ export default class Parser {
     return {
       kind: AST.ASTKind.HashExpression,
       pairs,
+      source,
     };
   };
 
-  private parseListExpression = (): AST.ListExpression => ({
-    kind: AST.ASTKind.ListExpression,
-    elements: this.parseExpressionList(TokenKind.RBracket),
-  });
+  private parseListExpression = (): AST.ListExpression => {
+    const source = this.captureSourceLocation();
 
-  private parseSetExpression = (): AST.SetExpression => ({
-    kind: AST.ASTKind.SetExpression,
-    elements: this.parseExpressionList(TokenKind.RBrace),
-  });
+    return {
+      kind: AST.ASTKind.ListExpression,
+      elements: this.parseExpressionList(TokenKind.RBracket),
+      source,
+    };
+  };
 
-  private parseListDestructurePattern = (): AST.ListDestructurePattern => ({
-    kind: AST.ASTKind.ListDestructurePattern,
-    elements: this.parseFunctionParameters(TokenKind.RBracket),
-  });
+  private parseSetExpression = (): AST.SetExpression => {
+    const source = this.captureSourceLocation();
+
+    return {
+      kind: AST.ASTKind.SetExpression,
+      elements: this.parseExpressionList(TokenKind.RBrace),
+      source,
+    };
+  };
+
+  private parseListDestructurePattern = (): AST.ListDestructurePattern => {
+    const source = this.captureSourceLocation();
+
+    return {
+      kind: AST.ASTKind.ListDestructurePattern,
+      elements: this.parseFunctionParameters(TokenKind.RBracket),
+      source,
+    };
+  };
 
   private parseRangeExpression = (left: AST.Expression): AST.RangeExpression => {
     if (
@@ -719,9 +801,13 @@ export default class Parser {
         end: {
           kind: AST.ASTKind.Integer,
           value: Infinity,
+          source: this.captureSourceLocation(),
         },
+        source: this.captureSourceLocation(),
       };
     }
+
+    const source = this.captureSourceLocation();
 
     this.nextToken();
 
@@ -729,6 +815,7 @@ export default class Parser {
       kind: AST.ASTKind.RangeExpression,
       start: left,
       end: this.parseExpression(Precedence.Identifier),
+      source,
     };
   };
 
@@ -759,23 +846,29 @@ export default class Parser {
     }
 
     if (this.curTokenIs(TokenKind.DotDot)) {
+      const source = this.captureSourceLocation();
       this.nextToken();
       return {
         kind: AST.ASTKind.RestElement,
         argument: {
           kind: AST.ASTKind.Identifier,
           value: this.curToken.literal,
+          source,
         },
+        source,
       };
     }
 
     return {
       kind: AST.ASTKind.Identifier,
       value: this.curToken.literal,
+      source: this.captureSourceLocation(),
     };
   };
 
   private parseFunctionThread = (left: AST.Expression): AST.FunctionThread => {
+    const source = this.captureSourceLocation();
+
     const functions: AST.Callable[] = [this.parseCallable()];
 
     while (this.peekTokenIs(TokenKind.PipeGreater)) {
@@ -791,6 +884,7 @@ export default class Parser {
       kind: AST.ASTKind.FunctionThread,
       initial: left,
       functions,
+      source,
     };
   };
 
@@ -798,6 +892,8 @@ export default class Parser {
     if (!this.isCallable(left)) {
       throw new ParserError(`Expected callable, but received ${left.kind}`, this.curToken);
     }
+
+    const source = this.captureSourceLocation();
 
     const functions: AST.Callable[] = [left, this.parseCallable()];
 
@@ -813,6 +909,7 @@ export default class Parser {
     return {
       kind: AST.ASTKind.FunctionComposition,
       functions,
+      source,
     };
   };
 
@@ -863,4 +960,9 @@ export default class Parser {
     node.kind === AST.ASTKind.InfixExpression ||
     node.kind === AST.ASTKind.PrefixExpression ||
     node.kind === AST.ASTKind.FunctionComposition;
+
+  private captureSourceLocation = (): AST.SourceLocation => ({
+    line: this.curToken.line,
+    column: this.curToken.column,
+  });
 }

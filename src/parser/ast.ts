@@ -81,27 +81,36 @@ export type Callable =
   | PrefixExpression
   | FunctionComposition;
 
+export type SourceLocation = {
+  line: number;
+  column: number;
+};
+
 export type Identifiable = ListDestructurePattern | Identifier | Placeholder | RestElement;
 
 export type Program = {
   kind: ASTKind.Program;
   statements: Statement[];
+  source: SourceLocation;
 };
 
 export type SectionStatement = {
   kind: ASTKind.Section;
   name: Identifier;
   section: BlockStatement;
+  source: SourceLocation;
 };
 
 export type BlockStatement = {
   kind: ASTKind.BlockStatement;
   statements: Statement[];
+  source: SourceLocation;
 };
 
 export type ExpressionStatement = {
   kind: ASTKind.ExpressionStatement;
   expression: Expression;
+  source: SourceLocation;
 };
 
 export type LetStatement = {
@@ -109,122 +118,145 @@ export type LetStatement = {
   name: ListDestructurePattern | Identifier;
   value: Expression;
   isMutable: boolean;
+  source: SourceLocation;
 };
 
 export type AssignmentExpression = {
   kind: ASTKind.Assignment;
   name: Identifier;
   value: Expression;
+  source: SourceLocation;
 };
 
 export type ReturnStatment = {
   kind: ASTKind.Return;
   returnValue: Expression;
+  source: SourceLocation;
 };
 
 export type BreakStatment = {
   kind: ASTKind.Break;
   value: Expression | null;
+  source: SourceLocation;
 };
 
 export type Integer = {
   kind: ASTKind.Integer;
   value: number;
+  source: SourceLocation;
 };
 
 export type Decimal = {
   kind: ASTKind.Decimal;
   value: number;
+  source: SourceLocation;
 };
 
 export type Placeholder = {
   kind: ASTKind.Placeholder;
+  source: SourceLocation;
 };
 
 export type Nil = {
   kind: ASTKind.Nil;
+  source: SourceLocation;
 };
 
 export type Str = {
   kind: ASTKind.Str;
   value: string;
+  source: SourceLocation;
 };
 
 export type Bool = {
   kind: ASTKind.Bool;
   value: boolean;
+  source: SourceLocation;
 };
 
 export type CommentStatement = {
   kind: ASTKind.CommentStatement;
   value: string;
+  source: SourceLocation;
 };
 
 export type RangeExpression = {
   kind: ASTKind.RangeExpression;
   start: Expression;
   end: Expression;
+  source: SourceLocation;
 };
 
 export type Identifier = {
   kind: ASTKind.Identifier;
   value: string;
+  source: SourceLocation;
 };
 
 export type ListExpression = {
   kind: ASTKind.ListExpression;
   elements: (Expression | SpreadElement)[];
+  source: SourceLocation;
 };
 
 export type SetExpression = {
   kind: ASTKind.SetExpression;
   elements: Expression[];
+  source: SourceLocation;
 };
 
 export type CallExpression = {
   kind: ASTKind.CallExpression;
   function: Callable;
   arguments: Expression[];
+  source: SourceLocation;
 };
 
 export type PrefixExpression = {
   kind: ASTKind.PrefixExpression;
   function: Identifier;
   argument: Expression;
+  source: SourceLocation;
 };
 
 export type InfixExpression = {
   kind: ASTKind.InfixExpression;
   function: Identifier;
   arguments: [left: Expression, right: Expression];
+  source: SourceLocation;
 };
 
 export type FunctionLiteral = {
   kind: ASTKind.FunctionLiteral;
   parameters: Identifiable[];
   body: BlockStatement;
+  source: SourceLocation;
 };
 
 export type FunctionThread = {
   kind: ASTKind.FunctionThread;
   initial: Expression;
   functions: Callable[];
+  source: SourceLocation;
 };
 
 export type FunctionComposition = {
   kind: ASTKind.FunctionComposition;
   functions: Callable[];
+  source: SourceLocation;
 };
 
 export type HashExpression = {
   kind: ASTKind.HashExpression;
   pairs: [key: Expression, value: Expression][];
+  source: SourceLocation;
 };
 
 export type MatchExpression = {
   kind: ASTKind.MatchExpression;
   subject: Expression;
   cases: MatchCase[];
+  source: SourceLocation;
 };
 
 export type MatchCase = {
@@ -246,6 +278,7 @@ export type MatchPattern =
 export type ListMatchPattern = {
   kind: ASTKind.ListMatchPattern;
   elements: MatchPattern[];
+  source: SourceLocation;
 };
 
 export type IfExpression = {
@@ -253,25 +286,30 @@ export type IfExpression = {
   condition: Expression;
   consequence: BlockStatement;
   alternative: BlockStatement | null;
+  source: SourceLocation;
 };
 
 export type IndexExpression = {
   kind: ASTKind.IndexExpression;
   item: Expression;
   index: Expression;
+  source: SourceLocation;
 };
 
 export type ListDestructurePattern = {
   kind: ASTKind.ListDestructurePattern;
   elements: Identifiable[];
+  source: SourceLocation;
 };
 
 export type RestElement = {
   kind: ASTKind.RestElement;
   argument: Identifier;
+  source: SourceLocation;
 };
 
 export type SpreadElement = {
   kind: ASTKind.SpreadElement;
   value: Expression;
+  source: SourceLocation;
 };

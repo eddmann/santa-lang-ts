@@ -8,7 +8,14 @@ test('integer', () => {
 
   expect(ast).toEqual({
     kind: 'PROGRAM',
-    statements: [{ kind: 'EXPRESSION', expression: { kind: 'INTEGER', value: 1 } }],
+    statements: [
+      {
+        kind: 'EXPRESSION',
+        expression: { kind: 'INTEGER', value: 1, source: { line: 0, column: 0 } },
+        source: { line: 0, column: 0 },
+      },
+    ],
+    source: { line: 0, column: 0 },
   });
 });
 
@@ -19,7 +26,14 @@ test('decimal', () => {
 
   expect(ast).toEqual({
     kind: 'PROGRAM',
-    statements: [{ kind: 'EXPRESSION', expression: { kind: 'DECIMAL', value: 1.5 } }],
+    statements: [
+      {
+        kind: 'EXPRESSION',
+        expression: { kind: 'DECIMAL', value: 1.5, source: { line: 0, column: 0 } },
+        source: { line: 0, column: 0 },
+      },
+    ],
+    source: { line: 0, column: 0 },
   });
 });
 
@@ -33,9 +47,11 @@ test('string', () => {
     statements: [
       {
         kind: 'EXPRESSION',
-        expression: { kind: 'STRING', value: 'Hello, world!' },
+        expression: { kind: 'STRING', value: 'Hello, world!', source: { line: 0, column: 2 } },
+        source: { line: 0, column: 2 },
       },
     ],
+    source: { line: 0, column: 2 },
   });
 });
 
@@ -47,9 +63,18 @@ test('boolean', () => {
   expect(ast).toEqual({
     kind: 'PROGRAM',
     statements: [
-      { kind: 'EXPRESSION', expression: { kind: 'BOOLEAN', value: true } },
-      { kind: 'EXPRESSION', expression: { kind: 'BOOLEAN', value: false } },
+      {
+        kind: 'EXPRESSION',
+        expression: { kind: 'BOOLEAN', value: true, source: { line: 0, column: 0 } },
+        source: { line: 0, column: 0 },
+      },
+      {
+        kind: 'EXPRESSION',
+        expression: { kind: 'BOOLEAN', value: false, source: { line: 0, column: 6 } },
+        source: { line: 0, column: 6 },
+      },
     ],
+    source: { line: 0, column: 0 },
   });
 });
 
@@ -60,7 +85,14 @@ test('nil', () => {
 
   expect(ast).toEqual({
     kind: 'PROGRAM',
-    statements: [{ expression: { kind: 'NIL' }, kind: 'EXPRESSION' }],
+    statements: [
+      {
+        kind: 'EXPRESSION',
+        expression: { kind: 'NIL', source: { line: 0, column: 0 } },
+        source: { line: 0, column: 0 },
+      },
+    ],
+    source: { line: 0, column: 0 },
   });
 });
 
@@ -75,10 +107,15 @@ test('comments', () => {
   expect(ast).toEqual({
     kind: 'PROGRAM',
     statements: [
-      { expression: { kind: 'INTEGER', value: 1 }, kind: 'EXPRESSION' },
-      { kind: 'COMMENT', value: ' sample comment one' },
-      { kind: 'COMMENT', value: ' sample comment two' },
+      {
+        kind: 'EXPRESSION',
+        expression: { kind: 'INTEGER', value: 1, source: { line: 1, column: 4 } },
+        source: { line: 1, column: 4 },
+      },
+      { kind: 'COMMENT', value: ' sample comment one', source: { line: 1, column: 8 } },
+      { kind: 'COMMENT', value: ' sample comment two', source: { line: 2, column: 6 } },
     ],
+    source: { line: 1, column: 4 },
   });
 });
 
@@ -94,14 +131,17 @@ test('infix function call', () => {
         kind: 'EXPRESSION',
         expression: {
           kind: 'INFIX_EXPRESSION',
-          function: { kind: 'IDENTIFIER', value: 'add' },
+          function: { kind: 'IDENTIFIER', value: 'add', source: { line: 0, column: 5 } },
           arguments: [
-            { kind: 'IDENTIFIER', value: 'one' },
-            { kind: 'IDENTIFIER', value: 'two' },
+            { kind: 'IDENTIFIER', value: 'one', source: { line: 0, column: 0 } },
+            { kind: 'IDENTIFIER', value: 'two', source: { line: 0, column: 10 } },
           ],
+          source: { line: 0, column: 4 },
         },
+        source: { line: 0, column: 0 },
       },
     ],
+    source: { line: 0, column: 0 },
   });
 });
 
@@ -118,8 +158,8 @@ test('function literal with block statement', () => {
         expression: {
           kind: 'FUNCTION_LITERAL',
           parameters: [
-            { kind: 'IDENTIFIER', value: 'x' },
-            { kind: 'IDENTIFIER', value: 'y' },
+            { kind: 'IDENTIFIER', value: 'x', source: { line: 0, column: 1 } },
+            { kind: 'IDENTIFIER', value: 'y', source: { line: 0, column: 4 } },
           ],
           body: {
             kind: 'BLOCK_STATEMENT',
@@ -128,18 +168,24 @@ test('function literal with block statement', () => {
                 kind: 'EXPRESSION',
                 expression: {
                   kind: 'INFIX_EXPRESSION',
-                  function: { kind: 'IDENTIFIER', value: '+' },
+                  function: { kind: 'IDENTIFIER', value: '+', source: { line: 0, column: 11 } },
                   arguments: [
-                    { kind: 'IDENTIFIER', value: 'x' },
-                    { kind: 'IDENTIFIER', value: 'y' },
+                    { kind: 'IDENTIFIER', value: 'x', source: { line: 0, column: 9 } },
+                    { kind: 'IDENTIFIER', value: 'y', source: { line: 0, column: 13 } },
                   ],
+                  source: { line: 0, column: 11 },
                 },
+                source: { line: 0, column: 9 },
               },
             ],
+            source: { line: 0, column: 7 },
           },
+          source: { line: 0, column: 0 },
         },
+        source: { line: 0, column: 0 },
       },
     ],
+    source: { line: 0, column: 0 },
   });
 });
 
@@ -156,8 +202,8 @@ test('function literal with expression statement', () => {
         expression: {
           kind: 'FUNCTION_LITERAL',
           parameters: [
-            { kind: 'IDENTIFIER', value: 'x' },
-            { kind: 'IDENTIFIER', value: 'y' },
+            { kind: 'IDENTIFIER', value: 'x', source: { line: 0, column: 1 } },
+            { kind: 'IDENTIFIER', value: 'y', source: { line: 0, column: 4 } },
           ],
           body: {
             kind: 'BLOCK_STATEMENT',
@@ -166,18 +212,23 @@ test('function literal with expression statement', () => {
                 kind: 'EXPRESSION',
                 expression: {
                   kind: 'INFIX_EXPRESSION',
-                  function: { kind: 'IDENTIFIER', value: '+' },
+                  function: { kind: 'IDENTIFIER', value: '+', source: { line: 0, column: 9 } },
                   arguments: [
-                    { kind: 'IDENTIFIER', value: 'x' },
-                    { kind: 'IDENTIFIER', value: 'y' },
+                    { kind: 'IDENTIFIER', value: 'x', source: { line: 0, column: 7 } },
+                    { kind: 'IDENTIFIER', value: 'y', source: { line: 0, column: 11 } },
                   ],
+                  source: { line: 0, column: 9 },
                 },
+                source: { line: 0, column: 7 },
               },
             ],
           },
+          source: { line: 0, column: 0 },
         },
+        source: { line: 0, column: 0 },
       },
     ],
+    source: { line: 0, column: 0 },
   });
 });
 
@@ -194,61 +245,106 @@ test('match expression with list destructing', () => {
         kind: 'EXPRESSION',
         expression: {
           kind: 'MATCH_EXPRESSION',
-          subject: { kind: 'IDENTIFIER', value: 'x' },
+          subject: { kind: 'IDENTIFIER', value: 'x', source: { line: 0, column: 6 } },
           cases: [
             {
-              pattern: { kind: 'LIST_MATCH_PATTERN', elements: [] },
+              pattern: {
+                kind: 'LIST_MATCH_PATTERN',
+                elements: [],
+                source: { line: 0, column: 10 },
+              },
               guard: null,
               consequence: {
                 kind: 'BLOCK_STATEMENT',
                 statements: [
-                  { kind: 'EXPRESSION', expression: { kind: 'STRING', value: 'empty' } },
+                  {
+                    kind: 'EXPRESSION',
+                    expression: { kind: 'STRING', value: 'empty', source: { line: 0, column: 17 } },
+                    source: { line: 0, column: 17 },
+                  },
                 ],
+                source: { line: 0, column: 13 },
               },
             },
             {
               pattern: {
                 kind: 'LIST_MATCH_PATTERN',
-                elements: [{ kind: 'IDENTIFIER', value: 'x' }],
+                elements: [{ kind: 'IDENTIFIER', value: 'x', source: { line: 0, column: 27 } }],
+                source: { line: 0, column: 26 },
               },
               guard: null,
               consequence: {
                 kind: 'BLOCK_STATEMENT',
                 statements: [
-                  { kind: 'EXPRESSION', expression: { kind: 'STRING', value: 'one items' } },
+                  {
+                    kind: 'EXPRESSION',
+                    expression: {
+                      kind: 'STRING',
+                      value: 'one items',
+                      source: { line: 0, column: 34 },
+                    },
+                    source: { line: 0, column: 34 },
+                  },
                 ],
+                source: { line: 0, column: 30 },
               },
             },
             {
               pattern: {
                 kind: 'LIST_MATCH_PATTERN',
                 elements: [
-                  { kind: 'IDENTIFIER', value: 'x' },
-                  { kind: 'REST_ELEMENT', argument: { kind: 'IDENTIFIER', value: 'xs' } },
+                  { kind: 'IDENTIFIER', value: 'x', source: { line: 0, column: 48 } },
+                  {
+                    kind: 'REST_ELEMENT',
+                    argument: { kind: 'IDENTIFIER', value: 'xs' },
+                    source: { line: 0, column: 53 },
+                  },
                 ],
+                source: { line: 0, column: 47 },
               },
               guard: null,
               consequence: {
                 kind: 'BLOCK_STATEMENT',
                 statements: [
-                  { kind: 'EXPRESSION', expression: { kind: 'STRING', value: 'many items' } },
+                  {
+                    kind: 'EXPRESSION',
+                    expression: {
+                      kind: 'STRING',
+                      value: 'many items',
+                      source: { line: 0, column: 61 },
+                    },
+                    source: { line: 0, column: 61 },
+                  },
                 ],
+                source: { line: 0, column: 57 },
               },
             },
             {
-              pattern: { kind: 'PLACEHOLDER' },
+              pattern: { kind: 'PLACEHOLDER', source: { line: 0, column: 75 } },
               guard: null,
               consequence: {
                 kind: 'BLOCK_STATEMENT',
                 statements: [
-                  { kind: 'EXPRESSION', expression: { kind: 'STRING', value: 'unknown' } },
+                  {
+                    kind: 'EXPRESSION',
+                    expression: {
+                      kind: 'STRING',
+                      value: 'unknown',
+                      source: { line: 0, column: 81 },
+                    },
+                    source: { line: 0, column: 81 },
+                  },
                 ],
+                source: { line: 0, column: 77 },
               },
             },
           ],
+          source: { line: 0, column: 0 },
         },
+        source: { line: 0, column: 0 },
       },
     ],
+    source: { line: 0, column: 0 },
   });
 });
 
@@ -264,46 +360,75 @@ test('match expression with primitives', () => {
         kind: 'EXPRESSION',
         expression: {
           kind: 'MATCH_EXPRESSION',
-          subject: { kind: 'IDENTIFIER', value: 'x' },
+          subject: { kind: 'IDENTIFIER', value: 'x', source: { line: 0, column: 6 } },
           cases: [
             {
-              pattern: { kind: 'INTEGER', value: 1 },
-              guard: null,
-              consequence: {
-                kind: 'BLOCK_STATEMENT',
-                statements: [{ kind: 'EXPRESSION', expression: { kind: 'STRING', value: 'one' } }],
-              },
-            },
-            {
-              pattern: { kind: 'DECIMAL', value: 2 },
-              guard: null,
-              consequence: {
-                kind: 'BLOCK_STATEMENT',
-                statements: [{ kind: 'EXPRESSION', expression: { kind: 'STRING', value: 'two' } }],
-              },
-            },
-            {
-              pattern: { kind: 'BOOLEAN', value: true },
+              pattern: { kind: 'INTEGER', value: 1, source: { line: 0, column: 10 } },
               guard: null,
               consequence: {
                 kind: 'BLOCK_STATEMENT',
                 statements: [
-                  { kind: 'EXPRESSION', expression: { kind: 'STRING', value: 'three' } },
+                  {
+                    kind: 'EXPRESSION',
+                    expression: { kind: 'STRING', value: 'one', source: { line: 0, column: 16 } },
+                    source: { line: 0, column: 16 },
+                  },
                 ],
+                source: { line: 0, column: 12 },
               },
             },
             {
-              pattern: { kind: 'STRING', value: 'four' },
+              pattern: { kind: 'DECIMAL', value: 2, source: { line: 0, column: 23 } },
               guard: null,
               consequence: {
                 kind: 'BLOCK_STATEMENT',
-                statements: [{ kind: 'EXPRESSION', expression: { kind: 'INTEGER', value: 4 } }],
+                statements: [
+                  {
+                    kind: 'EXPRESSION',
+                    expression: { kind: 'STRING', value: 'two', source: { line: 0, column: 31 } },
+                    source: { line: 0, column: 31 },
+                  },
+                ],
+                source: { line: 0, column: 27 },
+              },
+            },
+            {
+              pattern: { kind: 'BOOLEAN', value: true, source: { line: 0, column: 38 } },
+              guard: null,
+              consequence: {
+                kind: 'BLOCK_STATEMENT',
+                statements: [
+                  {
+                    kind: 'EXPRESSION',
+                    expression: { kind: 'STRING', value: 'three', source: { line: 0, column: 47 } },
+                    source: { line: 0, column: 47 },
+                  },
+                ],
+                source: { line: 0, column: 43 },
+              },
+            },
+            {
+              pattern: { kind: 'STRING', value: 'four', source: { line: 0, column: 58 } },
+              guard: null,
+              consequence: {
+                kind: 'BLOCK_STATEMENT',
+                statements: [
+                  {
+                    kind: 'EXPRESSION',
+                    expression: { kind: 'INTEGER', value: 4, source: { line: 0, column: 65 } },
+                    source: { line: 0, column: 65 },
+                  },
+                ],
+                source: { line: 0, column: 63 },
               },
             },
           ],
+          source: { line: 0, column: 0 },
         },
+        source: { line: 0, column: 0 },
       },
     ],
+    source: { line: 0, column: 0 },
   });
 });
 
@@ -320,66 +445,97 @@ test('match expression with if clause', () => {
         kind: 'EXPRESSION',
         expression: {
           kind: 'MATCH_EXPRESSION',
-          subject: { kind: 'IDENTIFIER', value: 'x' },
+          subject: { kind: 'IDENTIFIER', value: 'x', source: { line: 0, column: 6 } },
           cases: [
             {
-              pattern: { kind: 'INTEGER', value: 1 },
+              pattern: { kind: 'INTEGER', value: 1, source: { line: 0, column: 10 } },
               guard: {
                 kind: 'INFIX_EXPRESSION',
-                function: { kind: 'IDENTIFIER', value: '!=' },
+                function: { kind: 'IDENTIFIER', value: '!=', source: { line: 0, column: 17 } },
                 arguments: [
-                  { kind: 'INTEGER', value: 1 },
-                  { kind: 'INTEGER', value: 2 },
+                  { kind: 'INTEGER', value: 1, source: { line: 0, column: 15 } },
+                  { kind: 'INTEGER', value: 2, source: { line: 0, column: 20 } },
                 ],
-              },
-              consequence: {
-                kind: 'BLOCK_STATEMENT',
-                statements: [{ kind: 'EXPRESSION', expression: { kind: 'STRING', value: 'one' } }],
-              },
-            },
-            {
-              pattern: { kind: 'DECIMAL', value: 2 },
-              guard: {
-                kind: 'INFIX_EXPRESSION',
-                function: { kind: 'IDENTIFIER', value: '&&' },
-                arguments: [
-                  { kind: 'BOOLEAN', value: true },
-                  {
-                    kind: 'PREFIX_EXPRESSION',
-                    function: { kind: 'IDENTIFIER', value: 'unary_!' },
-                    argument: { kind: 'BOOLEAN', value: false },
-                  },
-                ],
-              },
-              consequence: {
-                kind: 'BLOCK_STATEMENT',
-                statements: [{ kind: 'EXPRESSION', expression: { kind: 'STRING', value: 'two' } }],
-              },
-            },
-            {
-              pattern: { kind: 'IDENTIFIER', value: 'e' },
-              guard: {
-                kind: 'INFIX_EXPRESSION',
-                function: { kind: 'IDENTIFIER', value: '>' },
-                arguments: [
-                  { kind: 'IDENTIFIER', value: 'e' },
-                  { kind: 'INTEGER', value: 3 },
-                ],
+                source: { line: 0, column: 17 },
               },
               consequence: {
                 kind: 'BLOCK_STATEMENT',
                 statements: [
                   {
                     kind: 'EXPRESSION',
-                    expression: { kind: 'STRING', value: 'greater than three' },
+                    expression: { kind: 'STRING', value: 'one', source: { line: 0, column: 26 } },
+                    source: { line: 0, column: 26 },
                   },
                 ],
+                source: { line: 0, column: 22 },
+              },
+            },
+            {
+              pattern: { kind: 'DECIMAL', value: 2, source: { line: 0, column: 33 } },
+              guard: {
+                kind: 'INFIX_EXPRESSION',
+                function: { kind: 'IDENTIFIER', value: '&&', source: { line: 0, column: 45 } },
+                arguments: [
+                  { kind: 'BOOLEAN', value: true, source: { line: 0, column: 40 } },
+                  {
+                    kind: 'PREFIX_EXPRESSION',
+                    function: {
+                      kind: 'IDENTIFIER',
+                      value: 'unary_!',
+                      source: { line: 0, column: 49 },
+                    },
+                    argument: { kind: 'BOOLEAN', value: false, source: { line: 0, column: 49 } },
+                    source: { line: 0, column: 48 },
+                  },
+                ],
+                source: { line: 0, column: 45 },
+              },
+              consequence: {
+                kind: 'BLOCK_STATEMENT',
+                statements: [
+                  {
+                    kind: 'EXPRESSION',
+                    expression: { kind: 'STRING', value: 'two', source: { line: 0, column: 59 } },
+                    source: { line: 0, column: 59 },
+                  },
+                ],
+                source: { line: 0, column: 55 },
+              },
+            },
+            {
+              pattern: { kind: 'IDENTIFIER', value: 'e', source: { line: 0, column: 66 } },
+              guard: {
+                kind: 'INFIX_EXPRESSION',
+                function: { kind: 'IDENTIFIER', value: '>', source: { line: 0, column: 73 } },
+                arguments: [
+                  { kind: 'IDENTIFIER', value: 'e', source: { line: 0, column: 71 } },
+                  { kind: 'INTEGER', value: 3, source: { line: 0, column: 75 } },
+                ],
+                source: { line: 0, column: 73 },
+              },
+              consequence: {
+                kind: 'BLOCK_STATEMENT',
+                statements: [
+                  {
+                    kind: 'EXPRESSION',
+                    expression: {
+                      kind: 'STRING',
+                      value: 'greater than three',
+                      source: { line: 0, column: 81 },
+                    },
+                    source: { line: 0, column: 81 },
+                  },
+                ],
+                source: { line: 0, column: 77 },
               },
             },
           ],
+          source: { line: 0, column: 0 },
         },
+        source: { line: 0, column: 0 },
       },
     ],
+    source: { line: 0, column: 0 },
   });
 });
 
@@ -395,19 +551,30 @@ test('partial application using placeholders', () => {
         kind: 'EXPRESSION',
         expression: {
           kind: 'INFIX_EXPRESSION',
-          function: { kind: 'IDENTIFIER', value: '+' },
-          arguments: [{ kind: 'PLACEHOLDER' }, { kind: 'INTEGER', value: 2 }],
+          function: { kind: 'IDENTIFIER', value: '+', source: { line: 0, column: 2 } },
+          arguments: [
+            { kind: 'PLACEHOLDER', source: { line: 0, column: 0 } },
+            { kind: 'INTEGER', value: 2, source: { line: 0, column: 4 } },
+          ],
+          source: { line: 0, column: 2 },
         },
+        source: { line: 0, column: 0 },
       },
       {
         kind: 'EXPRESSION',
         expression: {
           kind: 'CALL_EXPRESSION',
-          function: { kind: 'IDENTIFIER', value: '+' },
-          arguments: [{ kind: 'PLACEHOLDER' }, { kind: 'INTEGER', value: 2 }],
+          function: { kind: 'IDENTIFIER', value: '+', source: { line: 0, column: 7 } },
+          arguments: [
+            { kind: 'PLACEHOLDER', source: { line: 0, column: 9 } },
+            { kind: 'INTEGER', value: 2, source: { line: 0, column: 12 } },
+          ],
+          source: { line: 0, column: 8 },
         },
+        source: { line: 0, column: 7 },
       },
     ],
+    source: { line: 0, column: 0 },
   });
 });
 
@@ -424,15 +591,24 @@ test('function literal with parameter destructuring', () => {
         expression: {
           kind: 'FUNCTION_LITERAL',
           parameters: [
-            { kind: 'IDENTIFIER', value: 'x' },
+            { kind: 'IDENTIFIER', value: 'x', source: { line: 0, column: 1 } },
             {
               kind: 'LIST_DESTRUCTURE_PATTERN',
               elements: [
-                { kind: 'IDENTIFIER', value: 'y' },
-                { kind: 'REST_ELEMENT', argument: { kind: 'IDENTIFIER', value: 'z' } },
+                { kind: 'IDENTIFIER', value: 'y', source: { line: 0, column: 5 } },
+                {
+                  kind: 'REST_ELEMENT',
+                  argument: { kind: 'IDENTIFIER', value: 'z', source: { line: 0, column: 8 } },
+                  source: { line: 0, column: 8 },
+                },
               ],
+              source: { line: 0, column: 4 },
             },
-            { kind: 'REST_ELEMENT', argument: { kind: 'IDENTIFIER', value: 'rest' } },
+            {
+              kind: 'REST_ELEMENT',
+              argument: { kind: 'IDENTIFIER', value: 'rest', source: { line: 0, column: 14 } },
+              source: { line: 0, column: 14 },
+            },
           ],
           body: {
             kind: 'BLOCK_STATEMENT',
@@ -441,18 +617,23 @@ test('function literal with parameter destructuring', () => {
                 kind: 'EXPRESSION',
                 expression: {
                   kind: 'INFIX_EXPRESSION',
-                  function: { kind: 'IDENTIFIER', value: '+' },
+                  function: { kind: 'IDENTIFIER', value: '+', source: { line: 0, column: 24 } },
                   arguments: [
-                    { kind: 'IDENTIFIER', value: 'x' },
-                    { kind: 'IDENTIFIER', value: 'y' },
+                    { kind: 'IDENTIFIER', value: 'x', source: { line: 0, column: 22 } },
+                    { kind: 'IDENTIFIER', value: 'y', source: { line: 0, column: 26 } },
                   ],
+                  source: { line: 0, column: 24 },
                 },
+                source: { line: 0, column: 22 },
               },
             ],
           },
+          source: { line: 0, column: 0 },
         },
+        source: { line: 0, column: 0 },
       },
     ],
+    source: { line: 0, column: 0 },
   });
 });
 
@@ -469,13 +650,16 @@ test('list literal', () => {
         expression: {
           kind: 'LIST_EXPRESSION',
           elements: [
-            { kind: 'INTEGER', value: 1 },
-            { kind: 'DECIMAL', value: 2.5 },
-            { kind: 'STRING', value: 'hello' },
+            { kind: 'INTEGER', value: 1, source: { line: 0, column: 1 } },
+            { kind: 'DECIMAL', value: 2.5, source: { line: 0, column: 4 } },
+            { kind: 'STRING', value: 'hello', source: { line: 0, column: 11 } },
           ],
+          source: { line: 0, column: 0 },
         },
+        source: { line: 0, column: 0 },
       },
     ],
+    source: { line: 0, column: 0 },
   });
 });
 
@@ -493,35 +677,40 @@ test('hash literal', () => {
           kind: 'HASH_EXPRESSION',
           pairs: [
             [
-              { kind: 'STRING', value: 'hello' },
+              { kind: 'STRING', value: 'hello', source: { line: 0, column: 4 } },
               {
                 kind: 'HASH_EXPRESSION',
                 pairs: [
                   [
-                    { kind: 'STRING', value: 'x' },
-                    { kind: 'IDENTIFIER', value: 'x' },
+                    { kind: 'STRING', value: 'x', source: { line: 0, column: 13 } },
+                    { kind: 'IDENTIFIER', value: 'x', source: { line: 0, column: 13 } },
                   ],
                 ],
+                source: { line: 0, column: 11 },
               },
             ],
             [
-              { kind: 'INTEGER', value: 1 },
-              { kind: 'STRING', value: '2' },
+              { kind: 'INTEGER', value: 1, source: { line: 0, column: 17 } },
+              { kind: 'STRING', value: '2', source: { line: 0, column: 22 } },
             ],
             [
               {
                 kind: 'LIST_EXPRESSION',
                 elements: [
-                  { kind: 'INTEGER', value: 1 },
-                  { kind: 'INTEGER', value: 2 },
+                  { kind: 'INTEGER', value: 1, source: { line: 0, column: 26 } },
+                  { kind: 'INTEGER', value: 2, source: { line: 0, column: 29 } },
                 ],
+                source: { line: 0, column: 25 },
               },
-              { kind: 'DECIMAL', value: 1.4 },
+              { kind: 'DECIMAL', value: 1.4, source: { line: 0, column: 33 } },
             ],
           ],
+          source: { line: 0, column: 0 },
         },
+        source: { line: 0, column: 0 },
       },
     ],
+    source: { line: 0, column: 0 },
   });
 });
 
@@ -538,13 +727,16 @@ test('set literal', () => {
         expression: {
           kind: 'SET_EXPRESSION',
           elements: [
-            { kind: 'INTEGER', value: 1 },
-            { kind: 'INTEGER', value: 2 },
-            { kind: 'INTEGER', value: 3 },
+            { kind: 'INTEGER', value: 1, source: { line: 0, column: 1 } },
+            { kind: 'INTEGER', value: 2, source: { line: 0, column: 4 } },
+            { kind: 'INTEGER', value: 3, source: { line: 0, column: 7 } },
           ],
+          source: { line: 0, column: 0 },
         },
+        source: { line: 0, column: 0 },
       },
     ],
+    source: { line: 0, column: 0 },
   });
 });
 
@@ -558,11 +750,13 @@ test('let assignment', () => {
     statements: [
       {
         kind: 'LET',
-        name: { kind: 'IDENTIFIER', value: 'x' },
-        value: { kind: 'INTEGER', value: 1 },
+        name: { kind: 'IDENTIFIER', value: 'x', source: { line: 0, column: 4 } },
+        value: { kind: 'INTEGER', value: 1, source: { line: 0, column: 8 } },
         isMutable: false,
+        source: { line: 0, column: 0 },
       },
     ],
+    source: { line: 0, column: 0 },
   });
 });
 
@@ -576,19 +770,23 @@ test('let mut assignment', () => {
     statements: [
       {
         kind: 'LET',
-        name: { kind: 'IDENTIFIER', value: 'x' },
-        value: { kind: 'INTEGER', value: 1 },
+        name: { kind: 'IDENTIFIER', value: 'x', source: { line: 0, column: 8 } },
+        value: { kind: 'INTEGER', value: 1, source: { line: 0, column: 12 } },
         isMutable: true,
+        source: { line: 0, column: 0 },
       },
       {
         kind: 'EXPRESSION',
         expression: {
           kind: 'ASSIGNMENT',
-          name: { kind: 'IDENTIFIER', value: 'x' },
-          value: { kind: 'INTEGER', value: 2 },
+          name: { kind: 'IDENTIFIER', value: 'x', source: { line: 0, column: 15 } },
+          value: { kind: 'INTEGER', value: 2, source: { line: 0, column: 19 } },
+          source: { line: 0, column: 17 },
         },
+        source: { line: 0, column: 15 },
       },
     ],
+    source: { line: 0, column: 0 },
   });
 });
 
@@ -605,36 +803,46 @@ test('let destructuring', () => {
         name: {
           kind: 'LIST_DESTRUCTURE_PATTERN',
           elements: [
-            { kind: 'IDENTIFIER', value: 'a' },
-            { kind: 'IDENTIFIER', value: 'b' },
+            { kind: 'IDENTIFIER', value: 'a', source: { line: 0, column: 5 } },
+            { kind: 'IDENTIFIER', value: 'b', source: { line: 0, column: 8 } },
             {
               kind: 'LIST_DESTRUCTURE_PATTERN',
               elements: [
-                { kind: 'IDENTIFIER', value: 'c' },
-                { kind: 'IDENTIFIER', value: 'd' },
+                { kind: 'IDENTIFIER', value: 'c', source: { line: 0, column: 12 } },
+                { kind: 'IDENTIFIER', value: 'd', source: { line: 0, column: 15 } },
               ],
+              source: { line: 0, column: 11 },
             },
-            { kind: 'REST_ELEMENT', argument: { kind: 'IDENTIFIER', value: 'e' } },
+            {
+              kind: 'REST_ELEMENT',
+              argument: { kind: 'IDENTIFIER', value: 'e', source: { line: 0, column: 19 } },
+              source: { line: 0, column: 19 },
+            },
           ],
+          source: { line: 0, column: 4 },
         },
         value: {
           kind: 'LIST_EXPRESSION',
           elements: [
-            { kind: 'INTEGER', value: 1 },
-            { kind: 'INTEGER', value: 2 },
+            { kind: 'INTEGER', value: 1, source: { line: 0, column: 27 } },
+            { kind: 'INTEGER', value: 2, source: { line: 0, column: 30 } },
             {
               kind: 'LIST_EXPRESSION',
               elements: [
-                { kind: 'INTEGER', value: 3 },
-                { kind: 'INTEGER', value: 4 },
+                { kind: 'INTEGER', value: 3, source: { line: 0, column: 34 } },
+                { kind: 'INTEGER', value: 4, source: { line: 0, column: 37 } },
               ],
+              source: { line: 0, column: 33 },
             },
-            { kind: 'INTEGER', value: 5 },
+            { kind: 'INTEGER', value: 5, source: { line: 0, column: 41 } },
           ],
+          source: { line: 0, column: 26 },
         },
         isMutable: false,
+        source: { line: 0, column: 0 },
       },
     ],
+    source: { line: 0, column: 0 },
   });
 });
 
@@ -651,23 +859,32 @@ test('list spread', () => {
         expression: {
           kind: 'LIST_EXPRESSION',
           elements: [
-            { kind: 'INTEGER', value: 1 },
-            { kind: 'SPREAD_ELEMENT', value: { kind: 'IDENTIFIER', value: 'xs' } },
+            { kind: 'INTEGER', value: 1, source: { line: 0, column: 1 } },
+            {
+              kind: 'SPREAD_ELEMENT',
+              value: { kind: 'IDENTIFIER', value: 'xs', source: { line: 0, column: 6 } },
+              source: { line: 0, column: 4 },
+            },
             {
               kind: 'SPREAD_ELEMENT',
               value: {
                 kind: 'LIST_EXPRESSION',
                 elements: [
-                  { kind: 'INTEGER', value: 1 },
-                  { kind: 'INTEGER', value: 2 },
-                  { kind: 'INTEGER', value: 3 },
+                  { kind: 'INTEGER', value: 1, source: { line: 0, column: 13 } },
+                  { kind: 'INTEGER', value: 2, source: { line: 0, column: 16 } },
+                  { kind: 'INTEGER', value: 3, source: { line: 0, column: 19 } },
                 ],
+                source: { line: 0, column: 12 },
               },
+              source: { line: 0, column: 10 },
             },
           ],
+          source: { line: 0, column: 0 },
         },
+        source: { line: 0, column: 0 },
       },
     ],
+    source: { line: 0, column: 0 },
   });
 });
 
@@ -685,23 +902,41 @@ test('if expression', () => {
           kind: 'IF_EXPRESSION',
           condition: {
             kind: 'INFIX_EXPRESSION',
-            function: { kind: 'IDENTIFIER', value: '<' },
+            function: { kind: 'IDENTIFIER', value: '<', source: { line: 0, column: 5 } },
             arguments: [
-              { kind: 'INTEGER', value: 0 },
-              { kind: 'INTEGER', value: 5 },
+              { kind: 'INTEGER', value: 0, source: { line: 0, column: 3 } },
+              { kind: 'INTEGER', value: 5, source: { line: 0, column: 7 } },
             ],
+            source: { line: 0, column: 5 },
           },
           consequence: {
             kind: 'BLOCK_STATEMENT',
-            statements: [{ kind: 'EXPRESSION', expression: { kind: 'INTEGER', value: 1 } }],
+            statements: [
+              {
+                kind: 'EXPRESSION',
+                expression: { kind: 'INTEGER', value: 1, source: { line: 0, column: 11 } },
+                source: { line: 0, column: 11 },
+              },
+            ],
+            source: { line: 0, column: 9 },
           },
           alternative: {
             kind: 'BLOCK_STATEMENT',
-            statements: [{ kind: 'EXPRESSION', expression: { kind: 'INTEGER', value: 2 } }],
+            statements: [
+              {
+                kind: 'EXPRESSION',
+                expression: { kind: 'INTEGER', value: 2, source: { line: 0, column: 22 } },
+                source: { line: 0, column: 22 },
+              },
+            ],
+            source: { line: 0, column: 20 },
           },
+          source: { line: 0, column: 0 },
         },
+        source: { line: 0, column: 0 },
       },
     ],
+    source: { line: 0, column: 0 },
   });
 });
 
@@ -717,14 +952,17 @@ test('call expression', () => {
         kind: 'EXPRESSION',
         expression: {
           kind: 'CALL_EXPRESSION',
-          function: { kind: 'IDENTIFIER', value: 'add' },
+          function: { kind: 'IDENTIFIER', value: 'add', source: { line: 0, column: 0 } },
           arguments: [
-            { kind: 'INTEGER', value: 1 },
-            { kind: 'INTEGER', value: 2 },
+            { kind: 'INTEGER', value: 1, source: { line: 0, column: 4 } },
+            { kind: 'INTEGER', value: 2, source: { line: 0, column: 7 } },
           ],
+          source: { line: 0, column: 3 },
         },
+        source: { line: 0, column: 0 },
       },
     ],
+    source: { line: 0, column: 0 },
   });
 });
 
@@ -740,11 +978,14 @@ test('bounded range', () => {
         kind: 'EXPRESSION',
         expression: {
           kind: 'RANGE_EXPRESSION',
-          start: { kind: 'INTEGER', value: 1 },
-          end: { kind: 'INTEGER', value: 10 },
+          start: { kind: 'INTEGER', value: 1, source: { line: 0, column: 1 } },
+          end: { kind: 'INTEGER', value: 10, source: { line: 0, column: 4 } },
+          source: { line: 0, column: 2 },
         },
+        source: { line: 0, column: 1 },
       },
     ],
+    source: { line: 0, column: 1 },
   });
 });
 
@@ -760,11 +1001,14 @@ test('unbounded range', () => {
         kind: 'EXPRESSION',
         expression: {
           kind: 'RANGE_EXPRESSION',
-          start: { kind: 'INTEGER', value: 1 },
-          end: { kind: 'INTEGER', value: Infinity },
+          start: { kind: 'INTEGER', value: 1, source: { line: 0, column: 1 } },
+          end: { kind: 'INTEGER', value: Infinity, source: { line: 0, column: 2 } },
+          source: { line: 0, column: 2 },
         },
+        source: { line: 0, column: 1 },
       },
     ],
+    source: { line: 0, column: 1 },
   });
 });
 
@@ -780,11 +1024,14 @@ test('range using identifier', () => {
         kind: 'EXPRESSION',
         expression: {
           kind: 'RANGE_EXPRESSION',
-          start: { kind: 'INTEGER', value: 0 },
-          end: { kind: 'IDENTIFIER', value: 'x' },
+          start: { kind: 'INTEGER', value: 0, source: { line: 0, column: 1 } },
+          end: { kind: 'IDENTIFIER', value: 'x', source: { line: 0, column: 4 } },
+          source: { line: 0, column: 2 },
         },
+        source: { line: 0, column: 1 },
       },
     ],
+    source: { line: 0, column: 1 },
   });
 });
 
@@ -798,21 +1045,37 @@ test('sections', () => {
     statements: [
       {
         kind: 'SECTION',
-        name: { kind: 'IDENTIFIER', value: 'section_one' },
+        name: { kind: 'IDENTIFIER', value: 'section_one', source: { line: 0, column: 0 } },
         section: {
           kind: 'BLOCK_STATEMENT',
-          statements: [{ kind: 'EXPRESSION', expression: { kind: 'STRING', value: 'sample' } }],
+          statements: [
+            {
+              kind: 'EXPRESSION',
+              expression: { kind: 'STRING', value: 'sample', source: { line: 0, column: 16 } },
+              source: { line: 0, column: 16 },
+            },
+          ],
+          source: { line: 0, column: 13 },
         },
+        source: { line: 0, column: 0 },
       },
       {
         kind: 'SECTION',
-        name: { kind: 'IDENTIFIER', value: 'section_two' },
+        name: { kind: 'IDENTIFIER', value: 'section_two', source: { line: 0, column: 25 } },
         section: {
           kind: 'BLOCK_STATEMENT',
-          statements: [{ kind: 'EXPRESSION', expression: { kind: 'STRING', value: 'sample' } }],
+          statements: [
+            {
+              kind: 'EXPRESSION',
+              expression: { kind: 'STRING', value: 'sample', source: { line: 0, column: 40 } },
+              source: { line: 0, column: 40 },
+            },
+          ],
         },
+        source: { line: 0, column: 25 },
       },
     ],
+    source: { line: 0, column: 0 },
   });
 });
 
@@ -826,24 +1089,36 @@ test('section with sub-section', () => {
     statements: [
       {
         kind: 'SECTION',
-        name: { kind: 'IDENTIFIER', value: 'section_one' },
+        name: { kind: 'IDENTIFIER', value: 'section_one', source: { line: 0, column: 0 } },
         section: {
           kind: 'BLOCK_STATEMENT',
           statements: [
             {
               kind: 'SECTION',
-              name: { kind: 'IDENTIFIER', value: 'section_two' },
+              name: { kind: 'IDENTIFIER', value: 'section_two', source: { line: 0, column: 15 } },
               section: {
                 kind: 'BLOCK_STATEMENT',
                 statements: [
-                  { kind: 'EXPRESSION', expression: { kind: 'STRING', value: 'sample' } },
+                  {
+                    kind: 'EXPRESSION',
+                    expression: {
+                      kind: 'STRING',
+                      value: 'sample',
+                      source: { line: 0, column: 30 },
+                    },
+                    source: { line: 0, column: 30 },
+                  },
                 ],
               },
+              source: { line: 0, column: 15 },
             },
           ],
+          source: { line: 0, column: 13 },
         },
+        source: { line: 0, column: 0 },
       },
     ],
+    source: { line: 0, column: 0 },
   });
 });
 
@@ -859,25 +1134,34 @@ test('minus prefix/infix operation', () => {
         kind: 'EXPRESSION',
         expression: {
           kind: 'INFIX_EXPRESSION',
-          function: { kind: 'IDENTIFIER', value: '-' },
+          function: { kind: 'IDENTIFIER', value: '-', source: { line: 0, column: 7 } },
           arguments: [
             {
               kind: 'INFIX_EXPRESSION',
-              function: { kind: 'IDENTIFIER', value: '-' },
+              function: { kind: 'IDENTIFIER', value: '-', source: { line: 0, column: 2 } },
               arguments: [
-                { kind: 'INTEGER', value: 4 },
+                { kind: 'INTEGER', value: 4, source: { line: 0, column: 0 } },
                 {
                   kind: 'PREFIX_EXPRESSION',
-                  function: { kind: 'IDENTIFIER', value: 'unary_-' },
-                  argument: { kind: 'INTEGER', value: 4 },
+                  function: {
+                    kind: 'IDENTIFIER',
+                    value: 'unary_-',
+                    source: { line: 0, column: 5 },
+                  },
+                  argument: { kind: 'INTEGER', value: 4, source: { line: 0, column: 5 } },
+                  source: { line: 0, column: 4 },
                 },
               ],
+              source: { line: 0, column: 2 },
             },
-            { kind: 'INTEGER', value: 5 },
+            { kind: 'INTEGER', value: 5, source: { line: 0, column: 9 } },
           ],
+          source: { line: 0, column: 7 },
         },
+        source: { line: 0, column: 0 },
       },
     ],
+    source: { line: 0, column: 0 },
   });
 });
 
@@ -893,26 +1177,32 @@ test('multiple prefix boolean negations', () => {
         kind: 'EXPRESSION',
         expression: {
           kind: 'INFIX_EXPRESSION',
-          function: { kind: 'IDENTIFIER', value: '||' },
+          function: { kind: 'IDENTIFIER', value: '||', source: { line: 0, column: 6 } },
           arguments: [
             {
               kind: 'PREFIX_EXPRESSION',
-              function: { kind: 'IDENTIFIER', value: 'unary_!' },
-              argument: { kind: 'BOOLEAN', value: true },
+              function: { kind: 'IDENTIFIER', value: 'unary_!', source: { line: 0, column: 1 } },
+              argument: { kind: 'BOOLEAN', value: true, source: { line: 0, column: 1 } },
+              source: { line: 0, column: 0 },
             },
             {
               kind: 'PREFIX_EXPRESSION',
-              function: { kind: 'IDENTIFIER', value: 'unary_!' },
+              function: { kind: 'IDENTIFIER', value: 'unary_!', source: { line: 0, column: 10 } },
               argument: {
                 kind: 'PREFIX_EXPRESSION',
-                function: { kind: 'IDENTIFIER', value: 'unary_!' },
-                argument: { kind: 'BOOLEAN', value: false },
+                function: { kind: 'IDENTIFIER', value: 'unary_!', source: { line: 0, column: 11 } },
+                argument: { kind: 'BOOLEAN', value: false, source: { line: 0, column: 11 } },
+                source: { line: 0, column: 10 },
               },
+              source: { line: 0, column: 9 },
             },
           ],
+          source: { line: 0, column: 6 },
         },
+        source: { line: 0, column: 0 },
       },
     ],
+    source: { line: 0, column: 0 },
   });
 });
 
@@ -929,12 +1219,15 @@ test('function composition', () => {
         expression: {
           kind: 'FUNCTION_COMPOSITON',
           functions: [
-            { kind: 'IDENTIFIER', value: 'inc' },
-            { kind: 'IDENTIFIER', value: 'dec' },
+            { kind: 'IDENTIFIER', value: 'inc', source: { line: 0, column: 0 } },
+            { kind: 'IDENTIFIER', value: 'dec', source: { line: 0, column: 7 } },
           ],
+          source: { line: 0, column: 4 },
         },
+        source: { line: 0, column: 0 },
       },
     ],
+    source: { line: 0, column: 0 },
   });
 });
 
@@ -953,19 +1246,20 @@ test('function threading with call expression', () => {
           initial: {
             kind: 'LIST_EXPRESSION',
             elements: [
-              { kind: 'INTEGER', value: 1 },
-              { kind: 'INTEGER', value: 2 },
-              { kind: 'INTEGER', value: 3 },
+              { kind: 'INTEGER', value: 1, source: { line: 0, column: 1 } },
+              { kind: 'INTEGER', value: 2, source: { line: 0, column: 4 } },
+              { kind: 'INTEGER', value: 3, source: { line: 0, column: 7 } },
             ],
+            source: { line: 0, column: 0 },
           },
           functions: [
             {
               kind: 'CALL_EXPRESSION',
-              function: { kind: 'IDENTIFIER', value: 'map' },
+              function: { kind: 'IDENTIFIER', value: 'map', source: { line: 0, column: 13 } },
               arguments: [
                 {
                   kind: 'FUNCTION_LITERAL',
-                  parameters: [{ kind: 'IDENTIFIER', value: 'x' }],
+                  parameters: [{ kind: 'IDENTIFIER', value: 'x', source: { line: 0, column: 18 } }],
                   body: {
                     kind: 'BLOCK_STATEMENT',
                     statements: [
@@ -973,22 +1267,33 @@ test('function threading with call expression', () => {
                         kind: 'EXPRESSION',
                         expression: {
                           kind: 'INFIX_EXPRESSION',
-                          function: { kind: 'IDENTIFIER', value: '+' },
+                          function: {
+                            kind: 'IDENTIFIER',
+                            value: '+',
+                            source: { line: 0, column: 23 },
+                          },
                           arguments: [
-                            { kind: 'IDENTIFIER', value: 'x' },
-                            { kind: 'INTEGER', value: 1 },
+                            { kind: 'IDENTIFIER', value: 'x', source: { line: 0, column: 21 } },
+                            { kind: 'INTEGER', value: 1, source: { line: 0, column: 25 } },
                           ],
+                          source: { line: 0, column: 23 },
                         },
+                        source: { line: 0, column: 21 },
                       },
                     ],
                   },
+                  source: { line: 0, column: 17 },
                 },
               ],
+              source: { line: 0, column: 16 },
             },
           ],
+          source: { line: 0, column: 10 },
         },
+        source: { line: 0, column: 0 },
       },
     ],
+    source: { line: 0, column: 0 },
   });
 });
 
@@ -1004,28 +1309,33 @@ test('logical and', () => {
         kind: 'EXPRESSION',
         expression: {
           kind: 'INFIX_EXPRESSION',
-          function: { kind: 'IDENTIFIER', value: '&&' },
+          function: { kind: 'IDENTIFIER', value: '&&', source: { line: 0, column: 7 } },
           arguments: [
             {
               kind: 'INFIX_EXPRESSION',
-              function: { kind: 'IDENTIFIER', value: '==' },
+              function: { kind: 'IDENTIFIER', value: '==', source: { line: 0, column: 2 } },
               arguments: [
-                { kind: 'INTEGER', value: 1 },
-                { kind: 'INTEGER', value: 1 },
+                { kind: 'INTEGER', value: 1, source: { line: 0, column: 0 } },
+                { kind: 'INTEGER', value: 1, source: { line: 0, column: 5 } },
               ],
+              source: { line: 0, column: 2 },
             },
             {
               kind: 'INFIX_EXPRESSION',
-              function: { kind: 'IDENTIFIER', value: '>' },
+              function: { kind: 'IDENTIFIER', value: '>', source: { line: 0, column: 12 } },
               arguments: [
-                { kind: 'INTEGER', value: 1 },
-                { kind: 'INTEGER', value: 2 },
+                { kind: 'INTEGER', value: 1, source: { line: 0, column: 10 } },
+                { kind: 'INTEGER', value: 2, source: { line: 0, column: 14 } },
               ],
+              source: { line: 0, column: 12 },
             },
           ],
+          source: { line: 0, column: 7 },
         },
+        source: { line: 0, column: 0 },
       },
     ],
+    source: { line: 0, column: 0 },
   });
 });
 
@@ -1041,28 +1351,33 @@ test('logical or', () => {
         kind: 'EXPRESSION',
         expression: {
           kind: 'INFIX_EXPRESSION',
-          function: { kind: 'IDENTIFIER', value: '||' },
+          function: { kind: 'IDENTIFIER', value: '||', source: { line: 0, column: 7 } },
           arguments: [
             {
               kind: 'INFIX_EXPRESSION',
-              function: { kind: 'IDENTIFIER', value: '==' },
+              function: { kind: 'IDENTIFIER', value: '==', source: { line: 0, column: 2 } },
               arguments: [
-                { kind: 'INTEGER', value: 1 },
-                { kind: 'INTEGER', value: 1 },
+                { kind: 'INTEGER', value: 1, source: { line: 0, column: 0 } },
+                { kind: 'INTEGER', value: 1, source: { line: 0, column: 5 } },
               ],
+              source: { line: 0, column: 2 },
             },
             {
               kind: 'INFIX_EXPRESSION',
-              function: { kind: 'IDENTIFIER', value: '>' },
+              function: { kind: 'IDENTIFIER', value: '>', source: { line: 0, column: 12 } },
               arguments: [
-                { kind: 'INTEGER', value: 1 },
-                { kind: 'INTEGER', value: 2 },
+                { kind: 'INTEGER', value: 1, source: { line: 0, column: 10 } },
+                { kind: 'INTEGER', value: 2, source: { line: 0, column: 14 } },
               ],
+              source: { line: 0, column: 12 },
             },
           ],
+          source: { line: 0, column: 7 },
         },
+        source: { line: 0, column: 0 },
       },
     ],
+    source: { line: 0, column: 0 },
   });
 });
 
@@ -1078,16 +1393,17 @@ test('function threading with function literal', () => {
         kind: 'EXPRESSION',
         expression: {
           kind: 'FUNCTION_THEAD',
-          initial: { kind: 'INTEGER', value: 1 },
+          initial: { kind: 'INTEGER', value: 1, source: { line: 0, column: 0 } },
           functions: [
             {
               kind: 'CALL_EXPRESSION',
-              function: { kind: 'IDENTIFIER', value: 'add' },
-              arguments: [{ kind: 'INTEGER', value: 1 }],
+              function: { kind: 'IDENTIFIER', value: 'add', source: { line: 0, column: 5 } },
+              arguments: [{ kind: 'INTEGER', value: 1, source: { line: 0, column: 9 } }],
+              source: { line: 0, column: 8 },
             },
             {
               kind: 'FUNCTION_LITERAL',
-              parameters: [{ kind: 'IDENTIFIER', value: 'a' }],
+              parameters: [{ kind: 'IDENTIFIER', value: 'a', source: { line: 0, column: 16 } }],
               body: {
                 kind: 'BLOCK_STATEMENT',
                 statements: [
@@ -1095,26 +1411,37 @@ test('function threading with function literal', () => {
                     kind: 'EXPRESSION',
                     expression: {
                       kind: 'INFIX_EXPRESSION',
-                      function: { kind: 'IDENTIFIER', value: '+' },
+                      function: { kind: 'IDENTIFIER', value: '+', source: { line: 0, column: 23 } },
                       arguments: [
-                        { kind: 'IDENTIFIER', value: 'a' },
-                        { kind: 'INTEGER', value: 1 },
+                        { kind: 'IDENTIFIER', value: 'a', source: { line: 0, column: 21 } },
+                        { kind: 'INTEGER', value: 1, source: { line: 0, column: 25 } },
                       ],
+                      source: { line: 0, column: 23 },
                     },
+                    source: { line: 0, column: 21 },
                   },
                 ],
+                source: { line: 0, column: 19 },
               },
+              source: { line: 0, column: 15 },
             },
-            { kind: 'IDENTIFIER', value: 'inc' },
+            { kind: 'IDENTIFIER', value: 'inc', source: { line: 0, column: 32 } },
             {
               kind: 'INFIX_EXPRESSION',
-              function: { kind: 'IDENTIFIER', value: '+' },
-              arguments: [{ kind: 'PLACEHOLDER' }, { kind: 'INTEGER', value: 1 }],
+              function: { kind: 'IDENTIFIER', value: '+', source: { line: 0, column: 41 } },
+              arguments: [
+                { kind: 'PLACEHOLDER', source: { line: 0, column: 39 } },
+                { kind: 'INTEGER', value: 1, source: { line: 0, column: 43 } },
+              ],
+              source: { line: 0, column: 41 },
             },
           ],
+          source: { line: 0, column: 2 },
         },
+        source: { line: 0, column: 0 },
       },
     ],
+    source: { line: 0, column: 0 },
   });
 });
 
@@ -1130,75 +1457,94 @@ test('indexing', () => {
         kind: 'EXPRESSION',
         expression: {
           kind: 'INDEX_EXPRESSION',
-          item: { kind: 'IDENTIFIER', value: 'list' },
-          index: { kind: 'INTEGER', value: 1 },
+          item: { kind: 'IDENTIFIER', value: 'list', source: { line: 0, column: 0 } },
+          index: { kind: 'INTEGER', value: 1, source: { line: 0, column: 5 } },
+          source: { line: 0, column: 4 },
         },
+        source: { line: 0, column: 0 },
       },
       {
         kind: 'EXPRESSION',
         expression: {
           kind: 'INDEX_EXPRESSION',
-          item: { kind: 'IDENTIFIER', value: 'list' },
+          item: { kind: 'IDENTIFIER', value: 'list', source: { line: 0, column: 9 } },
           index: {
             kind: 'PREFIX_EXPRESSION',
-            function: { kind: 'IDENTIFIER', value: 'unary_-' },
-            argument: { kind: 'INTEGER', value: 1 },
+            function: { kind: 'IDENTIFIER', value: 'unary_-', source: { line: 0, column: 15 } },
+            argument: { kind: 'INTEGER', value: 1, source: { line: 0, column: 15 } },
+            source: { line: 0, column: 14 },
           },
+          source: { line: 0, column: 13 },
         },
+        source: { line: 0, column: 9 },
       },
       {
         kind: 'EXPRESSION',
         expression: {
           kind: 'INDEX_EXPRESSION',
-          item: { kind: 'IDENTIFIER', value: 'list' },
+          item: { kind: 'IDENTIFIER', value: 'list', source: { line: 0, column: 19 } },
           index: {
             kind: 'RANGE_EXPRESSION',
-            start: { kind: 'INTEGER', value: 2 },
-            end: { kind: 'INTEGER', value: 5 },
+            start: { kind: 'INTEGER', value: 2, source: { line: 0, column: 25 } },
+            end: { kind: 'INTEGER', value: 5, source: { line: 0, column: 28 } },
+            source: { line: 0, column: 26 },
           },
+          source: { line: 0, column: 23 },
         },
+        source: { line: 0, column: 19 },
       },
       {
         kind: 'EXPRESSION',
         expression: {
           kind: 'INDEX_EXPRESSION',
-          item: { kind: 'IDENTIFIER', value: 'list' },
+          item: { kind: 'IDENTIFIER', value: 'list', source: { line: 0, column: 32 } },
           index: {
             kind: 'RANGE_EXPRESSION',
             start: {
               kind: 'PREFIX_EXPRESSION',
-              function: { kind: 'IDENTIFIER', value: 'unary_-' },
-              argument: { kind: 'INTEGER', value: 2 },
+              function: { kind: 'IDENTIFIER', value: 'unary_-', source: { line: 0, column: 39 } },
+              argument: { kind: 'INTEGER', value: 2, source: { line: 0, column: 39 } },
+              source: { line: 0, column: 37 },
             },
-            end: { kind: 'INTEGER', value: Infinity },
+            end: { kind: 'INTEGER', value: Infinity, source: { line: 0, column: 40 } },
+            source: { line: 0, column: 40 },
           },
+          source: { line: 0, column: 36 },
         },
+        source: { line: 0, column: 32 },
       },
       {
         kind: 'EXPRESSION',
         expression: {
           kind: 'INDEX_EXPRESSION',
-          item: { kind: 'IDENTIFIER', value: 'list' },
+          item: { kind: 'IDENTIFIER', value: 'list', source: { line: 0, column: 45 } },
           index: {
             kind: 'RANGE_EXPRESSION',
-            start: { kind: 'INTEGER', value: 0 },
+            start: { kind: 'INTEGER', value: 0, source: { line: 0, column: 51 } },
             end: {
               kind: 'PREFIX_EXPRESSION',
-              function: { kind: 'IDENTIFIER', value: 'unary_-' },
-              argument: { kind: 'INTEGER', value: 2 },
+              function: { kind: 'IDENTIFIER', value: 'unary_-', source: { line: 0, column: 55 } },
+              argument: { kind: 'INTEGER', value: 2, source: { line: 0, column: 55 } },
+              source: { line: 0, column: 54 },
             },
+            source: { line: 0, column: 52 },
           },
+          source: { line: 0, column: 49 },
         },
+        source: { line: 0, column: 45 },
       },
       {
         kind: 'EXPRESSION',
         expression: {
           kind: 'INDEX_EXPRESSION',
-          item: { kind: 'IDENTIFIER', value: 'list' },
-          index: { kind: 'STRING', value: 'key' },
+          item: { kind: 'IDENTIFIER', value: 'list', source: { line: 0, column: 59 } },
+          index: { kind: 'STRING', value: 'key', source: { line: 0, column: 66 } },
+          source: { line: 0, column: 63 },
         },
+        source: { line: 0, column: 59 },
       },
     ],
+    source: { line: 0, column: 0 },
   });
 });
 
