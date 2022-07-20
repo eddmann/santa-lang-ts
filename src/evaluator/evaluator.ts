@@ -44,7 +44,7 @@ const evalExpressions = (expressions: AST.Expression[], environment: O.Environme
 
     if (expression.kind === AST.ASTKind.SpreadElement) {
       if (!(evaluated instanceof O.List)) {
-        return [new O.Err(`Expected ${AST.ASTKind.SpreadElement} to be a list`)];
+        throw new Error(`Expected ${AST.ASTKind.SpreadElement} to be a list`);
       }
 
       result.push(...evaluated.items);
@@ -112,7 +112,7 @@ const evalRangeExpression = (
   }
 
   if (!(start instanceof O.Integer)) {
-    return new O.Err('Expected range start value to be an integer');
+    return new O.Err('Expected range start value to be an integer', node);
   }
 
   const end = evaluate(node.end, environment);
@@ -121,7 +121,7 @@ const evalRangeExpression = (
   }
 
   if (!(end instanceof O.Integer)) {
-    return new O.Err('Expected range end value to be an integer');
+    return new O.Err('Expected range end value to be an integer', node);
   }
 
   return O.Range.fromRange(start.value, end.value);
@@ -138,7 +138,7 @@ const evalIdentifier = (node: AST.Identifier, environment: O.Environment): O.Obj
     return new O.BuiltinFunc(builtin.parameters, builtin.body, environment);
   }
 
-  return new O.Err(`Identifier not found: ${node.value}`);
+  return new O.Err(`Identifier not found: ${node.value}`, node);
 };
 
 const evalStatements = (statements: AST.Statement[], environment: O.Environment): O.Obj => {
@@ -211,7 +211,7 @@ const evalCallExpression = (node: AST.CallExpression, environment: O.Environment
 const extendFunctionEnv = (
   fn: O.Func | O.BuiltinFunc,
   args: O.Obj[]
-): { environment: Environment; parameters: AST.Identifiable[] } | O.Err => {
+): { environment: O.Environment; parameters: AST.Identifiable[] } | O.Err => {
   const environment = new O.Environment(fn.environment);
   const parameters = fn.parameters;
 
@@ -238,7 +238,7 @@ const extendFunctionEnv = (
       break;
     }
 
-    return new O.Err(`Unable to parse parameter: ${parameters[i].kind}`);
+    throw new Error(`Unable to parse parameter: ${parameters[i].kind}`);
   }
 
   return { environment, parameters: [...placeholderParams, ...parameters.slice(args.length)] };
@@ -258,7 +258,7 @@ export const applyFunction = (fn: O.Obj, args: O.Obj[]): O.Obj => {
     return fn.body(environment);
   }
 
-  return new O.Err(`Not a function: ${fn.inspect()}`);
+  throw new Error(`Not a function: ${fn.inspect()}`);
 };
 
 const evalInfixExpression = (node: AST.InfixExpression, environment: O.Environment): O.Obj => {
@@ -346,9 +346,15 @@ const evalMatchExpression = (node: AST.MatchExpression, environment: O.Environme
 
         return evaluate(case_.consequence, matchEnvironment);
       } catch (err) {
+        if (err instanceof NoPatternMatchError) {
+          continue;
+        }
+
         if (isError(err)) {
           return err;
         }
+
+        throw err;
       }
 
       continue;
@@ -371,14 +377,14 @@ const evalMatchExpression = (node: AST.MatchExpression, environment: O.Environme
   return O.NIL;
 };
 
-const evalIndexExpression = (node: AST.IndexExpression, environment: Environment): O.Obj => {
+const evalIndexExpression = (node: AST.IndexExpression, environment: O.Environment): O.Obj => {
   const item = evaluate(node.item, environment);
   if (isError(item)) {
     return item;
   }
 
   if (!item.get) {
-    return new O.Err('This value is not indexable');
+    return new O.Err('This value is not indexable', node);
   }
 
   const index = evaluate(node.index, environment);
@@ -476,7 +482,7 @@ const destructureListPatternIntoEnv = (
       break;
     }
 
-    return new O.Err(`Unable to destructure list item: ${elements[i].kind}`);
+    throw new Error(`Unable to destructure list item: ${elements[i].kind}`);
   }
 
   return value;
@@ -486,9 +492,13 @@ class NoPatternMatchError extends Error {}
 
 const matchListPatternIntoEnv = (
   { elements }: AST.ListMatchPattern,
-  value: O.List,
+  value: O.Obj,
   environment: O.Environment
 ): void => {
+  if (!(value instanceof O.List)) {
+    throw new NoPatternMatchError();
+  }
+
   if (elements.length === 0 && value.items.size === 0) {
     return;
   }
@@ -549,124 +559,128 @@ const matchListPatternIntoEnv = (
 };
 
 export const evaluate = (node: AST.Node, environment: O.Environment): O.Obj => {
-  switch (node.kind) {
-    case AST.ASTKind.Program:
-      return evalProgram(node.statements, environment);
+  try {
+    switch (node.kind) {
+      case AST.ASTKind.Program:
+        return evalProgram(node.statements, environment);
 
-    case AST.ASTKind.Section:
-      return environment.addSection(
-        node.name.value,
-        new O.Section(node.name, node.section, new O.Environment(environment))
-      );
+      case AST.ASTKind.Section:
+        return environment.addSection(
+          node.name.value,
+          new O.Section(node.name, node.section, new O.Environment(environment))
+        );
 
-    case AST.ASTKind.Integer:
-      return new O.Integer(node.value);
+      case AST.ASTKind.Integer:
+        return new O.Integer(node.value);
 
-    case AST.ASTKind.Decimal:
-      return new O.Decimal(node.value);
+      case AST.ASTKind.Decimal:
+        return new O.Decimal(node.value);
 
-    case AST.ASTKind.Bool:
-      return node.value ? O.TRUE : O.FALSE;
+      case AST.ASTKind.Bool:
+        return node.value ? O.TRUE : O.FALSE;
 
-    case AST.ASTKind.Str:
-      return new O.Str(node.value);
+      case AST.ASTKind.Str:
+        return new O.Str(node.value);
 
-    case AST.ASTKind.Placeholder:
-      return O.PLACEHOLDER;
+      case AST.ASTKind.Placeholder:
+        return O.PLACEHOLDER;
 
-    case AST.ASTKind.Nil:
-      return O.NIL;
+      case AST.ASTKind.Nil:
+        return O.NIL;
 
-    case AST.ASTKind.ListExpression:
-      return evalListExpression(node, environment);
+      case AST.ASTKind.ListExpression:
+        return evalListExpression(node, environment);
 
-    case AST.ASTKind.HashExpression:
-      return evalHashExpression(node, environment);
+      case AST.ASTKind.HashExpression:
+        return evalHashExpression(node, environment);
 
-    case AST.ASTKind.SetExpression:
-      return evalSetExpression(node, environment);
+      case AST.ASTKind.SetExpression:
+        return evalSetExpression(node, environment);
 
-    case AST.ASTKind.RangeExpression:
-      return evalRangeExpression(node, environment);
+      case AST.ASTKind.RangeExpression:
+        return evalRangeExpression(node, environment);
 
-    case AST.ASTKind.IndexExpression:
-      return evalIndexExpression(node, environment);
+      case AST.ASTKind.IndexExpression:
+        return evalIndexExpression(node, environment);
 
-    case AST.ASTKind.FunctionLiteral:
-      return new O.Func(node.parameters, node.body, new O.Environment(environment));
+      case AST.ASTKind.FunctionLiteral:
+        return new O.Func(node.parameters, node.body, new O.Environment(environment));
 
-    case AST.ASTKind.Return: {
-      const value = evaluate(node.returnValue, environment);
-      return isError(value) ? value : new O.ReturnValue(value);
-    }
-
-    case AST.ASTKind.Break: {
-      const value = node.value ? evaluate(node.value, environment) : O.NIL;
-      return isError(value) ? value : new O.BreakValue(value);
-    }
-
-    case AST.ASTKind.Let: {
-      const value = evaluate(node.value, environment);
-
-      if (isError(value)) {
-        return value;
+      case AST.ASTKind.Return: {
+        const value = evaluate(node.returnValue, environment);
+        return isError(value) ? value : new O.ReturnValue(value);
       }
 
-      if (node.name.kind === AST.ASTKind.ListDestructurePattern) {
-        return destructureListPatternIntoEnv(node.name, node.isMutable, value, environment);
+      case AST.ASTKind.Break: {
+        const value = node.value ? evaluate(node.value, environment) : O.NIL;
+        return isError(value) ? value : new O.BreakValue(value);
       }
 
-      if (value instanceof O.Func) {
-        value.environment.declareVariable(node.name.value, value, false);
+      case AST.ASTKind.Let: {
+        const value = evaluate(node.value, environment);
+
+        if (isError(value)) {
+          return value;
+        }
+
+        if (node.name.kind === AST.ASTKind.ListDestructurePattern) {
+          return destructureListPatternIntoEnv(node.name, node.isMutable, value, environment);
+        }
+
+        if (value instanceof O.Func) {
+          value.environment.declareVariable(node.name.value, value, false);
+        }
+
+        return environment.declareVariable(node.name.value, value, node.isMutable);
       }
 
-      return environment.declareVariable(node.name.value, value, node.isMutable);
+      case AST.ASTKind.Assignment: {
+        const value = evaluate(node.value, environment);
+
+        if (isError(value)) {
+          return value;
+        }
+
+        return environment.setVariable(node.name.value, value);
+      }
+
+      case AST.ASTKind.Identifier:
+        return evalIdentifier(node, environment);
+
+      case AST.ASTKind.BlockStatement:
+        return evalStatements(node.statements, environment);
+
+      case AST.ASTKind.ExpressionStatement:
+        return evaluate(node.expression, environment);
+
+      case AST.ASTKind.IfExpression:
+        return evalIfExpression(node, environment);
+
+      case AST.ASTKind.CallExpression:
+        return evalCallExpression(node, environment);
+
+      case AST.ASTKind.InfixExpression:
+        return evalInfixExpression(node, environment);
+
+      case AST.ASTKind.PrefixExpression:
+        return evalPrefixExpression(node, environment);
+
+      case AST.ASTKind.MatchExpression:
+        return evalMatchExpression(node, environment);
+
+      case AST.ASTKind.FunctionThread:
+        return evalFunctionThread(node, environment);
+
+      case AST.ASTKind.FunctionComposition:
+        return evalFunctionComposition(node, environment);
+
+      case AST.ASTKind.SpreadElement:
+        return evaluate(node.value, environment);
+
+      default:
+        return new O.Err(`Unknown node type: ${node.kind}`, node);
     }
-
-    case AST.ASTKind.Assignment: {
-      const value = evaluate(node.value, environment);
-
-      if (isError(value)) {
-        return value;
-      }
-
-      return environment.setVariable(node.name.value, value);
-    }
-
-    case AST.ASTKind.Identifier:
-      return evalIdentifier(node, environment);
-
-    case AST.ASTKind.BlockStatement:
-      return evalStatements(node.statements, environment);
-
-    case AST.ASTKind.ExpressionStatement:
-      return evaluate(node.expression, environment);
-
-    case AST.ASTKind.IfExpression:
-      return evalIfExpression(node, environment);
-
-    case AST.ASTKind.CallExpression:
-      return evalCallExpression(node, environment);
-
-    case AST.ASTKind.InfixExpression:
-      return evalInfixExpression(node, environment);
-
-    case AST.ASTKind.PrefixExpression:
-      return evalPrefixExpression(node, environment);
-
-    case AST.ASTKind.MatchExpression:
-      return evalMatchExpression(node, environment);
-
-    case AST.ASTKind.FunctionThread:
-      return evalFunctionThread(node, environment);
-
-    case AST.ASTKind.FunctionComposition:
-      return evalFunctionComposition(node, environment);
-
-    case AST.ASTKind.SpreadElement:
-      return evaluate(node.value, environment);
-
-    default:
-      return new O.Err(`Unknown node type: ${node.kind}`);
+  } catch (err) {
+    return new O.Err(err.message, node);
   }
 };

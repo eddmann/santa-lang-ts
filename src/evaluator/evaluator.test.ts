@@ -89,7 +89,7 @@ test('unable to declare variable more than once', () => {
 
   const result = doEvaluate(source);
 
-  expect(result).toEqual(new O.Err('Variable x has already been declared'));
+  expect(result.inspect()).toEqual('Runtime error: Variable x has already been declared');
 });
 
 test('unable to assign variable which is not mutable', () => {
@@ -97,7 +97,7 @@ test('unable to assign variable which is not mutable', () => {
 
   const result = doEvaluate(source);
 
-  expect(result).toEqual(new O.Err('Variable x is not mutable'));
+  expect(result.inspect()).toEqual('Runtime error: Variable x is not mutable');
 });
 
 test('unable to assign variable which has not been declared', () => {
@@ -105,7 +105,7 @@ test('unable to assign variable which has not been declared', () => {
 
   const result = doEvaluate(source);
 
-  expect(result).toEqual(new O.Err('Variable x has not been declared'));
+  expect(result.inspect()).toEqual('Runtime error: Variable x has not been declared');
 });
 
 test('let list destructing', () => {
@@ -280,7 +280,7 @@ test('function is unable to access parent variables declared after self', () => 
 
   const result = doEvaluate(source);
 
-  expect(result).toEqual(new O.Err('Identifier not found: total'));
+  expect(result.inspect()).toEqual('Runtime error: Identifier not found: total');
 });
 
 test('enclosed function variable state', () => {

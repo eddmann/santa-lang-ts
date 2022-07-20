@@ -138,7 +138,7 @@ const assert: O.BuiltinFuncTemplate = {
 
     for (const predicate of assertions) {
       if (!isTruthy(predicate)) {
-        return new O.Err('Assertion failed' + (message ? ': ' + message : ''));
+        return new Error('Assertion failed' + (message ? ': ' + message : ''));
       }
     }
 

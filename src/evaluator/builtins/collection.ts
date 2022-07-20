@@ -94,7 +94,7 @@ const reduce_s: O.BuiltinFuncTemplate = {
       return result.get(new O.Integer(0));
     }
 
-    return new O.Err('');
+    throw new Error('reduce_s expects the result to be a List');
   },
 };
 

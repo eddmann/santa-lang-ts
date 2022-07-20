@@ -7,7 +7,7 @@ import { BreakValue } from './function';
 export class Bool implements ValueObj {
   constructor(public value: boolean) {}
 
-  public static parse(value: Obj): Bool | Err {
+  public static parse(value: Obj): Bool {
     if (value instanceof Bool) {
       return value;
     }
@@ -61,7 +61,7 @@ export class Nil implements ValueObj {
 export class Integer implements ValueObj {
   constructor(public value: number) {}
 
-  public static parse(value: Obj): Integer | Err {
+  public static parse(value: Obj): Integer {
     if (value instanceof Bool) {
       return new Integer(value === TRUE ? 1 : 0);
     }
@@ -82,7 +82,9 @@ export class Integer implements ValueObj {
       return new Integer(parseInt(value.value, 10));
     }
 
-    return new Err('');
+    throw new Error(
+      `Parsing ${value.constructor.name} as a ${this.constructor.name} is not supported`
+    );
   }
 
   public inspect(): string {
@@ -97,7 +99,7 @@ export class Integer implements ValueObj {
     return that instanceof Integer && this.value === that.value;
   }
 
-  public add(that: Obj): Integer | Err {
+  public add(that: Obj): Integer {
     if (that instanceof Integer) {
       return new Integer(this.value + that.value);
     }
@@ -106,10 +108,10 @@ export class Integer implements ValueObj {
       return new Integer(Math.floor(this.value + that.value));
     }
 
-    return new Err('');
+    throw new Error(`${this.constructor.name} + ${that.constructor.name} is not supported`);
   }
 
-  public subtract(that: Obj): Integer | Err {
+  public subtract(that: Obj): Integer {
     if (that instanceof Integer) {
       return new Integer(this.value - that.value);
     }
@@ -118,10 +120,10 @@ export class Integer implements ValueObj {
       return new Integer(Math.floor(this.value - that.value));
     }
 
-    return new Err('');
+    throw new Error(`${this.constructor.name} - ${that.constructor.name} is not supported`);
   }
 
-  public multiply(that: Obj): Integer | Err {
+  public multiply(that: Obj): Integer {
     if (that instanceof Integer) {
       return new Integer(this.value * that.value);
     }
@@ -130,10 +132,10 @@ export class Integer implements ValueObj {
       return new Integer(Math.floor(this.value * that.value));
     }
 
-    return new Err('');
+    throw new Error(`${this.constructor.name} * ${that.constructor.name} is not supported`);
   }
 
-  public divide(that: Obj): Integer | Err {
+  public divide(that: Obj): Integer {
     if (that instanceof Integer) {
       return new Integer(Math.floor(this.value / that.value));
     }
@@ -142,10 +144,10 @@ export class Integer implements ValueObj {
       return new Integer(Math.floor(this.value / that.value));
     }
 
-    return new Err('');
+    throw new Error(`${this.constructor.name} / ${that.constructor.name} is not supported`);
   }
 
-  public modulo(that: Obj): Integer | Err {
+  public modulo(that: Obj): Integer {
     if (that instanceof Integer) {
       return new Integer(this.value % that.value);
     }
@@ -154,10 +156,10 @@ export class Integer implements ValueObj {
       return new Integer(Math.floor(this.value % that.value));
     }
 
-    return new Err('');
+    throw new Error(`${this.constructor.name} % ${that.constructor.name} is not supported`);
   }
 
-  public lessThan(that: Obj): Bool | Err {
+  public lessThan(that: Obj): Bool {
     if (that instanceof Integer) {
       return this.value < that.value ? TRUE : FALSE;
     }
@@ -166,10 +168,10 @@ export class Integer implements ValueObj {
       return this.value < that.value ? TRUE : FALSE;
     }
 
-    return new Err('');
+    throw new Error(`${this.constructor.name} < ${that.constructor.name} is not supported`);
   }
 
-  public greaterThan(that: Obj): Bool | Err {
+  public greaterThan(that: Obj): Bool {
     if (that instanceof Integer) {
       return this.value > that.value ? TRUE : FALSE;
     }
@@ -178,7 +180,7 @@ export class Integer implements ValueObj {
       return this.value > that.value ? TRUE : FALSE;
     }
 
-    return new Err('');
+    throw new Error(`${this.constructor.name} > ${that.constructor.name} is not supported`);
   }
 
   public negative(): Integer {
@@ -193,7 +195,7 @@ export class Integer implements ValueObj {
 export class Decimal implements ValueObj {
   constructor(public value: number) {}
 
-  public static parse(value: Obj): Decimal | Err {
+  public static parse(value: Obj): Decimal {
     if (value instanceof Bool) {
       return new Decimal(value === TRUE ? 1 : 0);
     }
@@ -214,7 +216,9 @@ export class Decimal implements ValueObj {
       return new Decimal(parseFloat(value.value));
     }
 
-    return new Err('');
+    throw new Error(
+      `Parsing ${value.constructor.name} as a ${this.constructor.name} is not supported`
+    );
   }
 
   public inspect(): string {
@@ -229,7 +233,7 @@ export class Decimal implements ValueObj {
     return that instanceof Decimal && this.value === that.value;
   }
 
-  public add(that: Obj): Decimal | Err {
+  public add(that: Obj): Decimal {
     if (that instanceof Integer) {
       return new Decimal(this.value + that.value);
     }
@@ -238,10 +242,10 @@ export class Decimal implements ValueObj {
       return new Decimal(this.value + that.value);
     }
 
-    return new Err('');
+    throw new Error(`${this.constructor.name} + ${that.constructor.name} is not supported`);
   }
 
-  public subtract(that: Obj): Decimal | Err {
+  public subtract(that: Obj): Decimal {
     if (that instanceof Integer) {
       return new Decimal(this.value - that.value);
     }
@@ -250,10 +254,10 @@ export class Decimal implements ValueObj {
       return new Decimal(this.value - that.value);
     }
 
-    return new Err('');
+    throw new Error(`${this.constructor.name} / ${that.constructor.name} is not supported`);
   }
 
-  public multiply(that: Obj): Decimal | Err {
+  public multiply(that: Obj): Decimal {
     if (that instanceof Integer) {
       return new Decimal(this.value * that.value);
     }
@@ -262,10 +266,10 @@ export class Decimal implements ValueObj {
       return new Decimal(this.value * that.value);
     }
 
-    return new Err('');
+    throw new Error(`${this.constructor.name} * ${that.constructor.name} is not supported`);
   }
 
-  public divide(that: Obj): Decimal | Err {
+  public divide(that: Obj): Decimal {
     if (that instanceof Integer) {
       return new Decimal(this.value / that.value);
     }
@@ -274,10 +278,10 @@ export class Decimal implements ValueObj {
       return new Decimal(this.value / that.value);
     }
 
-    return new Err('');
+    throw new Error(`${this.constructor.name} / ${that.constructor.name} is not supported`);
   }
 
-  public modulo(that: Obj): Decimal | Err {
+  public modulo(that: Obj): Decimal {
     if (that instanceof Integer) {
       return new Decimal(this.value % that.value);
     }
@@ -286,10 +290,10 @@ export class Decimal implements ValueObj {
       return new Decimal(this.value % that.value);
     }
 
-    return new Err('');
+    throw new Error(`${this.constructor.name} % ${that.constructor.name} is not supported`);
   }
 
-  public lessThan(that: Obj): Bool | Err {
+  public lessThan(that: Obj): Bool {
     if (that instanceof Integer) {
       return this.value < that.value ? TRUE : FALSE;
     }
@@ -298,10 +302,10 @@ export class Decimal implements ValueObj {
       return this.value < that.value ? TRUE : FALSE;
     }
 
-    return new Err('');
+    throw new Error(`${this.constructor.name} < ${that.constructor.name} is not supported`);
   }
 
-  public greaterThan(that: Obj): Bool | Err {
+  public greaterThan(that: Obj): Bool {
     if (that instanceof Integer) {
       return this.value > that.value ? TRUE : FALSE;
     }
@@ -310,7 +314,7 @@ export class Decimal implements ValueObj {
       return this.value > that.value ? TRUE : FALSE;
     }
 
-    return new Err('');
+    throw new Error(`${this.constructor.name} > ${that.constructor.name} is not supported`);
   }
 
   public negative(): Decimal {
@@ -325,7 +329,7 @@ export class Decimal implements ValueObj {
 export class Str implements ValueObj {
   constructor(public value: string) {}
 
-  public static parse(value: Obj): Str | Err {
+  public static parse(value: Obj): Str {
     if (value instanceof Str) {
       return value;
     }
@@ -345,7 +349,7 @@ export class Str implements ValueObj {
     return that instanceof Str && this.value === that.value;
   }
 
-  public get(index: Obj): Obj | Err {
+  public get(index: Obj): Obj {
     if (index instanceof Integer) {
       const char = this.value[index.value < 0 ? this.value.length + index.value : index.value];
 
@@ -364,36 +368,34 @@ export class Str implements ValueObj {
       return new Str(this.value.substring(index.start, index.end + 1));
     }
 
-    return new Err(
-      `Unsupported 'get' operation ${this.constructor.name}, ${index.constructor.name}`
-    );
+    throw new Error(`${this.constructor.name}[${index.constructor.name}] is not supported`);
   }
 
   public size(): Err | Integer {
     return new Integer(this.value.length);
   }
 
-  public contains(subject: Obj): Bool | Err {
+  public contains(subject: Obj): Bool {
     return subject instanceof Str && this.value.includes(subject.value) ? TRUE : FALSE;
   }
 
-  public first(): Obj | Nil | Err {
+  public first(): Obj | Nil {
     return new Str(this.value[0] || '');
   }
 
-  public rest(): Str | Err {
+  public rest(): Str {
     return new Str(this.value.substring(1));
   }
 
-  public last(): Obj | Nil | Err {
+  public last(): Obj | Nil {
     return new Str(this.value[this.value.length - 1] || '');
   }
 
-  public take(total: Integer): Str | Err {
+  public take(total: Integer): Str {
     return new Str(this.value.substring(0, total.value));
   }
 
-  public skip(total: Integer): Str | Err {
+  public skip(total: Integer): Str {
     return new Str(this.value.substring(total.value));
   }
 
@@ -415,7 +417,7 @@ export class Str implements ValueObj {
     }
   }
 
-  public zip(collections: List): List | Err {
+  public zip(collections: List): List {
     return new List(
       this.getInteralSeq().zipWith(
         (...values) => new List(values),
@@ -428,7 +430,7 @@ export class Str implements ValueObj {
     return Immutable.List([...this.value]).map(v => new Str(v));
   }
 
-  public chunk(size: Integer): List | Err {
+  public chunk(size: Integer): List {
     const chars = this.getInteralSeq();
 
     return new List(
@@ -438,7 +440,7 @@ export class Str implements ValueObj {
     );
   }
 
-  public map(fn: (v: Obj) => Obj | Err): List | Err {
+  public map(fn: (v: Obj) => Obj | Err): List {
     try {
       return new List(
         this.getInteralSeq().map(v => {
@@ -456,7 +458,7 @@ export class Str implements ValueObj {
     }
   }
 
-  public filter(fn: (v: Obj) => Obj): List | Err {
+  public filter(fn: (v: Obj) => Obj): List {
     try {
       return new List(
         this.getInteralSeq().filter(v => {
@@ -474,7 +476,7 @@ export class Str implements ValueObj {
     }
   }
 
-  public reduce(fn: (acc: Obj, v: Obj) => Obj, initial: Obj): Obj | Err {
+  public reduce(fn: (acc: Obj, v: Obj) => Obj, initial: Obj): Obj {
     try {
       return this.getInteralSeq().reduce((acc, v) => {
         const result = fn(acc, v);
@@ -494,7 +496,7 @@ export class Str implements ValueObj {
     }
   }
 
-  public each(fn: (v: Obj) => Nil | Err): Nil | Err {
+  public each(fn: (v: Obj) => Nil | Err): Nil {
     try {
       this.getInteralSeq().forEach(v => {
         const result = fn(v);
@@ -514,22 +516,20 @@ export class Str implements ValueObj {
     }
   }
 
-  public add(that: Obj): Str | Err {
+  public add(that: Obj): Str {
     const parsed = Str.parse(that);
-
-    if (parsed instanceof Err) {
-      return parsed;
-    }
 
     return new Str(this.value + parsed.value);
   }
 
-  public split(delimiter: Obj): List | Err {
+  public split(delimiter: Obj): List {
     if (delimiter instanceof Str) {
       return new List(this.value.split(delimiter.value).map(v => new Str(v)));
     }
 
-    return new Err('');
+    throw new Error(
+      `split(${delimiter.constructor.name}, ${this.constructor.name}) is not supported`
+    );
   }
 }
 

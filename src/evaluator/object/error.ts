@@ -1,9 +1,10 @@
+import { AST } from '../../parser';
 import { Obj } from './type';
 
 export class Err implements Obj {
-  constructor(public message: string) {}
+  constructor(public message: string, public node: AST.Node) {}
 
   public inspect(): string {
-    return `Error: ${this.message}`;
+    return `Runtime error: ${this.message}`;
   }
 }

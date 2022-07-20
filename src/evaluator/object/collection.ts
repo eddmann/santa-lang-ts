@@ -23,7 +23,7 @@ export class List implements ValueObj {
     return that instanceof List && this.items.equals(that.items);
   }
 
-  public get(index: Obj): Obj | Err {
+  public get(index: Obj): Obj {
     if (index instanceof Integer) {
       return this.items.get(index.value) || NIL;
     }
@@ -32,7 +32,7 @@ export class List implements ValueObj {
       return new List(this.items.slice(index.start, index.end));
     }
 
-    return new Err(
+    throw new Error(
       `Unsupported 'get' operation ${this.constructor.name}, ${index.constructor.name}`
     );
   }
@@ -41,27 +41,27 @@ export class List implements ValueObj {
     return new Integer(this.items.size);
   }
 
-  public contains(subject: Obj): Bool | Err {
+  public contains(subject: Obj): Bool {
     return this.items.contains(subject) ? TRUE : FALSE;
   }
 
-  public first(): Obj | Nil | Err {
+  public first(): Obj | Nil {
     return this.items.first() || NIL;
   }
 
-  public rest(): List | Err {
+  public rest(): List {
     return new List(this.items.rest());
   }
 
-  public last(): Obj | Nil | Err {
+  public last(): Obj | Nil {
     return this.items.last() || NIL;
   }
 
-  public take(total: Integer): List | Err {
+  public take(total: Integer): List {
     return new List(this.items.take(total.value));
   }
 
-  public skip(total: Integer): List | Err {
+  public skip(total: Integer): List {
     return new List(this.items.skip(total.value));
   }
 
@@ -83,7 +83,7 @@ export class List implements ValueObj {
     }
   }
 
-  public zip(collections: List): List | Err {
+  public zip(collections: List): List {
     return new List(
       this.items.zipWith(
         (...values) => new List(values),
@@ -92,7 +92,7 @@ export class List implements ValueObj {
     );
   }
 
-  public map(fn: (v: Obj) => Obj | Err): List | Err {
+  public map(fn: (v: Obj) => Obj | Err): List {
     try {
       return new List(
         this.items.map(v => {
@@ -110,7 +110,7 @@ export class List implements ValueObj {
     }
   }
 
-  public filter(fn: (v: Obj) => Obj): List | Err {
+  public filter(fn: (v: Obj) => Obj): List {
     try {
       return new List(
         this.items.filter(v => {
@@ -128,7 +128,7 @@ export class List implements ValueObj {
     }
   }
 
-  public reduce(fn: (acc: Obj, v: Obj) => Obj, initial: Obj): Obj | Err {
+  public reduce(fn: (acc: Obj, v: Obj) => Obj, initial: Obj): Obj {
     try {
       return this.items.reduce((acc, v) => {
         const result = fn(acc, v);
@@ -148,7 +148,7 @@ export class List implements ValueObj {
     }
   }
 
-  public each(fn: (v: Obj) => Nil | Err): Nil | Err {
+  public each(fn: (v: Obj) => Nil | Err): Nil {
     try {
       this.items.forEach(v => {
         const result = fn(v);
@@ -168,23 +168,23 @@ export class List implements ValueObj {
     }
   }
 
-  public add(that: Obj): List | Err {
+  public add(that: Obj): List {
     if (that instanceof List) {
       return new List(this.items.concat(that.items));
     }
 
-    return new Err('');
+    throw new Error(`${this.constructor.name} + ${that.constructor.name} is not supported`);
   }
 
-  public subtract(that: Obj): List | Err {
+  public subtract(that: Obj): List {
     if (that instanceof List) {
       return new List(this.items.filter(item => !that.items.contains(item)));
     }
 
-    return new Err('');
+    throw new Error(`${this.constructor.name} - ${that.constructor.name} is not supported`);
   }
 
-  public multiply(that: Obj): List | Err {
+  public multiply(that: Obj): List {
     if (that instanceof Integer) {
       const items = this.items.asMutable();
 
@@ -196,10 +196,10 @@ export class List implements ValueObj {
       return new List(items.asImmutable());
     }
 
-    return new Err('');
+    throw new Error(`${this.constructor.name} * ${that.constructor.name} is not supported`);
   }
 
-  public chunk(size: Integer): List | Err {
+  public chunk(size: Integer): List {
     return new List(
       Immutable.Range(0, this.items.count(), size.value)
         .map(start => new List(this.items.slice(start, start + size.value)))
@@ -237,7 +237,7 @@ export class Hash {
     return that instanceof Hash && this.items.equals(that.items);
   }
 
-  public get(index: Obj): Obj | Err {
+  public get(index: Obj): Obj {
     return this.items.get(index) || NIL;
   }
 
@@ -245,7 +245,7 @@ export class Hash {
     return new Integer(this.items.size);
   }
 
-  public contains(subject: Obj): Bool | Err {
+  public contains(subject: Obj): Bool {
     return this.items.contains(subject) ? TRUE : FALSE;
   }
 
@@ -267,7 +267,7 @@ export class Hash {
     }
   }
 
-  public map(fn: (v: Obj, k: Obj) => Obj | Err): Hash | Err {
+  public map(fn: (v: Obj, k: Obj) => Obj | Err): Hash {
     try {
       return new Hash(
         this.items.map((v, k) => {
@@ -285,7 +285,7 @@ export class Hash {
     }
   }
 
-  public filter(fn: (v: Obj, k: Obj) => Obj): Hash | Err {
+  public filter(fn: (v: Obj, k: Obj) => Obj): Hash {
     try {
       return new Hash(
         this.items.filter((v, k) => {
@@ -303,7 +303,7 @@ export class Hash {
     }
   }
 
-  public reduce(fn: (acc: Obj, v: Obj, k: Obj) => Obj, initial: Obj): Obj | Err {
+  public reduce(fn: (acc: Obj, v: Obj, k: Obj) => Obj, initial: Obj): Obj {
     try {
       return this.items.reduce((acc, v, k) => {
         const result = fn(acc, v, k);
@@ -323,7 +323,7 @@ export class Hash {
     }
   }
 
-  public each(fn: (v: Obj, k: Obj) => Nil | Err): Nil | Err {
+  public each(fn: (v: Obj, k: Obj) => Nil | Err): Nil {
     try {
       this.items.forEach((v, k) => {
         const result = fn(v, k);
@@ -343,15 +343,15 @@ export class Hash {
     }
   }
 
-  public add(that: Obj): Hash | Err {
+  public add(that: Obj): Hash {
     if (that instanceof Hash) {
       return new Hash(this.items.concat(that.items));
     }
 
-    return new Err('');
+    throw new Error(`${this.constructor.name} + ${that.constructor.name} is not supported`);
   }
 
-  public subtract(that: Obj): Hash | Err {
+  public subtract(that: Obj): Hash {
     if (that instanceof Set) {
       const items = this.items.asMutable();
 
@@ -362,7 +362,7 @@ export class Hash {
       return new Hash(items.toMap());
     }
 
-    return new Err('');
+    throw new Error(`${this.constructor.name} - ${that.constructor.name} is not supported`);
   }
 }
 
@@ -385,7 +385,7 @@ export class Set {
     return that instanceof Set && this.items.equals(that.items);
   }
 
-  public get(index: Obj): Obj | Err {
+  public get(index: Obj): Obj {
     return this.items.get(index) || NIL;
   }
 
@@ -393,7 +393,7 @@ export class Set {
     return new Integer(this.items.size);
   }
 
-  public contains(subject: Obj): Bool | Err {
+  public contains(subject: Obj): Bool {
     return this.items.contains(subject) ? TRUE : FALSE;
   }
 
@@ -415,7 +415,7 @@ export class Set {
     }
   }
 
-  public map(fn: (v: Obj) => Obj | Err): Set | Err {
+  public map(fn: (v: Obj) => Obj | Err): Set {
     try {
       return new Set(
         this.items.map(v => {
@@ -433,7 +433,7 @@ export class Set {
     }
   }
 
-  public filter(fn: (v: Obj) => Obj): Set | Err {
+  public filter(fn: (v: Obj) => Obj): Set {
     try {
       return new Set(
         this.items.filter(v => {
@@ -451,7 +451,7 @@ export class Set {
     }
   }
 
-  public reduce(fn: (acc: Obj, v: Obj) => Obj, initial: Obj): Obj | Err {
+  public reduce(fn: (acc: Obj, v: Obj) => Obj, initial: Obj): Obj {
     try {
       return this.items.reduce((acc, v) => {
         const result = fn(acc, v);
@@ -471,7 +471,7 @@ export class Set {
     }
   }
 
-  public each(fn: (v: Obj) => Nil | Err): Nil | Err {
+  public each(fn: (v: Obj) => Nil | Err): Nil {
     try {
       this.items.forEach(v => {
         const result = fn(v);
@@ -491,20 +491,20 @@ export class Set {
     }
   }
 
-  public add(that: Obj): Set | Err {
+  public add(that: Obj): Set {
     if (that instanceof Set) {
       return new Set(this.items.concat(that.items));
     }
 
-    return new Err('');
+    throw new Error(`${this.constructor.name} + ${that.constructor.name} is not supported`);
   }
 
-  public subtract(that: Obj): Set | Err {
+  public subtract(that: Obj): Set {
     if (that instanceof Set) {
       return new Set(this.items.subtract(that.items));
     }
 
-    return new Err('');
+    throw new Error(`${this.constructor.name} - ${that.constructor.name} is not supported`);
   }
 }
 
@@ -546,7 +546,7 @@ export class Range implements ValueObj {
     return that instanceof Range && this.items.equals(that.items);
   }
 
-  public get(index: Obj): Obj | Err {
+  public get(index: Obj): Obj {
     if (index instanceof Integer) {
       return this.items.get(index.value) || NIL;
     }
@@ -555,7 +555,7 @@ export class Range implements ValueObj {
       return new Range(this.start, this.end, this.items.slice(index.start, index.end));
     }
 
-    return new Err(
+    throw new Error(
       `Unsupported 'get' operation ${this.constructor.name}, ${index.constructor.name}`
     );
   }
@@ -570,31 +570,31 @@ export class Range implements ValueObj {
     return new Integer(this.items.size);
   }
 
-  public contains(subject: Obj): Bool | Err {
+  public contains(subject: Obj): Bool {
     return subject instanceof Integer && this.items.contains(subject) ? TRUE : FALSE;
   }
 
-  public first(): Obj | Nil | Err {
+  public first(): Obj | Nil {
     return this.items.first() || NIL;
   }
 
-  public rest(): Range | Err {
+  public rest(): Range {
     return new Range(this.start, this.end, this.items.rest());
   }
 
-  public last(): Obj | Nil | Err {
+  public last(): Obj | Nil {
     if (this.end === Infinity) {
-      return new Err('Unable to find last item within an infinite range');
+      throw new Error('Unable to find last item within an infinite range');
     }
 
     return this.items.last() || NIL;
   }
 
-  public take(total: Integer): Range | Err {
+  public take(total: Integer): Range {
     return new Range(this.start, 0, this.items.take(total.value));
   }
 
-  public skip(total: Integer): Range | Err {
+  public skip(total: Integer): Range {
     return new Range(this.start, this.end, this.items.skip(total.value));
   }
 
@@ -616,7 +616,7 @@ export class Range implements ValueObj {
     }
   }
 
-  public zip(collections: List): List | Range | Err {
+  public zip(collections: List): List | Range {
     const zipped = this.items.zipWith(
       (...values) => new List(values),
       ...collections.getInteralSeq().map(collection => collection.getInteralSeq())
@@ -625,7 +625,7 @@ export class Range implements ValueObj {
     return zipped.size === Infinity ? new Range(this.start, Infinity, zipped) : new List(zipped);
   }
 
-  public map(fn: (v: Obj) => Obj | Err): Range | Err {
+  public map(fn: (v: Obj) => Obj | Err): Range {
     try {
       return new Range(
         this.start,
@@ -645,7 +645,7 @@ export class Range implements ValueObj {
     }
   }
 
-  public filter(fn: (v: Obj) => Obj): Range | Err {
+  public filter(fn: (v: Obj) => Obj): Range {
     try {
       return new Range(
         this.start,
@@ -665,9 +665,9 @@ export class Range implements ValueObj {
     }
   }
 
-  public reduce(fn: (acc: Obj, v: Obj) => Obj, initial: Obj): Obj | Err {
+  public reduce(fn: (acc: Obj, v: Obj) => Obj, initial: Obj): Obj {
     if (this.end === Infinity) {
-      return new Err('Unable to reduce an infinite range');
+      throw new Error('Unable to reduce an infinite range');
     }
 
     try {
@@ -689,7 +689,7 @@ export class Range implements ValueObj {
     }
   }
 
-  public each(fn: (v: Obj) => Nil | Err): Nil | Err {
+  public each(fn: (v: Obj) => Nil | Err): Nil {
     try {
       if (this.end === Infinity) {
         this.items.size = 0;

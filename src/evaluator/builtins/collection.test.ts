@@ -140,7 +140,7 @@ describe('reduce', () => {
     },
     {
       source: 'reduce(+, 0, 1..)',
-      expected: 'Error: Unable to reduce an infinite range',
+      expected: 'Runtime error: Unable to reduce an infinite range',
       description: 'unbounded range',
     },
   ];
@@ -472,7 +472,7 @@ describe('last', () => {
     },
     {
       source: 'last(1..)',
-      expected: 'Error: Unable to find last item within an infinite range',
+      expected: 'Runtime error: Unable to find last item within an infinite range',
       description: 'range',
     },
     {

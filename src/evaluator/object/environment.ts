@@ -1,6 +1,5 @@
 import { Obj } from './type';
 import { Section } from './section';
-import { Err } from './error';
 
 export class Environment {
   sections: { [key: string]: Section[] };
@@ -29,7 +28,7 @@ export class Environment {
 
   public declareVariable(name: string, value: Obj, isMutable: boolean): Obj {
     if (this.variables[name]) {
-      return new Err(`Variable ${name} has already been declared`);
+      throw new Error(`Variable ${name} has already been declared`);
     }
 
     this.variables[name] = { value, isMutable };
@@ -40,7 +39,7 @@ export class Environment {
   public setVariable(name: string, value: Obj): Obj {
     if (this.variables[name]) {
       if (!this.variables[name].isMutable) {
-        return new Err(`Variable ${name} is not mutable`);
+        throw new Error(`Variable ${name} is not mutable`);
       }
 
       this.variables[name].value = value;
@@ -52,7 +51,7 @@ export class Environment {
       return this.parent.setVariable(name, value);
     }
 
-    return new Err(`Variable ${name} has not been declared`);
+    throw new Error(`Variable ${name} has not been declared`);
   }
 
   public addSection(name: string, value: Section): Section {
