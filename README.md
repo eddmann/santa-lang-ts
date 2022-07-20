@@ -134,6 +134,10 @@ let sum = |..xs| reduce(+, 0, xs);
 sum(1, 2, 3) == sum(..b) // 6
 ```
 
+### Detailed error handling
+
+<img src="docs/error.png" alt="santa-lang" width="400px" />
+
 ### Reimplementing `map`, `filter` and `reduce`
 
 These fundamental functions come part of the standard library, however, they can be reimplemented on-top of the language itself like so:
