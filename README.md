@@ -16,6 +16,8 @@ That way if I grow to dislike this language, I only have myself to blame!
 
 Welcome `santa-lang`, my [tree-walking interpreted](<https://en.wikipedia.org/wiki/Interpreter_(computing)>) programming language designed to help tackle Advent of Code problems.
 
+<p align="center"><img src="docs/aoc.png" alt="AoC template runner" width="500px" /></p>
+
 ## Examples
 
 ### Types
