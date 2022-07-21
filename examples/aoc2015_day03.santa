@@ -1,0 +1,43 @@
+input: read("aoc2015_day03.input")
+
+let move = |direction, [x, y]| match direction {
+  "^" { [x + 1, y] }
+  "v" { [x - 1, y] }
+  ">" { [x, y + 1] }
+  "<" { [x, y - 1] }
+};
+
+let deliver_presents = reduce_s(
+  |[houses, position], direction| {
+    let next_pos = move(direction, position)
+    return [houses + {next_pos}, next_pos];
+  },
+  [{[0, 0]}, [0, 0]]
+);
+
+part_one: {
+  input |> deliver_presents |> size
+}
+
+part_two: {
+  zip(0.., input)
+    |> reduce(
+      |[santa, robot], [index, direction]| {
+        if (index % 2 == 0) {
+          [santa + [direction], robot]
+        } else {
+          [santa, robot + [direction]]
+        }
+      },
+      [[], []]
+    )
+    |> map(deliver_presents)
+    |> reduce(+, {})
+    |> size
+}
+
+test: {
+  input: "^v^v^v^v^v"
+  part_one: 2
+  part_two: 11
+}

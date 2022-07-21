@@ -1,0 +1,52 @@
+input: read("aoc2016_day01.input")
+
+let compass = [[0, 1], [1, 0], [0, -1], [-1, 0]]
+
+let parse_instructions = split(", ") >> map(|i| [i[0], int(i[1..])]);
+
+let distance = |[x, y]| abs(x) + abs(y);
+
+part_one: {
+  parse_instructions(input)
+    |> reduce_s(
+      |[[x, y], dir], [turn, steps]| {
+        let next_dir = (dir + (if (turn == "R") { 1 } else { -1 })) % size(compass);
+        let [dx, dy] = compass[next_dir];
+        [[x + dx * steps, y + dy * steps], next_dir];
+      }, 
+      [[0, 0], 0]
+    )
+    |> distance
+}
+
+part_two: {
+  parse_instructions(input)
+    |> reduce_s(
+      |[[x, y], dir, visited], [turn, steps]| {
+        let next_dir = (dir + (if (turn == "R") { 1 } else { -1 })) % size(compass);
+        let [dx, dy] = compass[next_dir];
+
+        let path = 1..steps
+          |> reduce(
+            |path, steps| path + {[x + dx * steps, y + dy * steps]}, 
+            {}
+          );
+
+        let already_visited = find(visited `contains` _, path);
+
+        if (already_visited) {
+          break [already_visited];
+        }
+        
+        return [[x + dx * steps, y + dy * steps], next_dir, visited + path];
+      },
+      [[0, 0], 0, {}]
+    )
+    |> distance
+}
+
+test: {
+  input: "R8, R4, R4, R8"
+  part_one: 8
+  part_two: 4
+}

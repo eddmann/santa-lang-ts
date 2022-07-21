@@ -1,0 +1,29 @@
+input: read("aoc2020_day01.input")
+
+let parse_report = lines >> map(int)
+
+part_one: {
+  parse_report(input)
+    |> combinations(2)
+    |> find(|[x, y]| x + y == 2020)
+    |> reduce(*, 1)
+}
+
+part_two: {
+  parse_report(input)
+    |> combinations(3)
+    |> find(|[x, y, z]| x + y + z == 2020)
+    |> reduce(*, 1)
+}
+
+test: {
+  input: "1721
+979
+366
+299
+675
+1456"
+
+  part_one: 514579
+  part_two: 241861950
+}

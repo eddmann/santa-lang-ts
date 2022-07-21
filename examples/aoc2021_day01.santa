@@ -1,0 +1,28 @@
+input: read("aoc2021_day01.input")
+
+let parse_measurements = lines >> map(int)
+
+part_one: {
+  let measurements = parse_measurements(input);
+
+  zip(measurements, measurements[1..])
+    |> filter(|[a, b]| a < b)
+    |> size
+}
+
+part_two: {
+  let measurements = parse_measurements(input);
+
+  let windows = zip(measurements, measurements[1..], measurements[2..])
+    |> map(reduce(+, 0))
+
+  zip(windows, windows[1..])
+    |> filter(|[a, b]| a < b)
+    |> size
+}
+
+test: {
+  input: "199\n200\n208\n210\n200\n207\n240\n269\n260\n263"
+  part_one: 7
+  part_two: 5
+}
