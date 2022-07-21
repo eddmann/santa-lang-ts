@@ -1,0 +1,38 @@
+input: read("aoc2021_day02.input")
+
+let parse_course = lines >> map(|line| {
+  let [move, steps] = split(" ", line); 
+  [move, int(steps)]
+});
+
+part_one: {
+  parse_course(input) 
+    |> reduce(
+      |[horizontal, depth], action| match action {
+        ["forward", steps] { [horizontal + steps, depth] }
+        ["up", steps] { [horizontal, depth - steps] }
+        ["down", steps] { [horizontal, depth + steps] }
+      },
+      [0, 0]
+    )
+    |> |[x, y]| x * y
+}
+
+part_two: {
+  parse_course(input) 
+    |> reduce(
+      |[horizontal, depth, aim], action| match action {
+        ["forward", steps] { [horizontal + steps, depth + aim * steps, aim] }
+        ["up", steps] { [horizontal, depth, aim - steps] }
+        ["down", steps] { [horizontal, depth, aim + steps] }
+      },
+      [0, 0, 0]
+    )
+    |> |[x, y]| x * y
+}
+
+test: {
+  input: "forward 5\ndown 5\nforward 8\nup 3\ndown 8\nforward 2"
+  part_one: 150
+  part_two: 900
+}
