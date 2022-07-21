@@ -265,6 +265,22 @@ const rest: O.BuiltinFuncTemplate = {
   },
 };
 
+const combinations: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'size',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment.getVariable('collection').combinations(environment.getVariable('size'));
+  },
+};
+
 export default {
   map,
   filter,
@@ -281,4 +297,5 @@ export default {
   first,
   last,
   rest,
+  combinations,
 };

@@ -207,6 +207,27 @@ export class List implements ValueObj {
     );
   }
 
+  public combinations(size: Integer): List {
+    const recur = (size: number, list: Immutable.List): Immutable.List => {
+      if (size < 1) {
+        return new Immutable.List([new Immutable.List()]);
+      }
+
+      if (list.size === 0) {
+        return new Immutable.List();
+      }
+
+      const first = list.first();
+      const rest = list.rest();
+
+      return recur(size - 1, rest)
+        .map(list => list.push(first))
+        .concat(recur(size, rest));
+    };
+
+    return new List(recur(size.value, this.items).map(v => new List(v)));
+  }
+
   public getInteralSeq(): Immutable.Seq {
     return this.items;
   }

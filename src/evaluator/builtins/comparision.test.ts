@@ -214,6 +214,42 @@ describe('negation !', () => {
   });
 });
 
+describe('combinations', () => {
+  const cases = [
+    {
+      source: 'combinations(1, [])',
+      expected: '[]',
+      description: 'empty list',
+    },
+    {
+      source: 'combinations(1, [1, 2, 3, 4, 5])',
+      expected: '[[1], [2], [3], [4], [5]]',
+      description: 'one element',
+    },
+    {
+      source: 'combinations(2, [1, 2, 3, 4, 5])',
+      expected: '[[2, 1], [3, 1], [4, 1], [5, 1], [3, 2], [4, 2], [5, 2], [4, 3], [5, 3], [5, 4]]',
+      description: 'two elements',
+    },
+    {
+      source: 'combinations(5, [1, 2, 3, 4, 5])',
+      expected: '[[5, 4, 3, 2, 1]]',
+      description: 'one combination',
+    },
+    {
+      source: 'combinations(6, [1, 2, 3, 4, 5])',
+      expected: '[]',
+      description: 'exhausted elements',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
 const doEvaluate = (source: string): string => {
   const lexer = new Lexer(source);
   const parser = new Parser(lexer);
