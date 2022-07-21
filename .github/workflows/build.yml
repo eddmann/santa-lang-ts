@@ -1,0 +1,28 @@
+name: 'Build'
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency: build
+
+jobs:
+  build:
+    name: 'Build'
+    runs-on: ubuntu-20.04
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v3
+      - name: 'Install'
+        run: make install
+      - name: 'Update version'
+        run: |
+          echo "module.exports = { hash: '${GITHUB_SHA::7}' };" > src/version.js
+      - name: 'Build'
+        run: make build
+      - name: 'Upload'
+        uses: actions/upload-artifact@v3
+        with:
+          name: 'santa-cli-macos'
+          path: 'dist/santa-cli-macos'
