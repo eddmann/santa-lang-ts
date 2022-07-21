@@ -120,26 +120,13 @@ const not: O.BuiltinFuncTemplate = {
 const assert: O.BuiltinFuncTemplate = {
   parameters: [
     {
-      kind: AST.ASTKind.RestElement,
-      argument: {
-        kind: AST.ASTKind.Identifier,
-        value: 'assertions',
-      },
+      kind: AST.ASTKind.Identifier,
+      value: 'assertion',
     },
   ],
   body: (environment: O.Environment) => {
-    let assertions = environment.getVariable('assertions').items;
-
-    let message = '';
-    if (assertions.last() instanceof O.Str) {
-      message = assertions.last().value;
-      assertions = assertions.pop();
-    }
-
-    for (const predicate of assertions) {
-      if (!isTruthy(predicate)) {
-        return new Error('Assertion failed' + (message ? ': ' + message : ''));
-      }
+    if (!isTruthy(environment.getVariable('assertion'))) {
+      throw new Error('Assertion failed');
     }
 
     return O.NIL;

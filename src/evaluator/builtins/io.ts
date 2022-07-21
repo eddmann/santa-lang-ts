@@ -30,7 +30,7 @@ const read: O.BuiltinFuncTemplate = {
         require('fs').readFileSync(environment.getVariable('path').value, { encoding: 'utf-8' })
       );
     } catch (err) {
-      return new Error(`Unable to read path: ${environment.getVariable('path').value}`);
+      throw new Error(`Unable to read path: ${environment.getVariable('path').value}`);
     }
   },
 };
