@@ -25,4 +25,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: 'santa-cli-macos'
-          path: 'cli/dist/santa-cli-macos'
+          path: 'src/cli/dist/santa-cli-macos'
