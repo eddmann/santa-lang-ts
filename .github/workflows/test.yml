@@ -9,6 +9,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: 'Install'
-        run: make install
+        run: make lang/install
       - name: 'Test'
-        run: make test
+        run: make lang/test

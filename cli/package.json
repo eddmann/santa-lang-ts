@@ -1,0 +1,29 @@
+{
+  "name": "santa-cli",
+  "version": "0.0.1",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "esbuild": "^0.14.42",
+    "esbuild-jest": "^0.5.0",
+    "jest": "^28.1.0",
+    "santa-lang": "file:../lang"
+  },
+  "devDependencies": {
+    "pkg": "^5.3.1"
+  },
+  "scripts": {
+    "build": "esbuild ./src --bundle --platform=node --target=node16.16.0 --outfile=build/cli.js && pkg build/cli.js --target node16.16.0-macos-x64 --output dist/santa-cli-macos",
+    "test": "jest"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": [
+        "esbuild-jest",
+        {
+          "sourcemap": true
+        }
+      ]
+    }
+  }
+}

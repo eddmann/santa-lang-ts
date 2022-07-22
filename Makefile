@@ -1,17 +1,25 @@
-IMAGE = node:16.15.0-alpine3.15
+IMAGE = node:16.16.0-alpine3.15
 DOCKER = docker run --rm -v $(PWD):/app -w /app
 
-.PHONY: install
-install:
-	@$(DOCKER) $(IMAGE) yarn install --immutable
+.PHONY: lang/install
+lang/install:
+	@$(DOCKER) $(IMAGE) yarn --cwd lang install --immutable
 
-.PHONY: test
-test:
-	@$(DOCKER) $(IMAGE) yarn test
+.PHONY: lang/test
+lang/test:
+	@$(DOCKER) $(IMAGE) yarn --cwd lang test
 
-.PHONY: build
-build:
-	@$(DOCKER) $(IMAGE) yarn build
+.PHONY: cli/install
+cli/install:
+	@$(DOCKER) $(IMAGE) yarn --cwd cli install --immutable
+
+.PHONY: cli/test
+cli/test:
+	@$(DOCKER) $(IMAGE) yarn --cwd cli test
+
+.PHONY: cli/build
+cli/build:
+	@$(DOCKER) $(IMAGE) yarn --cwd cli build
 
 .PHONY: shell
 shell:

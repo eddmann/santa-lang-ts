@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 import { readFileSync, realpathSync } from 'fs';
-import { Lexer } from '../lexer';
-import { AST, Parser } from '../parser';
-import { evaluate, O } from '../evaluator';
+import { Lexer } from 'santa-lang/lexer';
+import { AST, Parser } from 'santa-lang/parser';
+import { evaluate, O } from 'santa-lang/evaluator';
 import printSourcePreview from './printSourcePreview';
 
 const evaluateSection = (
