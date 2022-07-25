@@ -97,7 +97,7 @@ if (input.length > 1) {
   process.exit(1);
 }
 
-const inputResult = evaluate(input[0].section, environment);
+const inputResult = input.length === 1 ? evaluate(input[0].section, environment) : null;
 if (inputResult instanceof O.Err) {
   printSourcePreview(
     filename,
@@ -110,11 +110,15 @@ if (inputResult instanceof O.Err) {
 }
 
 if (!process.argv.includes('-t')) {
-  const partOneResult = evaluateSection(partOne[0], environment, inputResult);
-  console.log('Part 1: \x1b[32m%s\x1b[0m', partOneResult.inspect());
+  if (partOne.length === 1) {
+    const partOneResult = evaluateSection(partOne[0], environment, inputResult);
+    console.log('Part 1: \x1b[32m%s\x1b[0m', partOneResult.inspect());
+  }
 
-  const partTwoResult = evaluateSection(partTwo[0], environment, inputResult);
-  console.log('Part 2: \x1b[32m%s\x1b[0m', partTwoResult.inspect());
+  if (partTwo.length === 1) {
+    const partTwoResult = evaluateSection(partTwo[0], environment, inputResult);
+    console.log('Part 2: \x1b[32m%s\x1b[0m', partTwoResult.inspect());
+  }
 
   process.exit(0);
 }
@@ -186,34 +190,39 @@ environment.getSection('test').forEach((test, idx) => {
     process.exit(1);
   }
 
-  const testInputResult = evaluateSection(testInput[0], testEnvironment);
+  const testInputResult =
+    testInput.length === 1 ? evaluateSection(testInput[0], testEnvironment) : null;
 
-  const partOneExpectedResult = evaluateSection(partOneExpected[0], testEnvironment);
-  const partOneActualResult = evaluateSection(partOne[0], testEnvironment, testInputResult);
+  if (partOneExpected.length === 1 && partOne.length === 1) {
+    const partOneExpectedResult = evaluateSection(partOneExpected[0], testEnvironment);
+    const partOneActualResult = evaluateSection(partOne[0], testEnvironment, testInputResult);
 
-  if (partOneExpectedResult.equals(partOneActualResult)) {
-    console.log('Part 1: %s \x1b[32m✔️\x1b[0m', partOneActualResult.inspect());
-  } else {
-    console.log(
-      'Part 1: %s \x1b[31m✘ (Expected: %s)\x1b[0m',
-      partOneActualResult.inspect(),
-      partOneExpectedResult.inspect()
-    );
-    exitCode = 1;
+    if (partOneExpectedResult.equals(partOneActualResult)) {
+      console.log('Part 1: %s \x1b[32m✔️\x1b[0m', partOneActualResult.inspect());
+    } else {
+      console.log(
+        'Part 1: %s \x1b[31m✘ (Expected: %s)\x1b[0m',
+        partOneActualResult.inspect(),
+        partOneExpectedResult.inspect()
+      );
+      exitCode = 1;
+    }
   }
 
-  const partTwoExpectedResult = evaluateSection(partTwoExpected[0], testEnvironment);
-  const partTwoActualResult = evaluateSection(partTwo[0], testEnvironment, testInputResult);
+  if (partTwoExpected.length === 1 && partTwo.length === 1) {
+    const partTwoExpectedResult = evaluateSection(partTwoExpected[0], testEnvironment);
+    const partTwoActualResult = evaluateSection(partTwo[0], testEnvironment, testInputResult);
 
-  if (partTwoExpectedResult.equals(partTwoActualResult)) {
-    console.log('Part 2: %s \x1b[32m✔️\x1b[0m', partTwoActualResult.inspect());
-  } else {
-    console.log(
-      'Part 2: %s \x1b[31m✘ (Expected: %s)\x1b[0m',
-      partTwoActualResult.inspect(),
-      partTwoExpectedResult.inspect()
-    );
-    exitCode = 1;
+    if (partTwoExpectedResult.equals(partTwoActualResult)) {
+      console.log('Part 2: %s \x1b[32m✔️\x1b[0m', partTwoActualResult.inspect());
+    } else {
+      console.log(
+        'Part 2: %s \x1b[31m✘ (Expected: %s)\x1b[0m',
+        partTwoActualResult.inspect(),
+        partTwoExpectedResult.inspect()
+      );
+      exitCode = 1;
+    }
   }
 });
 
