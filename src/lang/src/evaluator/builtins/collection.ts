@@ -116,6 +116,24 @@ const each: O.BuiltinFuncTemplate = {
   },
 };
 
+const flat_map: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'mapper',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment
+      .getVariable('collection')
+      .flatMap((v, k) => applyFunction(environment.getVariable('mapper'), [v, k]));
+  },
+};
+
 const find: O.BuiltinFuncTemplate = {
   parameters: [
     {
@@ -287,6 +305,7 @@ export default {
   reduce,
   reduce_s,
   each,
+  flat_map,
   find,
   contains,
   size,

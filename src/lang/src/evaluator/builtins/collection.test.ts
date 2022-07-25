@@ -272,6 +272,27 @@ describe('each', () => {
   });
 });
 
+describe('flat_map', () => {
+  const cases = [
+    {
+      source: 'flat_map(_ + 1, [])',
+      expected: '[]',
+      description: 'empty list',
+    },
+    {
+      source: 'flat_map(|v| [v] * 2, [1, 2, 3])',
+      expected: '[1, 1, 2, 2, 3, 3]',
+      description: 'mapped list elements',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
 describe('find', () => {
   const cases = [
     {
