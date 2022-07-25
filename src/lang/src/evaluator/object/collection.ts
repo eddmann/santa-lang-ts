@@ -258,6 +258,24 @@ export class Hash {
     this.items = Immutable.Map(items);
   }
 
+  public static from(collection: Obj): Hash {
+    if (collection instanceof List) {
+      return new Hash(
+        collection.items.map(v => {
+          if (!(v instanceof List) || v.items.size !== 2) {
+            throw new Error(
+              'The List is expected to be of the form [[K, V], ..] to convert to a Hash'
+            );
+          }
+
+          return [v.items.get(0), v.items.get(1)];
+        })
+      );
+    }
+
+    throw new Error(`Unable to convert ${collection.constructor.name} into a Hash`);
+  }
+
   public inspect(): string {
     return (
       '#{' +

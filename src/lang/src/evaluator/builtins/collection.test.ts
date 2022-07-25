@@ -628,6 +628,33 @@ describe('zip', () => {
   });
 });
 
+describe('hash', () => {
+  const cases = [
+    {
+      source: 'hash([])',
+      expected: '#{}',
+      description: 'empty list',
+    },
+    {
+      source: 'hash([[1, "one"], [2, "two"], [3, "three"]])',
+      expected: '#{1: "one", 2: "two", 3: "three"}',
+      description: 'list with key-value pairs',
+    },
+    {
+      source: 'hash([1, 2, 3])',
+      expected:
+        'Runtime error: The List is expected to be of the form [[K, V], ..] to convert to a Hash',
+      description: 'list without pairs',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
 const doEvaluate = (source: string): string => {
   const lexer = new Lexer(source);
   const parser = new Parser(lexer);

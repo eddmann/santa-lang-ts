@@ -299,6 +299,18 @@ const combinations: O.BuiltinFuncTemplate = {
   },
 };
 
+const hash: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return O.Hash.from(environment.getVariable('collection'));
+  },
+};
+
 export default {
   map,
   filter,
@@ -317,4 +329,5 @@ export default {
   last,
   rest,
   combinations,
+  hash,
 };
