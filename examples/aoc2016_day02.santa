@@ -1,0 +1,52 @@
+input: read("aoc2016_day02.input")
+
+let DIRECTIONS = #{"U": [0, -1], "D": [0, 1], "L": [-1, 0], "R": [1, 0]};
+
+let find_key = |value, hash_map| reduce(|_, v, k| if v == value { break(k) }, nil, hash_map);
+
+let add = |[x1, y1], [x2, y2]| [x1 + x2, y1 + y2];
+
+let generate_keypad = |input| {
+  zip(0.., lines(input))
+    |> flat_map(
+      |[y, line]| {
+        zip(0.., line)
+          |> filter(|[_, char]| char != ".")
+          |> map(|[x, char]| [[x, y], char]);
+      }
+    )
+    |> hash;
+};
+
+let calc_keycode = |keypad, initial_key, instructions| {
+  let mut pos = find_key(initial_key, keypad);
+  let mut code = "";
+
+  instructions |> each(|instruction| {
+    instruction |> each(|direction| {
+      let next_pos = pos `add` DIRECTIONS[direction];
+      if keypad[next_pos] {
+        pos = next_pos;
+      }
+    });
+    code = code + keypad[pos];
+  });
+
+  code;
+};
+
+part_one: {
+  let keypad = generate_keypad("123\n456\n789");
+  calc_keycode(keypad, "5", lines(input));
+}
+
+part_two: {
+  let keypad = generate_keypad("..1..\n.234.\n56789\n.ABC.\n..D..");
+  calc_keycode(keypad, "5", lines(input));
+}
+
+test: {
+  input: "ULL\nRRDDD\nLURDL\nUUUUD"
+  part_one: "1985"
+  part_two: "5DB3"
+}
