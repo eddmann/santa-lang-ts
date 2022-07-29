@@ -714,6 +714,41 @@ test('hash literal', () => {
   });
 });
 
+test('hash literal with short-hand notation', () => {
+  const source = '#{x, y, z}';
+
+  const ast = parse(source);
+
+  expect(ast).toEqual({
+    kind: 'PROGRAM',
+    source: { column: 0, line: 0 },
+    statements: [
+      {
+        expression: {
+          kind: 'HASH_EXPRESSION',
+          pairs: [
+            [
+              { kind: 'STRING', source: { column: 2, line: 0 }, value: 'x' },
+              { kind: 'IDENTIFIER', source: { column: 2, line: 0 }, value: 'x' },
+            ],
+            [
+              { kind: 'STRING', source: { column: 5, line: 0 }, value: 'y' },
+              { kind: 'IDENTIFIER', source: { column: 5, line: 0 }, value: 'y' },
+            ],
+            [
+              { kind: 'STRING', source: { column: 8, line: 0 }, value: 'z' },
+              { kind: 'IDENTIFIER', source: { column: 8, line: 0 }, value: 'z' },
+            ],
+          ],
+          source: { column: 0, line: 0 },
+        },
+        kind: 'EXPRESSION',
+        source: { column: 0, line: 0 },
+      },
+    ],
+  });
+});
+
 test('set literal', () => {
   const source = '{1, 2, 3}';
 

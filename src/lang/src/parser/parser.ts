@@ -734,7 +734,12 @@ export default class Parser {
       this.nextToken();
 
       if (this.curToken.kind === TokenKind.Identifier && !this.peekTokenIs(TokenKind.Colon)) {
-        pairs.push([this.parseString(), this.parseExpression(Precedence.Lowest)]);
+        pairs.push([this.parseString(), this.parseIdentifier()]);
+
+        if (!this.peekTokenIs(TokenKind.RBrace)) {
+          this.expectPeek(TokenKind.Comma);
+        }
+
         continue;
       }
 
