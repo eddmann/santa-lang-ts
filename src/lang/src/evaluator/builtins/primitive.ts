@@ -77,6 +77,22 @@ const lines: O.BuiltinFuncTemplate = {
   },
 };
 
+const regex_match: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'pattern',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'string',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment.getVariable('string').regExMatch(environment.getVariable('pattern'));
+  },
+};
+
 export default {
   bool,
   int,
@@ -84,4 +100,5 @@ export default {
   str,
   split,
   lines,
+  regex_match,
 };

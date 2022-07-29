@@ -531,6 +531,18 @@ export class Str implements ValueObj {
       `split(${delimiter.constructor.name}, ${this.constructor.name}) is not supported`
     );
   }
+
+  public regExMatch(pattern: Obj): List {
+    if (!(pattern instanceof Str)) {
+      throw new Error(
+        `regex_match(${pattern.constructor.name}, ${this.constructor.name}) is not supported`
+      );
+    }
+
+    const match = this.value.match(new RegExp(pattern.value));
+
+    return new List((match || []).slice(1).map(v => new Str(v)));
+  }
 }
 
 export const TRUE = new Bool(true);

@@ -283,6 +283,27 @@ describe('lines', () => {
   });
 });
 
+describe('regex_match', () => {
+  const cases = [
+    {
+      source: 'regex_match("([0-9]), ([0-9]{2}), ([0-9]+)", "1, 22, 333")',
+      expected: '["1", "22", "333"]',
+      description: 'match present',
+    },
+    {
+      source: 'regex_match("([0-9]), ([0-9]{2}), ([0-9]+)", "1, 22")',
+      expected: '[]',
+      description: 'no match present',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
 const doEvaluate = (source: string): string => {
   const lexer = new Lexer(source);
   const parser = new Parser(lexer);
