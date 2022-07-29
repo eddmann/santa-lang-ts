@@ -13,7 +13,8 @@
     "pkg": "^5.3.1"
   },
   "scripts": {
-    "build": "esbuild ./src --bundle --platform=node --target=node16.16.0 --outfile=build/cli.js && pkg build/cli.js --target node16.16.0-macos-x64 --output dist/santa-cli-macos",
+    "compile": "esbuild ./src --bundle --platform=node --target=node16.16.0 --outfile=build/cli.js",
+    "package:binary": "pkg build/cli.js --target node16.16.0-macos-x64,node16.16.0-linux-x64 --output dist/santa-cli",
     "test": "jest"
   },
   "jest": {

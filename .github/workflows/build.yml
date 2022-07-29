@@ -15,14 +15,17 @@ jobs:
       - name: 'Checkout'
         uses: actions/checkout@v3
       - name: 'Install'
-        run: make lang/install cli/install
-      - name: 'Update version'
-        run: |
-          echo "module.exports = { hash: '${GITHUB_SHA::7}' };" > src/version.js
+        run: make cli/install
       - name: 'Build'
-        run: make cli/build
-      - name: 'Upload'
+        run: |
+          make cli/build
+          docker build -f src/cli/Dockerfile -t ghcr.io/eddmann/santa-lang-ts:cli-latest src/cli
+      - name: 'Upload binary'
         uses: actions/upload-artifact@v3
         with:
           name: 'santa-cli-macos'
           path: 'src/cli/dist/santa-cli-macos'
+      - name: 'Push image'
+        run: |
+          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          docker push ghcr.io/eddmann/santa-lang-ts:cli-latest
