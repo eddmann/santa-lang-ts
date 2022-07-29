@@ -784,6 +784,24 @@ export class Range implements ValueObj {
     }
   }
 
+  public flatMap(fn: (v: Obj) => List | Err): List {
+    try {
+      return new List(
+        this.items.flatMap(v => {
+          const result = fn(v);
+
+          if (result instanceof Err) {
+            throw result;
+          }
+
+          return result.items;
+        })
+      );
+    } catch (err) {
+      return err;
+    }
+  }
+
   public getInteralSeq(): Immutable.Seq {
     return this.items;
   }
