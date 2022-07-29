@@ -92,7 +92,7 @@ export class List implements ValueObj {
     );
   }
 
-  public map(fn: (v: Obj) => Obj | Err): List {
+  public map(fn: (v: Obj) => Obj): List {
     try {
       return new List(
         this.items.map(v => {
@@ -246,6 +246,16 @@ export class List implements ValueObj {
     return new List(recur(size.value, this.items).map(v => new List(v)));
   }
 
+  public cycle(): List | Range {
+    if (this.items.size === 0) {
+      return this;
+    }
+
+    return Range.fromRange(0, Infinity).map(
+      idx => this.items.get(idx.value % this.items.size) as Obj
+    );
+  }
+
   public getInteralSeq(): Immutable.Seq {
     return this.items;
   }
@@ -324,7 +334,7 @@ export class Hash {
     }
   }
 
-  public map(fn: (v: Obj, k: Obj) => Obj | Err): Hash {
+  public map(fn: (v: Obj, k: Obj) => Obj): Hash {
     try {
       return new Hash(
         this.items.map((v, k) => {
@@ -472,7 +482,7 @@ export class Set {
     }
   }
 
-  public map(fn: (v: Obj) => Obj | Err): Set {
+  public map(fn: (v: Obj) => Obj): Set {
     try {
       return new Set(
         this.items.map(v => {
@@ -682,7 +692,7 @@ export class Range implements ValueObj {
     return zipped.size === Infinity ? new Range(this.start, Infinity, zipped) : new List(zipped);
   }
 
-  public map(fn: (v: Obj) => Obj | Err): Range {
+  public map(fn: (v: Obj) => Obj): Range {
     try {
       return new Range(
         this.start,

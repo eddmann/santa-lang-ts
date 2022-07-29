@@ -655,6 +655,37 @@ describe('hash', () => {
   });
 });
 
+describe('cycle', () => {
+  const cases = [
+    {
+      source: 'cycle([])',
+      expected: '[]',
+      description: 'empty list',
+    },
+    {
+      source: 'cycle([1, 2, 3])',
+      expected: '[1, 2, 3, ..∞]',
+      description: 'list cycle',
+    },
+    {
+      source: 'take(5, cycle([1, 2, 3]))',
+      expected: '[1, 2, 3, 1, 2]',
+      description: 'take from cycle',
+    },
+    {
+      source: 'take(5, cycle([1, 2, 3]))[4]',
+      expected: '2',
+      description: 'nth from cycle',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
 const doEvaluate = (source: string): string => {
   const lexer = new Lexer(source);
   const parser = new Parser(lexer);

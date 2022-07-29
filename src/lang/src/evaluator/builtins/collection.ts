@@ -311,6 +311,18 @@ const hash: O.BuiltinFuncTemplate = {
   },
 };
 
+const cycle: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment.getVariable('collection').cycle();
+  },
+};
+
 export default {
   map,
   filter,
@@ -330,4 +342,5 @@ export default {
   rest,
   combinations,
   hash,
+  cycle,
 };
