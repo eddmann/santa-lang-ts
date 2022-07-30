@@ -522,6 +522,22 @@ export class Str implements ValueObj {
     return new Str(this.value + parsed.value);
   }
 
+  public lessThan(that: Obj): Bool {
+    if (that instanceof Str) {
+      return this.value.localeCompare(that.value) < 0 ? TRUE : FALSE;
+    }
+
+    throw new Error(`${this.constructor.name} < ${that.constructor.name} is not supported`);
+  }
+
+  public greaterThan(that: Obj): Bool {
+    if (that instanceof Str) {
+      return this.value.localeCompare(that.value) > 0 ? TRUE : FALSE;
+    }
+
+    throw new Error(`${this.constructor.name} > ${that.constructor.name} is not supported`);
+  }
+
   public split(delimiter: Obj): List {
     if (delimiter instanceof Str) {
       return new List(this.value.split(delimiter.value).map(v => new Str(v)));
