@@ -376,6 +376,11 @@ describe('min', () => {
       expected: '"a"',
       description: 'hash of string values',
     },
+    {
+      source: 'min(1..10)',
+      expected: '1',
+      description: 'range',
+    },
   ];
 
   cases.forEach(({ source, expected, description }) => {
@@ -431,6 +436,11 @@ describe('max', () => {
       source: 'max(#{"b": "b", "a": "a", "c": "c"})',
       expected: '"c"',
       description: 'hash of string values',
+    },
+    {
+      source: 'max(1..10)',
+      expected: '10',
+      description: 'range',
     },
   ];
 
