@@ -329,6 +329,118 @@ describe('find', () => {
   });
 });
 
+describe('min', () => {
+  const cases = [
+    {
+      source: 'min([3, 2, 1])',
+      expected: '1',
+      description: 'list of integers',
+    },
+    {
+      source: 'min([3.2, 1.1, 2.8])',
+      expected: '1.1',
+      description: 'list of decimals',
+    },
+    {
+      source: 'min(["b", "a", "c"])',
+      expected: '"a"',
+      description: 'list of strings',
+    },
+    {
+      source: 'min({3, 2, 1})',
+      expected: '1',
+      description: 'set of integers',
+    },
+    {
+      source: 'min({3.2, 1.1, 2.8})',
+      expected: '1.1',
+      description: 'set of decimals',
+    },
+    {
+      source: 'min({"b", "a", "c"})',
+      expected: '"a"',
+      description: 'set of strings',
+    },
+    {
+      source: 'min(#{"a": 3, "b": 2, "c": 1})',
+      expected: '1',
+      description: 'hash of integer values',
+    },
+    {
+      source: 'min(#{"a": 3.2, "b": 1.1, "c": 2.8})',
+      expected: '1.1',
+      description: 'hash of decimal values',
+    },
+    {
+      source: 'min(#{"b": "b", "a": "a", "c": "c"})',
+      expected: '"a"',
+      description: 'hash of string values',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
+describe('max', () => {
+  const cases = [
+    {
+      source: 'max([3, 2, 1])',
+      expected: '3',
+      description: 'list of integers',
+    },
+    {
+      source: 'max([3.2, 1.1, 2.8])',
+      expected: '3.2',
+      description: 'list of decimals',
+    },
+    {
+      source: 'max(["b", "a", "c"])',
+      expected: '"c"',
+      description: 'list of strings',
+    },
+    {
+      source: 'max({3, 2, 1})',
+      expected: '3',
+      description: 'set of integers',
+    },
+    {
+      source: 'max({3.2, 1.1, 2.8})',
+      expected: '3.2',
+      description: 'set of decimals',
+    },
+    {
+      source: 'max({"b", "a", "c"})',
+      expected: '"c"',
+      description: 'set of strings',
+    },
+    {
+      source: 'max(#{"a": 3, "b": 2, "c": 1})',
+      expected: '3',
+      description: 'hash of integer values',
+    },
+    {
+      source: 'max(#{"a": 3.2, "b": 1.1, "c": 2.8})',
+      expected: '3.2',
+      description: 'hash of decimal values',
+    },
+    {
+      source: 'max(#{"b": "b", "a": "a", "c": "c"})',
+      expected: '"c"',
+      description: 'hash of string values',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
 describe('contains', () => {
   const cases = [
     {

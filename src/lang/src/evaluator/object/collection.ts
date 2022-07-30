@@ -256,6 +256,24 @@ export class List implements ValueObj {
     );
   }
 
+  public min(): Obj {
+    const result = this.items.min((a, b) => {
+      if (a.equals(b).value) return 0;
+      return a.lessThan(b).value ? -1 : 1;
+    });
+
+    return result || NIL;
+  }
+
+  public max(): Obj {
+    const result = this.items.max((a, b) => {
+      if (a.equals(b).value) return 0;
+      return a.lessThan(b).value ? -1 : 1;
+    });
+
+    return result || NIL;
+  }
+
   public getInteralSeq(): Immutable.Seq {
     return this.items;
   }
@@ -431,6 +449,24 @@ export class Hash {
 
     throw new Error(`${this.constructor.name} - ${that.constructor.name} is not supported`);
   }
+
+  public min(): Obj {
+    const result = this.items.min((a, b) => {
+      if (a.equals(b).value) return 0;
+      return a.lessThan(b).value ? -1 : 1;
+    });
+
+    return result || NIL;
+  }
+
+  public max(): Obj {
+    const result = this.items.max((a, b) => {
+      if (a.equals(b).value) return 0;
+      return a.lessThan(b).value ? -1 : 1;
+    });
+
+    return result || NIL;
+  }
 }
 
 export class Set {
@@ -572,6 +608,24 @@ export class Set {
     }
 
     throw new Error(`${this.constructor.name} - ${that.constructor.name} is not supported`);
+  }
+
+  public min(): Obj {
+    const result = this.items.min((a, b) => {
+      if (a.equals(b).value) return 0;
+      return a.lessThan(b).value ? -1 : 1;
+    });
+
+    return result || NIL;
+  }
+
+  public max(): Obj {
+    const result = this.items.max((a, b) => {
+      if (a.equals(b).value) return 0;
+      return a.lessThan(b).value ? -1 : 1;
+    });
+
+    return result || NIL;
   }
 }
 
@@ -800,6 +854,24 @@ export class Range implements ValueObj {
     } catch (err) {
       return err;
     }
+  }
+
+  public min(): Obj {
+    const result = this.items.min((a, b) => {
+      if (a.equals(b).value) return 0;
+      return a.lessThan(b).value ? -1 : 1;
+    });
+
+    return result || NIL;
+  }
+
+  public max(): Obj {
+    const result = this.items.max((a, b) => {
+      if (a.equals(b).value) return 0;
+      return a.lessThan(b).value ? -1 : 1;
+    });
+
+    return result || NIL;
   }
 
   public getInteralSeq(): Immutable.Seq {

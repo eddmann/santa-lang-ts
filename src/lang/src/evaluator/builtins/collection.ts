@@ -323,6 +323,30 @@ const cycle: O.BuiltinFuncTemplate = {
   },
 };
 
+const min: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment.getVariable('collection').min();
+  },
+};
+
+const max: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment.getVariable('collection').max();
+  },
+};
+
 export default {
   map,
   filter,
@@ -340,6 +364,8 @@ export default {
   first,
   last,
   rest,
+  min,
+  max,
   combinations,
   hash,
   cycle,
