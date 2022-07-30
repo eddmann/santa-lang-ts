@@ -689,6 +689,38 @@ describe('chunk', () => {
   });
 });
 
+describe('keys', () => {
+  const cases = [
+    {
+      source: 'keys(#{"a": 1, "b": 2, "c": 3})',
+      expected: '["a", "b", "c"]',
+      description: 'keys of hash',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
+describe('values', () => {
+  const cases = [
+    {
+      source: 'values(#{"a": 1, "b": 2, "c": 3})',
+      expected: '[1, 2, 3]',
+      description: 'values of hash',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
 describe('zip', () => {
   const cases = [
     {

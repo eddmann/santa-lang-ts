@@ -299,6 +299,30 @@ const combinations: O.BuiltinFuncTemplate = {
   },
 };
 
+const keys: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment.getVariable('collection').keys();
+  },
+};
+
+const values: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment.getVariable('collection').values();
+  },
+};
+
 const hash: O.BuiltinFuncTemplate = {
   parameters: [
     {
@@ -369,4 +393,6 @@ export default {
   combinations,
   hash,
   cycle,
+  keys,
+  values,
 };

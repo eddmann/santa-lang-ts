@@ -436,6 +436,14 @@ export class Hash {
     throw new Error(`${this.constructor.name} + ${that.constructor.name} is not supported`);
   }
 
+  public keys(): List {
+    return new List(this.items.keys());
+  }
+
+  public values(): List {
+    return new List(this.items.values());
+  }
+
   public subtract(that: Obj): Hash {
     if (that instanceof Set) {
       const items = this.items.asMutable();
