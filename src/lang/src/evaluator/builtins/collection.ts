@@ -152,6 +152,24 @@ const find: O.BuiltinFuncTemplate = {
   },
 };
 
+const sort: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'comparator',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment
+      .getVariable('collection')
+      .sort((a, b) => applyFunction(environment.getVariable('comparator'), [a, b]));
+  },
+};
+
 const contains: O.BuiltinFuncTemplate = {
   parameters: [
     {
@@ -379,6 +397,7 @@ export default {
   each,
   flat_map,
   find,
+  sort,
   contains,
   size,
   chunk,

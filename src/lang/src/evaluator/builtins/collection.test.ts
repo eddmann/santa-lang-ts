@@ -472,6 +472,47 @@ describe('contains', () => {
   });
 });
 
+describe('sort', () => {
+  const cases = [
+    {
+      source: 'sort(>, [3, 1, 2])',
+      expected: '[1, 2, 3]',
+      description: 'integers in ascending order',
+    },
+    {
+      source: 'sort(<, [3, 1, 2])',
+      expected: '[3, 2, 1]',
+      description: 'integers in descending order',
+    },
+    {
+      source: 'sort(>, [3.2, 3.1, 3.2, 2.8])',
+      expected: '[2.8, 3.1, 3.2, 3.2]',
+      description: 'decimals in ascending order',
+    },
+    {
+      source: 'sort(<, [3.2, 3.1, 3.2, 2.8])',
+      expected: '[3.2, 3.2, 3.1, 2.8]',
+      description: 'decimals in descending order',
+    },
+    {
+      source: 'sort(>, ["b", "a", "c"])',
+      expected: '["a", "b", "c"]',
+      description: 'strings in ascending order',
+    },
+    {
+      source: 'sort(<, ["b", "a", "c"])',
+      expected: '["c", "b", "a"]',
+      description: 'strings in descending order',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
 describe('size', () => {
   const cases = [
     {

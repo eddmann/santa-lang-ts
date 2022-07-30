@@ -277,6 +277,24 @@ export class List implements ValueObj {
   public getInteralSeq(): Immutable.Seq {
     return this.items;
   }
+
+  public sort(comparator: (a: Obj, b: Obj) => Bool): List {
+    return new List(
+      this.items.sort((a, b) => {
+        if (a.equals(b).value) {
+          return 0;
+        }
+
+        const result = comparator(a, b);
+
+        if (result instanceof Err) {
+          throw result;
+        }
+
+        return result !== FALSE && result !== NIL ? 1 : -1;
+      })
+    );
+  }
 }
 
 export class Hash {
