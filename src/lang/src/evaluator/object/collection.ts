@@ -295,6 +295,34 @@ export class List implements ValueObj {
       })
     );
   }
+
+  public assoc(index: Obj, value: Obj): List {
+    if (!(index instanceof Integer)) {
+      throw new Error('Expected List index to be an Integer');
+    }
+
+    return new List(this.items.set(index.value, value).map(v => v || NIL));
+  }
+
+  public update(index: Obj, updater: (index: Obj) => Obj): List {
+    if (!(index instanceof Integer)) {
+      throw new Error('Expected List index to be an Integer');
+    }
+
+    return new List(
+      this.items
+        .update(index.value, value => {
+          const nextValue = updater(value || NIL);
+
+          if (nextValue instanceof Err) {
+            throw nextValue;
+          }
+
+          return nextValue;
+        })
+        .map(v => v || NIL)
+    );
+  }
 }
 
 export class Hash {
@@ -492,6 +520,24 @@ export class Hash {
     });
 
     return result || NIL;
+  }
+
+  public assoc(key: Obj, value: Obj): Hash {
+    return new Hash(this.items.set(key, value));
+  }
+
+  public update(key: Obj, updater: (key: Obj) => Obj): Hash {
+    return new Hash(
+      this.items.update(key, value => {
+        const nextValue = updater(value || NIL);
+
+        if (nextValue instanceof Err) {
+          throw nextValue;
+        }
+
+        return nextValue;
+      })
+    );
   }
 }
 

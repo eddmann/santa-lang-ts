@@ -389,6 +389,68 @@ const max: O.BuiltinFuncTemplate = {
   },
 };
 
+const assoc: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'key',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'value',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment
+      .getVariable('collection')
+      .assoc(environment.getVariable('key'), environment.getVariable('value'));
+  },
+};
+
+const update: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'key',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'updater',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment
+      .getVariable('collection')
+      .update(environment.getVariable('key'), v =>
+        applyFunction(environment.getVariable('updater'), [v])
+      );
+  },
+};
+
+const get: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'key',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment.getVariable('collection').get(environment.getVariable('key'));
+  },
+};
+
 export default {
   map,
   filter,
@@ -414,4 +476,7 @@ export default {
   cycle,
   keys,
   values,
+  assoc,
+  update,
+  get,
 };

@@ -881,6 +881,129 @@ describe('cycle', () => {
   });
 });
 
+describe('assoc', () => {
+  const cases = [
+    {
+      source: 'assoc(0, 1, [])',
+      expected: '[1]',
+      description: 'empty list',
+    },
+    {
+      source: 'assoc(1, 2, [])',
+      expected: '[nil, 2]',
+      description: 'empty list, specifying second index',
+    },
+    {
+      source: 'assoc(1, 10, [1, 2, 3])',
+      expected: '[1, 10, 3]',
+      description: 'list with existing value',
+    },
+    {
+      source: 'assoc(1, 10, #{})',
+      expected: '#{1: 10}',
+      description: 'empty hash',
+    },
+    {
+      source: 'assoc(1, 10, #{1: 20})',
+      expected: '#{1: 10}',
+      description: 'hash with existing value',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
+describe('update', () => {
+  const cases = [
+    {
+      source: 'update(0, || 4, [])',
+      expected: '[4]',
+      description: 'empty list',
+    },
+    {
+      source: 'update(1, || 2, [])',
+      expected: '[nil, 2]',
+      description: 'empty list, specifying second index',
+    },
+    {
+      source: 'update(1, _ * 2, [1, 2, 3])',
+      expected: '[1, 4, 3]',
+      description: 'list with existing value',
+    },
+    {
+      source: 'update(1, || 10, #{})',
+      expected: '#{1: 10}',
+      description: 'empty hash',
+    },
+    {
+      source: 'update(1, _ - 10, #{1: 20})',
+      expected: '#{1: 10}',
+      description: 'hash with existing value',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
+describe('get', () => {
+  const cases = [
+    {
+      source: 'get(0, [])',
+      expected: 'nil',
+      description: 'empty list',
+    },
+    {
+      source: 'get(1, [1, 2, 3])',
+      expected: '2',
+      description: 'list with values',
+    },
+    {
+      source: 'get(1, #{})',
+      expected: 'nil',
+      description: 'empty hash',
+    },
+    {
+      source: 'get(1, #{1: 20})',
+      expected: '20',
+      description: 'hash with values',
+    },
+    {
+      source: 'get(1, {})',
+      expected: 'nil',
+      description: 'empty set',
+    },
+    {
+      source: 'get(1, {1})',
+      expected: '1',
+      description: 'set with values',
+    },
+    {
+      source: 'get(11, 1..10)',
+      expected: 'nil',
+      description: 'range out-of-bounds',
+    },
+    {
+      source: 'get(1, 1..10)',
+      expected: '2',
+      description: 'range within bounds',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
 const doEvaluate = (source: string): string => {
   const lexer = new Lexer(source);
   const parser = new Parser(lexer);
