@@ -93,6 +93,30 @@ const regex_match: O.BuiltinFuncTemplate = {
   },
 };
 
+const upper: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'string',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment.getVariable('string').toUpper();
+  },
+};
+
+const lower: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'string',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment.getVariable('string').toLower();
+  },
+};
+
 export default {
   bool,
   int,
@@ -101,4 +125,6 @@ export default {
   split,
   lines,
   regex_match,
+  upper,
+  lower,
 };

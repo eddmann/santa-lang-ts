@@ -559,6 +559,14 @@ export class Str implements ValueObj {
 
     return new List((match || []).slice(1).map(v => new Str(v)));
   }
+
+  public toUpper(): Str {
+    return new Str(this.value.toUpperCase());
+  }
+
+  public toLower(): Str {
+    return new Str(this.value.toLowerCase());
+  }
 }
 
 export const TRUE = new Bool(true);

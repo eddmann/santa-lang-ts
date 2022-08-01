@@ -304,6 +304,58 @@ describe('regex_match', () => {
   });
 });
 
+describe('upper', () => {
+  const cases = [
+    {
+      source: 'upper("abcd")',
+      expected: '"ABCD"',
+      description: 'lower-case string',
+    },
+    {
+      source: 'upper("ABCD")',
+      expected: '"ABCD"',
+      description: 'upper-case string',
+    },
+    {
+      source: 'upper("AbCd")',
+      expected: '"ABCD"',
+      description: 'upper and lower-case string',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
+describe('lower', () => {
+  const cases = [
+    {
+      source: 'lower("abcd")',
+      expected: '"abcd"',
+      description: 'lower-case string',
+    },
+    {
+      source: 'lower("ABCD")',
+      expected: '"abcd"',
+      description: 'upper-case string',
+    },
+    {
+      source: 'lower("AbCd")',
+      expected: '"abcd"',
+      description: 'upper and lower-case string',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
 const doEvaluate = (source: string): string => {
   const lexer = new Lexer(source);
   const parser = new Parser(lexer);
