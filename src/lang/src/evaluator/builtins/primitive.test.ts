@@ -356,6 +356,32 @@ describe('lower', () => {
   });
 });
 
+describe('replace', () => {
+  const cases = [
+    {
+      source: 'replace("a", "b", "aBaD")',
+      expected: '"bBbD"',
+      description: 'single matching char',
+    },
+    {
+      source: 'replace("ab", "CD", "DabEab")',
+      expected: '"DCDECD"',
+      description: 'multiple match char',
+    },
+    {
+      source: 'replace("a", "b", "cdef")',
+      expected: '"cdef"',
+      description: 'no match char',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
 const doEvaluate = (source: string): string => {
   const lexer = new Lexer(source);
   const parser = new Parser(lexer);

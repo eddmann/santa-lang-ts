@@ -117,6 +117,28 @@ const lower: O.BuiltinFuncTemplate = {
   },
 };
 
+const replace: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'subject',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'replacement',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'string',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment
+      .getVariable('string')
+      .replace(environment.getVariable('subject'), environment.getVariable('replacement'));
+  },
+};
+
 export default {
   bool,
   int,
@@ -127,4 +149,5 @@ export default {
   regex_match,
   upper,
   lower,
+  replace,
 };

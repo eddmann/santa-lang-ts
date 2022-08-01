@@ -567,6 +567,10 @@ export class Str implements ValueObj {
   public toLower(): Str {
     return new Str(this.value.toLowerCase());
   }
+
+  public replace(subject: Str, replacement: Str): Str {
+    return new Str(this.value.replace(new RegExp(subject.value, 'g'), replacement.value));
+  }
 }
 
 export const TRUE = new Bool(true);
