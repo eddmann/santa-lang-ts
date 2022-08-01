@@ -419,6 +419,10 @@ const update: O.BuiltinFuncTemplate = {
     },
     {
       kind: AST.ASTKind.Identifier,
+      value: 'default',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
       value: 'updater',
     },
     {
@@ -429,7 +433,7 @@ const update: O.BuiltinFuncTemplate = {
   body: (environment: O.Environment) => {
     return environment
       .getVariable('collection')
-      .update(environment.getVariable('key'), v =>
+      .update(environment.getVariable('key'), environment.getVariable('default'), v =>
         applyFunction(environment.getVariable('updater'), [v])
       );
   },

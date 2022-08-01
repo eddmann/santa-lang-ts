@@ -920,27 +920,27 @@ describe('assoc', () => {
 describe('update', () => {
   const cases = [
     {
-      source: 'update(0, || 4, [])',
-      expected: '[4]',
+      source: 'update(0, 0, _ + 1, [])',
+      expected: '[1]',
       description: 'empty list',
     },
     {
-      source: 'update(1, || 2, [])',
-      expected: '[nil, 2]',
+      source: 'update(1, 0, _ + 1, [])',
+      expected: '[nil, 1]',
       description: 'empty list, specifying second index',
     },
     {
-      source: 'update(1, _ * 2, [1, 2, 3])',
+      source: 'update(1, 0, _ * 2, [1, 2, 3])',
       expected: '[1, 4, 3]',
       description: 'list with existing value',
     },
     {
-      source: 'update(1, || 10, #{})',
-      expected: '#{1: 10}',
+      source: 'update(1, 0, _ + 1, #{})',
+      expected: '#{1: 1}',
       description: 'empty hash',
     },
     {
-      source: 'update(1, _ - 10, #{1: 20})',
+      source: 'update(1, 0, _ - 10, #{1: 20})',
       expected: '#{1: 10}',
       description: 'hash with existing value',
     },

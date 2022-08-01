@@ -304,15 +304,15 @@ export class List implements ValueObj {
     return new List(this.items.set(index.value, value).map(v => v || NIL));
   }
 
-  public update(index: Obj, updater: (index: Obj) => Obj): List {
+  public update(index: Obj, defaultValue: Obj, updater: (index: Obj) => Obj): List {
     if (!(index instanceof Integer)) {
       throw new Error('Expected List index to be an Integer');
     }
 
     return new List(
       this.items
-        .update(index.value, value => {
-          const nextValue = updater(value || NIL);
+        .update(index.value, defaultValue, value => {
+          const nextValue = updater(value);
 
           if (nextValue instanceof Err) {
             throw nextValue;
@@ -526,10 +526,10 @@ export class Hash {
     return new Hash(this.items.set(key, value));
   }
 
-  public update(key: Obj, updater: (key: Obj) => Obj): Hash {
+  public update(key: Obj, defaultValue: Obj, updater: (key: Obj) => Obj): Hash {
     return new Hash(
-      this.items.update(key, value => {
-        const nextValue = updater(value || NIL);
+      this.items.update(key, defaultValue, value => {
+        const nextValue = updater(value);
 
         if (nextValue instanceof Err) {
           throw nextValue;
