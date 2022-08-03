@@ -841,6 +841,104 @@ describe('hash', () => {
         'Runtime error: The List is expected to be of the form [[K, V], ..] to convert to a Hash',
       description: 'list without pairs',
     },
+    {
+      source: 'hash(#{1: "one", 2: "two", 3: "three"})',
+      expected: '#{1: "one", 2: "two", 3: "three"}',
+      description: 'hash',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
+describe('list', () => {
+  const cases = [
+    {
+      source: 'list([1, 2, 3])',
+      expected: '[1, 2, 3]',
+      description: 'list',
+    },
+    {
+      source: 'list(#{1: "one", 2: "two", 3: "three"})',
+      expected: '[[1, "one"], [2, "two"], [3, "three"]]',
+      description: 'hash',
+    },
+    {
+      source: 'list({1, 2, 3})',
+      expected: '[1, 2, 3]',
+      description: 'set',
+    },
+    {
+      source: 'list(1..5)',
+      expected: '[1, 2, 3, 4, 5]',
+      description: 'bounded range',
+    },
+    {
+      source: 'list(1..)',
+      expected: 'Runtime error: Cannot perform this action with an infinite size.',
+      description: 'unbounded range',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
+describe('set', () => {
+  const cases = [
+    {
+      source: 'set([1, 2, 3])',
+      expected: '{1, 2, 3}',
+      description: 'list',
+    },
+    {
+      source: 'set(#{1: "one", 2: "two", 3: "three"})',
+      expected: 'Runtime error: Unable to convert Hash into a Set',
+      description: 'hash',
+    },
+    {
+      source: 'set({1, 2, 3})',
+      expected: '{1, 2, 3}',
+      description: 'set',
+    },
+    {
+      source: 'set(1..5)',
+      expected: '{1, 2, 3, 4, 5}',
+      description: 'bounded range',
+    },
+    {
+      source: 'set(1..)',
+      expected: 'Runtime error: Cannot perform this action with an infinite size.',
+      description: 'unbounded range',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
+describe('repeat', () => {
+  const cases = [
+    {
+      source: 'repeat("hello")',
+      expected: '["hello", "hello", "hello", ..∞]',
+      description: 'unbounded repeat',
+    },
+    {
+      source: 'repeat("hello") |> take(2)',
+      expected: '["hello", "hello"]',
+      description: 'repeat with bounded',
+    },
   ];
 
   cases.forEach(({ source, expected, description }) => {

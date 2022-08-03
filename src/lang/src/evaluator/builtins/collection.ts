@@ -353,6 +353,30 @@ const hash: O.BuiltinFuncTemplate = {
   },
 };
 
+const set: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return O.Set.from(environment.getVariable('collection'));
+  },
+};
+
+const list: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return O.List.from(environment.getVariable('collection'));
+  },
+};
+
 const cycle: O.BuiltinFuncTemplate = {
   parameters: [
     {
@@ -455,6 +479,18 @@ const get: O.BuiltinFuncTemplate = {
   },
 };
 
+const repeat: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'value',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return O.Range.repeat(environment.getVariable('value'));
+  },
+};
+
 export default {
   map,
   filter,
@@ -477,10 +513,13 @@ export default {
   max,
   combinations,
   hash,
+  set,
+  list,
   cycle,
   keys,
   values,
   assoc,
   update,
   get,
+  repeat,
 };

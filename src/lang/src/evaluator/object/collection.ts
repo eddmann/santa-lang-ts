@@ -11,6 +11,26 @@ export class List implements ValueObj {
     this.items = Immutable.List(items);
   }
 
+  public static from(collection: Obj): List {
+    if (collection instanceof List) {
+      return new List(collection.items);
+    }
+
+    if (collection instanceof Set) {
+      return new List(collection.items);
+    }
+
+    if (collection instanceof Hash) {
+      return new List([...collection.items.entries()].map(entry => new List(entry)));
+    }
+
+    if (collection instanceof Range) {
+      return new List(collection.items);
+    }
+
+    throw new Error(`Unable to convert ${collection.constructor.name} into a List`);
+  }
+
   public inspect(): string {
     return '[' + this.items.map(item => item.inspect()).join(', ') + ']';
   }
@@ -326,7 +346,7 @@ export class List implements ValueObj {
 }
 
 export class Hash {
-  private items: Immutable.Map<Obj, Obj>;
+  public items: Immutable.Map<Obj, Obj>;
 
   constructor(items: Iterable<[Obj, Obj]>) {
     this.items = Immutable.Map(items);
@@ -345,6 +365,10 @@ export class Hash {
           return [v.items.get(0), v.items.get(1)];
         })
       );
+    }
+
+    if (collection instanceof Hash) {
+      return new Hash(collection.items);
     }
 
     throw new Error(`Unable to convert ${collection.constructor.name} into a Hash`);
@@ -548,6 +572,22 @@ export class Set {
     this.items = Immutable.Set(items);
   }
 
+  public static from(collection: Obj): Set {
+    if (collection instanceof List) {
+      return new Set(collection.items);
+    }
+
+    if (collection instanceof Set) {
+      return new Set(collection.items);
+    }
+
+    if (collection instanceof Range) {
+      return new Set(collection.items);
+    }
+
+    throw new Error(`Unable to convert ${collection.constructor.name} into a Set`);
+  }
+
   public inspect(): string {
     return '{' + this.items.map(item => item.inspect()).join(', ') + '}';
   }
@@ -714,6 +754,10 @@ export class Range implements ValueObj {
       end,
       Immutable.Range(start, end + (end < 0 ? -1 : 1)).map(v => new Integer(v))
     );
+  }
+
+  public static repeat(value: Obj) {
+    return new Range(0, Infinity, Immutable.Repeat(value));
   }
 
   public inspect(): string {
