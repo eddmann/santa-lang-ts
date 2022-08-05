@@ -927,6 +927,67 @@ describe('set', () => {
   });
 });
 
+describe('range', () => {
+  const cases = [
+    {
+      source: '1..5',
+      expected: '[1, 2, 3, 4, 5]',
+      description: 'positive low-high',
+    },
+    {
+      source: '5..1',
+      expected: '[5, 4, 3, 2, 1]',
+      description: 'positive high-low',
+    },
+    {
+      source: '-5..-10',
+      expected: '[-5, -6, -7, -8, -9, -10]',
+      description: 'negative high-low',
+    },
+    {
+      source: '-10..-5',
+      expected: '[-10, -9, -8, -7, -6, -5]',
+      description: 'negative low-high',
+    },
+    {
+      source: '-3..3',
+      expected: '[-3, -2, -1, 0, 1, 2, 3]',
+      description: 'negative-positive low-high',
+    },
+    {
+      source: '3..-3',
+      expected: '[3, 2, 1, 0, -1, -2, -3]',
+      description: 'positive-negative high-low',
+    },
+    {
+      source: 'range(0, 10, 2)',
+      expected: '[0, 2, 4, 6, 8, 10]',
+      description: 'positive low-high with 2 step',
+    },
+    {
+      source: 'range(10, 0, -2)',
+      expected: '[10, 8, 6, 4, 2, 0]',
+      description: 'positive high-low with 2 step',
+    },
+    {
+      source: 'range(5, -5, -2)',
+      expected: '[5, 3, 1, -1, -3, -5]',
+      description: 'positive-negative high-low with 2 step',
+    },
+    {
+      source: 'range(-5, 5, 2)',
+      expected: '[-5, -3, -1, 1, 3, 5]',
+      description: 'negative-positive low-high with 2 step',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
 describe('repeat', () => {
   const cases = [
     {

@@ -271,7 +271,7 @@ export class List implements ValueObj {
       return this;
     }
 
-    return Range.fromRange(0, Infinity).map(
+    return Range.fromRange(0, Infinity, 1).map(
       idx => this.items.get(idx.value % this.items.size) as Obj
     );
   }
@@ -748,11 +748,11 @@ export class Range implements ValueObj {
     public items: Immutable.Seq.Indexed<Obj>
   ) {}
 
-  public static fromRange(start: number, end: number) {
+  public static fromRange(start: number, end: number, step: number) {
     return new Range(
       start,
       end,
-      Immutable.Range(start, end + (end < 0 ? -1 : 1)).map(v => new Integer(v))
+      Immutable.Range(start, end + (end < start ? -1 : 1), step).map(v => new Integer(v))
     );
   }
 

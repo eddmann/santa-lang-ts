@@ -124,7 +124,7 @@ const evalRangeExpression = (
     return new O.Err('Expected range end value to be an integer', node);
   }
 
-  return O.Range.fromRange(start.value, end.value);
+  return O.Range.fromRange(start.value, end.value, 1);
 };
 
 const evalIdentifier = (node: AST.Identifier, environment: O.Environment): O.Obj => {
@@ -476,7 +476,7 @@ const destructureListPatternIntoEnv = (
     if (elements[i].kind === AST.ASTKind.RestElement) {
       environment.declareVariable(
         elements[i].argument.value,
-        value.get(O.Range.fromRange(i, Infinity)),
+        value.get(O.Range.fromRange(i, Infinity, 1)),
         isMutable
       );
       break;
@@ -534,7 +534,7 @@ const matchListPatternIntoEnv = (
     if (elements[i].kind === AST.ASTKind.RestElement) {
       environment.declareVariable(
         elements[i].argument.value,
-        value.get(O.Range.fromRange(i, Infinity)),
+        value.get(O.Range.fromRange(i, Infinity, 1)),
         false
       );
       return;

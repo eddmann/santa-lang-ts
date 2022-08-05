@@ -491,6 +491,30 @@ const repeat: O.BuiltinFuncTemplate = {
   },
 };
 
+const range: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'start',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'end',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'step',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return O.Range.fromRange(
+      environment.getVariable('start').value,
+      environment.getVariable('end').value,
+      environment.getVariable('step').value
+    );
+  },
+};
+
 export default {
   map,
   filter,
@@ -522,4 +546,5 @@ export default {
   update,
   get,
   repeat,
+  range,
 };
