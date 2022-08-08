@@ -25,6 +25,7 @@
   "exports": {
     "./lexer": "./src/lexer/index.ts",
     "./parser": "./src/parser/index.ts",
-    "./evaluator": "./src/evaluator/index.ts"
+    "./evaluator": "./src/evaluator/index.ts",
+    "./runner": "./src/runner/index.ts"
   }
 }
