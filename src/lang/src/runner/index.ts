@@ -27,7 +27,8 @@ const evaluateSection = (
 };
 
 const evaluateSource = (
-  source: string
+  source: string,
+  io: O.IO
 ): {
   environment: O.Enviornment;
   result: O.Obj;
@@ -48,6 +49,8 @@ const evaluateSource = (
   }
 
   const environment = new O.Environment();
+  environment.setIO(io);
+
   const result = evaluate(ast, environment);
   if (result instanceof O.Err) {
     throw {
@@ -97,8 +100,8 @@ type Result =
       result: string;
     };
 
-export const run = (source: string): Result => {
-  const { environment, result, partOne, partTwo } = evaluateSource(source);
+export const run = (source: string, io: O.IO): Result => {
+  const { environment, result, partOne, partTwo } = evaluateSource(source, io);
 
   if (!partOne && !partTwo) {
     return { result: result.inspect() };
@@ -139,8 +142,8 @@ type TestCaseResult = {
   hasPassed: boolean;
 };
 
-export const runTests = (source: string): TestCase[] => {
-  const { environment, partOne, partTwo } = evaluateSource(source);
+export const runTests = (source: string, io: O.IO): TestCase[] => {
+  const { environment, partOne, partTwo } = evaluateSource(source, io);
 
   return environment.getSection('test').map(test => {
     const testEnvironment = new O.Environment(environment);

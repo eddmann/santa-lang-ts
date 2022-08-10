@@ -12,7 +12,9 @@ const puts: O.BuiltinFuncTemplate = {
     },
   ],
   body: (environment: O.Environment) => {
-    console.log(...environment.getVariable('values').items.map(arg => arg.inspect()));
+    environment
+      .getIO()
+      .output([...environment.getVariable('values').items.map(arg => arg.inspect())]);
     return O.NIL;
   },
 };
@@ -26,9 +28,7 @@ const read: O.BuiltinFuncTemplate = {
   ],
   body: (environment: O.Environment) => {
     try {
-      return new O.Str(
-        require('fs').readFileSync(environment.getVariable('path').value, { encoding: 'utf-8' })
-      );
+      return new O.Str(environment.getIO().input(environment.getVariable('path').value));
     } catch (err) {
       throw new Error(`Unable to read path: ${environment.getVariable('path').value}`);
     }

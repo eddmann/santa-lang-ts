@@ -14,13 +14,18 @@ try {
   process.exit(1);
 }
 
-// ensure all file reads are relative to the `.santa` source location
+// ensure all files read are relative to the `.santa` source location
 process.chdir(require('path').dirname(realpathSync(filename)));
+
+const io = {
+  input: (path: string): string => readFileSync(path, { encoding: 'utf-8' }),
+  output: console.log.bind(this),
+};
 
 const isTestRun = process.argv.includes('-t');
 try {
   if (!isTestRun) {
-    const result = run(source);
+    const result = run(source, io);
 
     if (result.result) {
       console.log(result.result);
@@ -40,7 +45,7 @@ try {
 
   let exitCode = 0;
 
-  for (const [idx, testCase] of Object.entries(runTests(source))) {
+  for (const [idx, testCase] of Object.entries(runTests(source, io))) {
     if (idx > 0) console.log();
     console.log('\x1b[4mTestcase #%s\x1b[0m', Number(idx) + 1);
 

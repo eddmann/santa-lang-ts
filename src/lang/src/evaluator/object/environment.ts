@@ -1,10 +1,16 @@
 import { Obj } from './type';
 import { Section } from './section';
 
+export type IO = {
+  input: (path: O.String) => string;
+  output: (args: string[]) => void;
+};
+
 export class Environment {
   sections: { [key: string]: Section[] };
   variables: { [key: string]: { value: Obj; isMutable: boolean } };
   scopedVariableNames: string[];
+  io?: IO;
 
   constructor(public parent: Environment | null = null) {
     this.sections = {};
@@ -65,6 +71,22 @@ export class Environment {
 
   public hasSection(name: string): boolean {
     return this.getSection(name).length > 0;
+  }
+
+  public setIO(io: IO): void {
+    this.io = io;
+  }
+
+  public getIO(): IO {
+    if (this.io) {
+      return this.io;
+    }
+
+    if (this.parent) {
+      return this.parent.getIO();
+    }
+
+    throw new Error('IO has not been specified');
   }
 
   private captureParentVariableNames(): string[] {
