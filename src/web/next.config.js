@@ -4,6 +4,7 @@ const withTM = require('next-transpile-modules')(['santa-lang']);
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  assetPrefix: process.env.NODE_ENV === 'production' ? '/santa-lang-ts/' : undefined,
 };
 
 module.exports = withTM(nextConfig);
