@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-import { readFileSync, realpathSync } from 'fs';
+import { readFileSync, realpathSync, writeFileSync } from 'fs';
+import fetch from 'sync-fetch';
 import { run, runTests } from 'santa-lang/runner';
 import printSourcePreview from './printSourcePreview';
 
@@ -18,8 +19,69 @@ try {
 process.chdir(require('path').dirname(realpathSync(filename)));
 
 const io = {
-  input: (path: string): string => readFileSync(path, { encoding: 'utf-8' }),
-  output: console.log.bind(this),
+  input: (path: string): string => {
+    let url = {};
+    try {
+      url = new URL(path);
+    } catch (err) {}
+
+    if (url.protocol === 'aoc:') {
+      const token = process.env.SANTA_CLI_SESSION_TOKEN;
+
+      if (!token) {
+        throw new Error(
+          `Unable to read AOC input: ${path}, missing session token within SANTA_CLI_SESSION_TOKEN environment variable`
+        );
+      }
+
+      const year = url.host;
+      const day = url.pathname.substr(1);
+
+      try {
+        return readFileSync(`aoc${year}_day${day}.input`);
+      } catch (err) {}
+
+      const response = fetch(`https://adventofcode.com/${year}/day/${day}/input`, {
+        method: 'GET',
+        headers: {
+          Accepts: 'text/plain',
+          Cookie: `session=${token}`,
+        },
+      });
+
+      if (response.status !== 200) {
+        throw new Error(`Unable to read AOC input: ${path}, response: ${response.statusText}`);
+      }
+
+      const input = response.text();
+
+      writeFileSync(`aoc${year}_day${day}.input`, input);
+
+      return input;
+    }
+
+    if (url.protocol) {
+      const response = fetch(path, {
+        method: 'GET',
+        headers: {
+          Accepts: 'text/plain',
+        },
+      });
+
+      if (response.status !== 200) {
+        throw new Error(`Unable to read HTTP input: ${path}, response: ${response.statusText}`);
+      }
+
+      return response.text();
+    }
+
+    try {
+      return readFileSync(path, { encoding: 'utf-8' });
+    } catch (err) {
+      throw new Error(`Unable to read path: ${path}`);
+    }
+  },
+  output: (args: string[]) => console.log(...args),
 };
 
 const isTestRun = process.argv.includes('-t');
