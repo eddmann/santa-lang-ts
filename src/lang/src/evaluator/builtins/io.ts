@@ -27,11 +27,7 @@ const read: O.BuiltinFuncTemplate = {
     },
   ],
   body: (environment: O.Environment) => {
-    try {
-      return new O.Str(environment.getIO().input(environment.getVariable('path').value));
-    } catch (err) {
-      throw new Error(`Unable to read path: ${environment.getVariable('path').value}`);
-    }
+    return new O.Str(environment.getIO().input(environment.getVariable('path').value));
   },
 };
 
