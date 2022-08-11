@@ -12,7 +12,7 @@ const io = {
     request.send(null);
     return request.responseText;
   },
-  output: console.log.bind(this),
+  output: (args: string[]) => console.log(...args),
 };
 
 type RequestType = 'run' | 'test' | 'tokenize' | 'parse';
