@@ -4,18 +4,19 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
+    "deasync": "^0.1.28",
     "esbuild": "^0.14.42",
     "esbuild-jest": "^0.5.0",
     "jest": "^28.1.0",
-    "santa-lang": "file:../lang",
-    "sync-fetch": "^0.4.1"
+    "node-fetch": "^3.2.10",
+    "santa-lang": "file:../lang"
   },
   "devDependencies": {
     "pkg": "^5.3.1"
   },
   "scripts": {
-    "compile": "esbuild ./src --bundle --external:'sync-fetch' --platform=node --target=node16.16.0 --outfile=build/cli.js",
-    "package:binary": "pkg build/cli.js --target node16.16.0-macos-x64,node16.16.0-linux-x64 --output dist/santa-cli",
+    "compile": "esbuild ./src --bundle --platform=node --target=node16.16.0 --outfile=build/cli.js",
+    "package:binary": "pkg --config=pkg.json --output dist/santa-cli build/cli.js",
     "test": "jest"
   },
   "jest": {

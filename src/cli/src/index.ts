@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { readFileSync, realpathSync, writeFileSync } from 'fs';
-import fetch from 'sync-fetch';
+import fetch from 'node-fetch';
 import { run, runTests } from 'santa-lang/runner';
 import printSourcePreview from './printSourcePreview';
 
@@ -38,41 +38,65 @@ const io = {
       const day = url.pathname.substr(1);
 
       try {
-        return readFileSync(`aoc${year}_day${day}.input`);
+        return readFileSync(`aoc${year}_day${day}.input`, { encoding: 'utf-8' });
       } catch (err) {}
 
-      const response = fetch(`https://adventofcode.com/${year}/day/${day}/input`, {
+      let content, error;
+
+      fetch(`https://adventofcode.com/${year}/day/${day}/input`, {
         method: 'GET',
         headers: {
           Accepts: 'text/plain',
           Cookie: `session=${token}`,
         },
+      }).then(response => {
+        if (response.status !== 200) {
+          error = `Unable to read AOC input: ${path}, response: ${response.statusText}`;
+          return;
+        }
+
+        return response.text().then(body => {
+          content = body;
+        });
       });
 
-      if (response.status !== 200) {
-        throw new Error(`Unable to read AOC input: ${path}, response: ${response.statusText}`);
+      require('deasync').loopWhile(() => !content && !error);
+
+      if (error) {
+        throw new Error(error);
       }
 
-      const input = response.text();
+      writeFileSync(`aoc${year}_day${day}.input`, content);
 
-      writeFileSync(`aoc${year}_day${day}.input`, input);
-
-      return input;
+      return content;
     }
 
     if (url.protocol) {
-      const response = fetch(path, {
+      let content, error;
+
+      fetch(path, {
         method: 'GET',
         headers: {
           Accepts: 'text/plain',
         },
+      }).then(response => {
+        if (response.status !== 200) {
+          error = `Unable to read HTTP input: ${path}, response: ${response.statusText}`;
+          return;
+        }
+
+        return response.text().then(body => {
+          content = body;
+        });
       });
 
-      if (response.status !== 200) {
-        throw new Error(`Unable to read HTTP input: ${path}, response: ${response.statusText}`);
+      require('deasync').loopWhile(() => !content && !error);
+
+      if (error) {
+        throw new Error(error);
       }
 
-      return response.text();
+      return content;
     }
 
     try {

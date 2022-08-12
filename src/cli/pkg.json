@@ -1,0 +1,6 @@
+{
+  "pkg": {
+    "assets": ["./build/bin/**"],
+    "targets": ["node16.16.0-macos-x64", "node16.16.0-linux-x64"]
+  }
+}
