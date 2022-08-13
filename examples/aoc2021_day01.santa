@@ -1,4 +1,4 @@
-input: read("aoc2021_day01.input")
+input: read("aoc://2021/1")
 
 let parse_measurements = lines >> map(int)
 

@@ -1,4 +1,4 @@
-input: read("aoc2021_day02.input")
+input: read("aoc://2021/2")
 
 let parse_course = lines >> map(|line| {
   let [move, steps] = split(" ", line); 

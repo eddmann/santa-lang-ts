@@ -1,4 +1,4 @@
-input: read("aoc2016_day02.input")
+input: read("aoc://2016/2")
 
 let DIRECTIONS = #{"U": [0, -1], "D": [0, 1], "L": [-1, 0], "R": [1, 0]};
 

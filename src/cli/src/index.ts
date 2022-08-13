@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-import { readFileSync, realpathSync, writeFileSync } from 'fs';
-import fetch from 'node-fetch';
+import { readFileSync, realpathSync } from 'fs';
 import { run, runTests } from 'santa-lang/runner';
 import printSourcePreview from './printSourcePreview';
+import io from './io';
 
 let filename: string, source: string;
 try {
@@ -17,96 +17,6 @@ try {
 
 // ensure all files read are relative to the `.santa` source location
 process.chdir(require('path').dirname(realpathSync(filename)));
-
-const io = {
-  input: (path: string): string => {
-    let url = {};
-    try {
-      url = new URL(path);
-    } catch (err) {}
-
-    if (url.protocol === 'aoc:') {
-      const token = process.env.SANTA_CLI_SESSION_TOKEN;
-
-      if (!token) {
-        throw new Error(
-          `Unable to read AOC input: ${path}, missing session token within SANTA_CLI_SESSION_TOKEN environment variable`
-        );
-      }
-
-      const year = url.host;
-      const day = url.pathname.substr(1);
-
-      try {
-        return readFileSync(`aoc${year}_day${day}.input`, { encoding: 'utf-8' });
-      } catch (err) {}
-
-      let content, error;
-
-      fetch(`https://adventofcode.com/${year}/day/${day}/input`, {
-        method: 'GET',
-        headers: {
-          Accepts: 'text/plain',
-          Cookie: `session=${token}`,
-        },
-      }).then(response => {
-        if (response.status !== 200) {
-          error = `Unable to read AOC input: ${path}, response: ${response.statusText}`;
-          return;
-        }
-
-        return response.text().then(body => {
-          content = body;
-        });
-      });
-
-      require('deasync').loopWhile(() => !content && !error);
-
-      if (error) {
-        throw new Error(error);
-      }
-
-      writeFileSync(`aoc${year}_day${day}.input`, content);
-
-      return content;
-    }
-
-    if (url.protocol) {
-      let content, error;
-
-      fetch(path, {
-        method: 'GET',
-        headers: {
-          Accepts: 'text/plain',
-        },
-      }).then(response => {
-        if (response.status !== 200) {
-          error = `Unable to read HTTP input: ${path}, response: ${response.statusText}`;
-          return;
-        }
-
-        return response.text().then(body => {
-          content = body;
-        });
-      });
-
-      require('deasync').loopWhile(() => !content && !error);
-
-      if (error) {
-        throw new Error(error);
-      }
-
-      return content;
-    }
-
-    try {
-      return readFileSync(path, { encoding: 'utf-8' });
-    } catch (err) {
-      throw new Error(`Unable to read path: ${path}`);
-    }
-  },
-  output: (args: string[]) => console.log(...args),
-};
 
 const isTestRun = process.argv.includes('-t');
 try {

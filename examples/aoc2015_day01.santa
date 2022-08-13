@@ -1,4 +1,4 @@
-input: read("aoc2015_day01.input")
+input: read("aoc://2015/1")
 
 part_one: {
   input |>

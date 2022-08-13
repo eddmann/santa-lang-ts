@@ -1,4 +1,4 @@
-input: read("aoc2015_day03.input")
+input: read("aoc://2015/3")
 
 let move = |direction, [x, y]| match direction {
   "^" { [x + 1, y] }

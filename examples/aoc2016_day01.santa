@@ -1,4 +1,4 @@
-input: read("aoc2016_day01.input")
+input: read("aoc://2016/1")
 
 let compass = [[0, 1], [1, 0], [0, -1], [-1, 0]]
 
