@@ -3,14 +3,20 @@ import { run, runTests } from 'santa-lang/runner';
 
 const io = {
   input: (path: string): string => {
+    const url = new URL(path);
+
+    if (url.protocol === 'aoc:') {
+      const [year, day] = url.pathname.substring(2).split('/');
+      path = `https://raw.githubusercontent.com/eddmann/advent-of-code/master/${year}/santa-lang/aoc${year}_day${day.padStart(
+        2,
+        '0'
+      )}.input`;
+    }
+
     const request = new XMLHttpRequest();
-    request.open(
-      'GET',
-      `https://raw.githubusercontent.com/eddmann/advent-of-code/master/2018/santa-lang/${path}`,
-      false
-    );
+    request.open('GET', path, false);
     request.send(null);
-    return request.responseText;
+    return request.responseText.trim();
   },
   output: (args: string[]) => console.log(...args),
 };
