@@ -42,7 +42,7 @@ const readAoC = (url: URL, path: string): string => {
     }
 
     return response.text().then(body => {
-      content = body;
+      content = body.trim();
     });
   });
 
