@@ -192,6 +192,12 @@ const WorkspaceEditor = () => {
                 <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2018/santa-lang/aoc2018_day05.santa">
                   aoc2018_day05.santa
                 </option>
+                <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2018/santa-lang/aoc2018_day06.santa">
+                  aoc2018_day06.santa
+                </option>
+                <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2018/santa-lang/aoc2018_day07.santa">
+                  aoc2018_day07.santa
+                </option>
               </select>
             </div>
             <div>
