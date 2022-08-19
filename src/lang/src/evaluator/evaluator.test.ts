@@ -724,6 +724,17 @@ describe('match expression with guards', () => {
   });
 });
 
+test('ensure that multiple placeholders are ignored', () => {
+  const source = `
+    let [_, _, value] = [1, 2, 3];
+    value;
+  `;
+
+  const result = doEvaluate(source);
+
+  expect(result.inspect()).toEqual('3');
+});
+
 const doEvaluate = (source: string): O.Obj => {
   const lexer = new Lexer(source);
   const parser = new Parser(lexer);

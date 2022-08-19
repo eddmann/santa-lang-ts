@@ -218,6 +218,10 @@ const extendFunctionEnv = (
   const placeholderParams: AST.Identifiable[] = [];
 
   for (let i = 0; i < Math.min(parameters.length, args.length); i++) {
+    if (parameters[i].kind === AST.ASTKind.Placeholder) {
+      continue;
+    }
+
     if (args[i] instanceof O.Placeholder) {
       placeholderParams.push(parameters[i]);
       continue;

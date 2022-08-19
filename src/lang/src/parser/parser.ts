@@ -864,6 +864,13 @@ export default class Parser {
       };
     }
 
+    if (this.curToken.kind === TokenKind.Underscore) {
+      return {
+        kind: AST.ASTKind.Placeholder,
+        source: this.captureSourceLocation(),
+      };
+    }
+
     return {
       kind: AST.ASTKind.Identifier,
       value: this.curToken.literal,
