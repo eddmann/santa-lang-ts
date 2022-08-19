@@ -515,6 +515,47 @@ const range: O.BuiltinFuncTemplate = {
   },
 };
 
+const all: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'predicate',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment
+      .getVariable('collection')
+      .filter((v, k) => applyFunction(environment.getVariable('predicate'), [v, k]))
+      .equals(environment.getVariable('collection'))
+      ? O.TRUE
+      : O.FALSE;
+  },
+};
+
+const any: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'predicate',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment
+      .getVariable('collection')
+      .find((v, k) => applyFunction(environment.getVariable('predicate'), [v, k])) === O.NIL
+      ? O.FALSE
+      : O.TRUE;
+  },
+};
+
 export default {
   map,
   filter,
@@ -547,4 +588,6 @@ export default {
   get,
   repeat,
   range,
+  all,
+  any,
 };

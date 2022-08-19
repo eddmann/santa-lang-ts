@@ -1163,6 +1163,58 @@ describe('get', () => {
   });
 });
 
+describe('all', () => {
+  const cases = [
+    {
+      source: 'all(_ > 1, [2, 3, 4])',
+      expected: 'true',
+      description: 'list values match predicate',
+    },
+    {
+      source: 'all(_ > 1, [])',
+      expected: 'true',
+      description: 'empty list',
+    },
+    {
+      source: 'all(_ > 1, [0, 1, 2])',
+      expected: 'false',
+      description: 'list value does not match predicate',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
+describe('any', () => {
+  const cases = [
+    {
+      source: 'any(_ > 1, [0, 1, 2])',
+      expected: 'true',
+      description: 'list value matches predicate',
+    },
+    {
+      source: 'any(_ > 1, [])',
+      expected: 'false',
+      description: 'empty list',
+    },
+    {
+      source: 'any(_ > 1, [0, 1])',
+      expected: 'false',
+      description: 'no list value matches predicate',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
 const doEvaluate = (source: string): string => {
   const lexer = new Lexer(source);
   const parser = new Parser(lexer);
