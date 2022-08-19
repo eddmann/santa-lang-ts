@@ -41,8 +41,8 @@ export type Statement =
   | BlockStatement
   | ExpressionStatement
   | LetStatement
-  | ReturnStatment
-  | BreakStatment
+  | ReturnStatement
+  | BreakStatement
   | SectionStatement
   | CommentStatement;
 
@@ -128,13 +128,13 @@ export type AssignmentExpression = {
   source: SourceLocation;
 };
 
-export type ReturnStatment = {
+export type ReturnStatement = {
   kind: ASTKind.Return;
   returnValue: Expression;
   source: SourceLocation;
 };
 
-export type BreakStatment = {
+export type BreakStatement = {
   kind: ASTKind.Break;
   value: Expression | null;
   source: SourceLocation;

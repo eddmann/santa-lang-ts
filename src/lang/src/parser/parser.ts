@@ -225,7 +225,7 @@ export default class Parser {
     };
   }
 
-  private parseReturnStatement(): AST.ReturnStatment {
+  private parseReturnStatement(): AST.ReturnStatement {
     const source = this.captureSourceLocation();
 
     this.nextToken();
@@ -243,7 +243,7 @@ export default class Parser {
     };
   }
 
-  private parseBreakStatement(): AST.BreakStatment {
+  private parseBreakStatement(): AST.BreakStatement {
     const source = this.captureSourceLocation();
 
     this.nextToken();
