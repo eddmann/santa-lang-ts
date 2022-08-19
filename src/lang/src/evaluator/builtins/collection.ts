@@ -556,6 +556,38 @@ const any: O.BuiltinFuncTemplate = {
   },
 };
 
+const remove: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'key',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment.getVariable('collection').remove(environment.getVariable('key'));
+  },
+};
+
+const remove_value: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'value',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment.getVariable('collection').removeValue(environment.getVariable('value'));
+  },
+};
+
 export default {
   map,
   filter,
@@ -590,4 +622,6 @@ export default {
   range,
   all,
   any,
+  remove,
+  remove_value,
 };

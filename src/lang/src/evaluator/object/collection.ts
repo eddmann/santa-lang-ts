@@ -294,6 +294,18 @@ export class List implements ValueObj {
     return result || NIL;
   }
 
+  public remove(key: Obj): Obj {
+    if (key instanceof Integer) {
+      return new List(this.items.remove(key.value));
+    }
+
+    throw new Error(`remove(${key.constructor.name}, ${this.constructor.name}) is not supported`);
+  }
+
+  public removeValue(value: Obj): Obj {
+    return new List(this.items.filter(v => !v.equals(value)));
+  }
+
   public getInteralSeq(): Immutable.Seq {
     return this.items;
   }
@@ -546,6 +558,14 @@ export class Hash {
     return result || NIL;
   }
 
+  public remove(key: Obj): Obj {
+    return new Hash(this.items.remove(key));
+  }
+
+  public removeValue(value: Obj): Obj {
+    return new Hash(this.items.filter(v => !v.equals(value)));
+  }
+
   public assoc(key: Obj, value: Obj): Hash {
     return new Hash(this.items.set(key, value));
   }
@@ -738,6 +758,14 @@ export class Set {
     });
 
     return result || NIL;
+  }
+
+  public remove(key: Obj): Obj {
+    return new Set(this.items.remove(key));
+  }
+
+  public removeValue(value: Obj): Obj {
+    return new Set(this.items.remove(value));
   }
 }
 

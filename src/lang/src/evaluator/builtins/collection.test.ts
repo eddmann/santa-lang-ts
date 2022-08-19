@@ -1215,6 +1215,88 @@ describe('any', () => {
   });
 });
 
+describe('remove', () => {
+  const cases = [
+    {
+      source: 'remove(0, [1, 2, 3])',
+      expected: '[2, 3]',
+      description: 'list',
+    },
+    {
+      source: 'remove(3, [1, 2, 3])',
+      expected: '[1, 2, 3]',
+      description: 'list with unknown key',
+    },
+    {
+      source: 'remove("b", #{"a": 1, "b": 2, "c": 3})',
+      expected: '#{"a": 1, "c": 3}',
+      description: 'hash',
+    },
+    {
+      source: 'remove("d", #{"a": 1, "b": 2, "c": 3})',
+      expected: '#{"a": 1, "b": 2, "c": 3}',
+      description: 'hash with unknown key',
+    },
+    {
+      source: 'remove(1, {1, 2, 3})',
+      expected: '{3, 2}',
+      description: 'set',
+    },
+    {
+      source: 'remove(4, {1, 2, 3})',
+      expected: '{1, 2, 3}',
+      description: 'set with unknown key',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
+describe('remove_value', () => {
+  const cases = [
+    {
+      source: 'remove_value(1, [1, 2, 3])',
+      expected: '[2, 3]',
+      description: 'list',
+    },
+    {
+      source: 'remove_value(4, [1, 2, 3])',
+      expected: '[1, 2, 3]',
+      description: 'list with unknown value',
+    },
+    {
+      source: 'remove_value(2, #{"a": 1, "b": 2, "c": 3})',
+      expected: '#{"a": 1, "c": 3}',
+      description: 'hash',
+    },
+    {
+      source: 'remove_value(4, #{"a": 1, "b": 2, "c": 3})',
+      expected: '#{"a": 1, "b": 2, "c": 3}',
+      description: 'hash with unknown value',
+    },
+    {
+      source: 'remove_value(1, {1, 2, 3})',
+      expected: '{3, 2}',
+      description: 'set',
+    },
+    {
+      source: 'remove_value(4, {1, 2, 3})',
+      expected: '{1, 2, 3}',
+      description: 'set with unknown value',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
 const doEvaluate = (source: string): string => {
   const lexer = new Lexer(source);
   const parser = new Parser(lexer);
