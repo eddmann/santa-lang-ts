@@ -11,14 +11,6 @@ const parseUrl = (path: string): URL | null => {
 };
 
 const readAoC = (url: URL, path: string): string => {
-  const token = process.env.SANTA_CLI_SESSION_TOKEN;
-
-  if (!token) {
-    throw new Error(
-      `Unable to read AOC input: ${path}, missing session token within SANTA_CLI_SESSION_TOKEN environment variable`
-    );
-  }
-
   const year = url.host;
   const day = url.pathname.substring(1);
   const filename = `aoc${year}_day${day.padStart(2, '0')}.input`;
@@ -26,6 +18,14 @@ const readAoC = (url: URL, path: string): string => {
   try {
     return readFileSync(filename, { encoding: 'utf-8' });
   } catch (err) {}
+
+  const token = process.env.SANTA_CLI_SESSION_TOKEN;
+
+  if (!token) {
+    throw new Error(
+      `Unable to read AOC input: ${path}, missing session token within SANTA_CLI_SESSION_TOKEN environment variable`
+    );
+  }
 
   let content: string | undefined, error: string | undefined;
 
