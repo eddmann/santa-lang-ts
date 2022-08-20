@@ -34,6 +34,19 @@ export class BuiltinFunc implements Obj {
   }
 }
 
+export class TailCallFunc implements Obj {
+  constructor(
+    public parameters: AST.Identifiable[],
+    public body: AST.BlockStatement,
+    public environment: Environment
+  ) {}
+
+  public inspect(): string {
+    const parameters = this.parameters.map(parameter => parameter.value).join(', ');
+    return `|${parameters}| {…}`;
+  }
+}
+
 export class ReturnValue implements Obj {
   constructor(public value: Obj) {}
 

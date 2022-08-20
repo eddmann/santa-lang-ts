@@ -142,11 +142,37 @@ const evalIdentifier = (node: AST.Identifier, environment: O.Environment): O.Obj
 };
 
 const evalStatements = (statements: AST.Statement[], environment: O.Environment): O.Obj => {
+  let result = evalStatementsLoop(statements, environment);
+
+  while (result instanceof O.TailCallFunc) {
+    result = evalStatementsLoop(result.body.statements, result.environment);
+  }
+
+  return result;
+};
+
+const evalStatementsLoop = (statements: AST.Statement[], environment: O.Environment): O.Obj => {
   let result: O.Obj = O.NIL;
 
   for (const statement of statements) {
     if (statement.kind === AST.ASTKind.CommentStatement) {
       continue;
+    }
+
+    if (
+      statement.kind === AST.ASTKind.Return &&
+      statement.returnValue.kind === AST.ASTKind.CallExpression
+    ) {
+      const fn: O.Func = evaluate(statement.returnValue.function, environment);
+
+      return new O.TailCallFunc(
+        fn.parameters,
+        fn.body,
+        extendFunctionEnv(
+          fn,
+          evalExpressions(statement.returnValue.arguments, environment)
+        ).environment
+      );
     }
 
     result = evaluate(statement, environment);
@@ -171,11 +197,11 @@ const evalIfExpression = (node: AST.IfExpression, environment: O.Environment): O
   }
 
   if (isTruthy(condition)) {
-    return evaluate(node.consequence, environment);
+    return evalStatementsLoop(node.consequence.statements, environment);
   }
 
   if (node.alternative) {
-    return evaluate(node.alternative, environment);
+    return evalStatementsLoop(node.alternative.statements, environment);
   }
 
   return O.NIL;
