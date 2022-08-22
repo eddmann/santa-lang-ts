@@ -166,16 +166,18 @@ const evalStatementsLoop = (statements: AST.Statement[], environment: O.Environm
       statement.kind === AST.ASTKind.Return &&
       statement.returnValue.kind === AST.ASTKind.CallExpression
     ) {
-      const fn: O.Func = evaluate(statement.returnValue.function, environment);
+      const fn = evaluate(statement.returnValue.function, environment);
 
-      return new O.TailCallFunc(
-        fn.parameters,
-        fn.body,
-        extendFunctionEnv(
-          fn,
-          evalExpressions(statement.returnValue.arguments, environment)
-        ).environment
-      );
+      if (fn instanceof O.Func) {
+        return new O.TailCallFunc(
+          fn.parameters,
+          fn.body,
+          extendFunctionEnv(
+            fn,
+            evalExpressions(statement.returnValue.arguments, environment)
+          ).environment
+        );
+      }
     }
 
     // handle tail-recursive end statements
@@ -184,16 +186,18 @@ const evalStatementsLoop = (statements: AST.Statement[], environment: O.Environm
       statement.kind === AST.ASTKind.ExpressionStatement &&
       statement.expression.kind === AST.ASTKind.CallExpression
     ) {
-      const fn: O.Func = evaluate(statement.expression.function, environment);
+      const fn = evaluate(statement.expression.function, environment);
 
-      return new O.TailCallFunc(
-        fn.parameters,
-        fn.body,
-        extendFunctionEnv(
-          fn,
-          evalExpressions(statement.expression.arguments, environment)
-        ).environment
-      );
+      if (fn instanceof O.Func) {
+        return new O.TailCallFunc(
+          fn.parameters,
+          fn.body,
+          extendFunctionEnv(
+            fn,
+            evalExpressions(statement.expression.arguments, environment)
+          ).environment
+        );
+      }
     }
 
     result = evaluate(statement, environment);
