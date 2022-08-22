@@ -13,7 +13,7 @@ part_one: {
         let next_dir = (dir + (if (turn == "R") { 1 } else { -1 })) % size(compass);
         let [dx, dy] = compass[next_dir];
         [[x + dx * steps, y + dy * steps], next_dir];
-      }, 
+      },
       [[0, 0], 0]
     )
     |> distance
@@ -28,7 +28,7 @@ part_two: {
 
         let path = 1..steps
           |> reduce(
-            |path, steps| path + {[x + dx * steps, y + dy * steps]}, 
+            |path, steps| path + {[x + dx * steps, y + dy * steps]},
             {}
           );
 
@@ -37,7 +37,7 @@ part_two: {
         if (already_visited) {
           break [already_visited];
         }
-        
+
         return [[x + dx * steps, y + dy * steps], next_dir, visited + path];
       },
       [[0, 0], 0, {}]

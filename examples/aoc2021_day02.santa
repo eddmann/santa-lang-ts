@@ -1,12 +1,12 @@
 input: read("aoc://2021/2")
 
 let parse_course = lines >> map(|line| {
-  let [move, steps] = split(" ", line); 
+  let [move, steps] = split(" ", line);
   [move, int(steps)]
 });
 
 part_one: {
-  parse_course(input) 
+  parse_course(input)
     |> reduce(
       |[horizontal, depth], action| match action {
         ["forward", steps] { [horizontal + steps, depth] }
@@ -19,7 +19,7 @@ part_one: {
 }
 
 part_two: {
-  parse_course(input) 
+  parse_course(input)
     |> reduce(
       |[horizontal, depth, aim], action| match action {
         ["forward", steps] { [horizontal + steps, depth + aim * steps, aim] }
