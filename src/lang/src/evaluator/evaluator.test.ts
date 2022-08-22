@@ -735,20 +735,38 @@ test('ensure that multiple placeholders are ignored', () => {
   expect(result.inspect()).toEqual('3');
 });
 
-test('optimises tail recursive function calls', () => {
-  const source = `
-    let fibonacci = |n| {
-      let recur = |a, b, n| {
-        if (n > 0) { return recur(b, a + b, n - 1) } else { a }
+describe('tail recursive function calls', () => {
+  test('explicit return statement', () => {
+    const source = `
+      let fibonacci = |n| {
+        let recur = |a, b, n| {
+          if (n > 0) { return recur(b, a + b, n - 1) } else { a }
+        };
+        recur(0, 1, n);
       };
-      recur(0, 1, n)
-    };
-    fibonacci(50);
-  `;
+      fibonacci(50);
+    `;
 
-  const result = doEvaluate(source);
+    const result = doEvaluate(source);
 
-  expect(result.inspect()).toEqual('12586269025');
+    expect(result.inspect()).toEqual('12586269025');
+  });
+
+  test('implicit end statement', () => {
+    const source = `
+      let fibonacci = |n| {
+        let recur = |a, b, n| {
+          if (n > 0) { recur(b, a + b, n - 1) } else { a }
+        };
+        recur(0, 1, n);
+      };
+      fibonacci(50);
+    `;
+
+    const result = doEvaluate(source);
+
+    expect(result.inspect()).toEqual('12586269025');
+  });
 });
 
 const doEvaluate = (source: string): O.Obj => {

@@ -154,11 +154,14 @@ const evalStatements = (statements: AST.Statement[], environment: O.Environment)
 const evalStatementsLoop = (statements: AST.Statement[], environment: O.Environment): O.Obj => {
   let result: O.Obj = O.NIL;
 
-  for (const statement of statements) {
+  for (let i = 0; i < statements.length; i++) {
+    const statement = statements[i];
+
     if (statement.kind === AST.ASTKind.CommentStatement) {
       continue;
     }
 
+    // handle tail-recursive `return` statements
     if (
       statement.kind === AST.ASTKind.Return &&
       statement.returnValue.kind === AST.ASTKind.CallExpression
@@ -171,6 +174,24 @@ const evalStatementsLoop = (statements: AST.Statement[], environment: O.Environm
         extendFunctionEnv(
           fn,
           evalExpressions(statement.returnValue.arguments, environment)
+        ).environment
+      );
+    }
+
+    // handle tail-recursive end statements
+    if (
+      i == statements.length - 1 &&
+      statement.kind === AST.ASTKind.ExpressionStatement &&
+      statement.expression.kind === AST.ASTKind.CallExpression
+    ) {
+      const fn: O.Func = evaluate(statement.expression.function, environment);
+
+      return new O.TailCallFunc(
+        fn.parameters,
+        fn.body,
+        extendFunctionEnv(
+          fn,
+          evalExpressions(statement.expression.arguments, environment)
         ).environment
       );
     }
