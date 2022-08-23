@@ -94,7 +94,7 @@ const WorkspaceEditor = () => {
               if (testCase.partOne.hasPassed) {
                 output += `Part 1: ${testCase.partOne.actual} ✔️\n`;
               } else {
-                output += `Part 1: ${testCase.partOne.actual} ✘ (Expected: ${testCase.partTwo.expected})\n`;
+                output += `Part 1: ${testCase.partOne.actual} ✘ (Expected: ${testCase.partOne.expected})\n`;
               }
             }
 
