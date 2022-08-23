@@ -2,6 +2,11 @@ import { Lexer } from '../lexer';
 import { AST, Parser } from '../parser';
 import { O, evaluate } from '../evaluator';
 
+const unwrapReturnValue = (obj: O.Obj): O.Obj => (obj instanceof O.ReturnValue ? obj.value : obj);
+
+const evaluateNode = (node: AST.Node, environment: O.Environment): O.Obj =>
+  unwrapReturnValue(evaluate(node, environment));
+
 const evaluateSection = (
   section: O.Section,
   environment: O.Enviornment,
@@ -13,7 +18,7 @@ const evaluateSection = (
     sectionEnvironment.declareVariable('input', input, false);
   }
 
-  const result = evaluate(section.section, sectionEnvironment);
+  const result = evaluateNode(section.section, sectionEnvironment);
 
   if (result instanceof O.Err) {
     throw {
@@ -51,7 +56,7 @@ const evaluateSource = (
   const environment = new O.Environment();
   environment.setIO(io);
 
-  const result = evaluate(ast, environment);
+  const result = evaluateNode(ast, environment);
   if (result instanceof O.Err) {
     throw {
       message: result.inspect(),
@@ -116,7 +121,7 @@ export const run = (source: string, io: O.IO): Result => {
     };
   }
 
-  const inputResult = input.length === 1 ? evaluate(input[0].section, environment) : null;
+  const inputResult = input.length === 1 ? evaluateNode(input[0].section, environment) : null;
   if (inputResult instanceof O.Err) {
     throw {
       message: inputResult.inspect(),
@@ -148,7 +153,7 @@ export const runTests = (source: string, io: O.IO): TestCase[] => {
   return environment.getSection('test').map(test => {
     const testEnvironment = new O.Environment(environment);
 
-    const testResult = evaluate(test.section, testEnvironment);
+    const testResult = evaluateNode(test.section, testEnvironment);
     if (testResult instanceof O.Err) {
       throw {
         message: testResult.inspect(),
