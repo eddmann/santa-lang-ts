@@ -6,7 +6,10 @@ const io = {
     const url = new URL(path);
 
     if (url.protocol === 'aoc:') {
-      const [year, day] = url.pathname.substring(2).split('/');
+      let year = url.host;
+      let day = url.pathname.substring(1);
+      if (!year) [year, day] = url.pathname.substring(2).split('/');
+
       path = `https://raw.githubusercontent.com/eddmann/advent-of-code/master/${year}/santa-lang/aoc${year}_day${day.padStart(
         2,
         '0'
