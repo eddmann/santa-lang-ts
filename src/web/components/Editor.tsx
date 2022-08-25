@@ -11,7 +11,7 @@ export default function Editor({
 }): React.ReactElement {
   return (
     <CodeMirror
-      className="Editor"
+      style={{ height: '100%' }}
       value={source}
       autoFocus={false}
       height="100%"

@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
-import Container from '../components/Container';
+import Split from 'react-split';
 import Navigation from '../components/Navigation';
 const Editor = dynamic(() => import('../components/Editor'), { ssr: false });
 
@@ -142,126 +142,76 @@ const WorkspaceEditor = () => {
   };
 
   return (
-    <div style={{ flex: 1, position: 'relative' }}>
+    <div>
       <div
         style={{
-          position: 'absolute',
-          left: 0,
-          right: 0,
-          top: 0,
-          bottom: 0,
+          backgroundColor: '#efefef',
+          borderBottom: '1px solid #ddd',
+          height: 32,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '0 10px',
         }}
       >
-        <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            bottom: 0,
-            width: '50%',
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: '#efefef',
-              borderBottom: '1px solid #ddd',
-              height: 32,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              padding: '0 10px',
-            }}
-          >
-            <div>
-              <select onChange={handleExample} defaultValue="title">
-                <option value="title" disabled>
-                  Select an example...
-                </option>
-                <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2018/santa-lang/aoc2018_day01.santa">
-                  aoc2018_day01.santa
-                </option>
-                <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2018/santa-lang/aoc2018_day02.santa">
-                  aoc2018_day02.santa
-                </option>
-                <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2018/santa-lang/aoc2018_day03.santa">
-                  aoc2018_day03.santa
-                </option>
-                <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2018/santa-lang/aoc2018_day04.santa">
-                  aoc2018_day04.santa
-                </option>
-                <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2018/santa-lang/aoc2018_day05.santa">
-                  aoc2018_day05.santa
-                </option>
-                <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2018/santa-lang/aoc2018_day06.santa">
-                  aoc2018_day06.santa
-                </option>
-                <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2018/santa-lang/aoc2018_day07.santa">
-                  aoc2018_day07.santa
-                </option>
-              </select>
-            </div>
-            <div>
-              <button onClick={handleTest} disabled={isRunning}>
-                Test
-              </button>{' '}
-              <button onClick={handleRun} disabled={isRunning}>
-                Run
-              </button>
-            </div>
-          </div>
-          <Editor onChange={setSource} source={source} />
+        <div>
+          <select onChange={handleExample} defaultValue="title">
+            <option value="title" disabled>
+              Select an example...
+            </option>
+            <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2018/santa-lang/aoc2018_day01.santa">
+              aoc2018_day01.santa
+            </option>
+            <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2018/santa-lang/aoc2018_day02.santa">
+              aoc2018_day02.santa
+            </option>
+            <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2018/santa-lang/aoc2018_day03.santa">
+              aoc2018_day03.santa
+            </option>
+            <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2018/santa-lang/aoc2018_day04.santa">
+              aoc2018_day04.santa
+            </option>
+            <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2018/santa-lang/aoc2018_day05.santa">
+              aoc2018_day05.santa
+            </option>
+            <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2018/santa-lang/aoc2018_day06.santa">
+              aoc2018_day06.santa
+            </option>
+            <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2018/santa-lang/aoc2018_day07.santa">
+              aoc2018_day07.santa
+            </option>
+          </select>
         </div>
-        <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            bottom: 0,
-            left: '50%',
-            width: 5,
-            backgroundColor: '#ddd',
-            zIndex: 100,
-          }}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            bottom: 0,
-            width: '50%',
-          }}
-        >
-          <div
-            style={{
-              position: 'absolute',
-              top: 0,
-              bottom: 0,
-              left: 0,
-              right: 0,
-              display: 'flex',
-              flexDirection: 'column',
-            }}
-          >
-            <div style={{ flex: 1, position: 'relative' }}>
-              <pre
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  paddingLeft: 20,
-                  overflowY: 'scroll',
-                  fontFamily: 'monospace',
-                  fontSize: 16,
-                }}
-              >
-                {result}
-              </pre>
-            </div>
-          </div>
+        <div>
+          <button onClick={handleTest} disabled={isRunning}>
+            Test
+          </button>{' '}
+          <button onClick={handleRun} disabled={isRunning}>
+            Run
+          </button>
         </div>
       </div>
+      <Split
+        direction="vertical"
+        style={{ height: `calc(100vh - 64px)` }}
+        sizes={[60, 40]}
+        minSize={[200, 200]}
+      >
+        <div>
+          <Editor onChange={setSource} source={source} />
+        </div>
+        <pre
+          style={{
+            margin: 0,
+            padding: '20px',
+            overflowY: 'scroll',
+            fontFamily: 'monospace',
+            fontSize: 16,
+          }}
+        >
+          {result}
+        </pre>
+      </Split>
     </div>
   );
 };
@@ -271,11 +221,15 @@ const Workspace: NextPage = () => {
     <div>
       <Head>
         <title>santa-lang</title>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
       </Head>
-      <Container>
+      <div>
         <Navigation />
         <WorkspaceEditor />
-      </Container>
+      </div>
     </div>
   );
 };
