@@ -97,6 +97,17 @@ zip(1.., 2..) |> map(|[x, y]| x * y) |> take(5); // [2, 6, 12, 20, 30]
 let factorial = |n| if n == 0 { 1 } else { n * factorial(n - 1) };
 ```
 
+#### Tail-call optimization
+
+To avoid exhausting the call stack, the above `factorial` function can be rewritten in a tail-recursive form.
+
+```
+let factorial = |n| {
+  let recur = |acc, n| if n == 0 { acc } else { recur(acc * n, n - 1) };
+  recur(1, n);
+};
+```
+
 ### Closures
 
 ```
