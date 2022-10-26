@@ -7,6 +7,8 @@ import { Parser } from 'santa-lang/parser';
 import { O, evaluate } from 'santa-lang/evaluator';
 import { encode, decode } from './encode';
 
+// Reference: https://github.com/lambci/node-custom-lambda/blob/master/v12.x/bootstrap.js
+
 const RUNTIME_PATH = '/2018-06-01/runtime';
 
 const {
@@ -129,7 +131,10 @@ function initHandler(scriptPath, sectionName) {
   const environment = new O.Environment();
   environment.setIO(io);
 
-  evaluate(ast, environment);
+  const result = evaluate(ast, environment);
+  if (result instanceof O.Err) {
+    throw result;
+  }
 
   return environment.getSection(sectionName)[0].section;
 }
