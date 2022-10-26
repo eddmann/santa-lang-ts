@@ -588,6 +588,18 @@ const remove_value: O.BuiltinFuncTemplate = {
   },
 };
 
+const shuffle: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment.getVariable('collection').shuffle();
+  },
+};
+
 export default {
   map,
   filter,
@@ -624,4 +636,5 @@ export default {
   any,
   remove,
   remove_value,
+  shuffle,
 };

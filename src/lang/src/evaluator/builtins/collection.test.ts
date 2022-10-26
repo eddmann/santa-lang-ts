@@ -1297,6 +1297,20 @@ describe('remove_value', () => {
   });
 });
 
+describe('shuffle', () => {
+  test('multiple items', () => {
+    expect(doEvaluate('shuffle([1, 2, 3])')).not.toEqual('[1, 2, 3]');
+  });
+
+  test('single items', () => {
+    expect(doEvaluate('shuffle([1])')).toEqual('[1]');
+  });
+
+  test('empty list', () => {
+    expect(doEvaluate('shuffle([])')).toEqual('[]');
+  });
+});
+
 const doEvaluate = (source: string): string => {
   const lexer = new Lexer(source);
   const parser = new Parser(lexer);

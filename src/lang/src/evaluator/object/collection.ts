@@ -355,6 +355,22 @@ export class List implements ValueObj {
         .map(v => v || NIL)
     );
   }
+
+  shuffle() {
+    return new List(
+      // Fisher-Yates shuffle
+      this.items.withMutations(list => {
+        let idx = list.size;
+
+        while (idx) {
+          const swapIdx = Math.floor(Math.random() * idx--);
+          const currentValue = list.get(idx);
+          list.set(idx, list.get(swapIdx));
+          list.set(swapIdx, currentValue);
+        }
+      })
+    );
+  }
 }
 
 export class Hash {
