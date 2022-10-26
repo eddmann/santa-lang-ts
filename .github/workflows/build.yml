@@ -44,3 +44,18 @@ jobs:
         with:
           branch: gh-pages
           folder: src/web/out
+  build-lambda:
+    name: 'Build Lambda runtime'
+    runs-on: ubuntu-20.04
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v3
+      - name: 'Install'
+        run: make lambda/install
+      - name: 'Build'
+        run: make lambda/build
+      - name: 'Upload layer'
+        uses: actions/upload-artifact@v3
+        with:
+          name: 'santa-lang-lambda-al2.zip'
+          path: 'src/lambda/dist/layer.zip'

@@ -3,6 +3,7 @@ DOCKER = docker run --rm -v $(PWD):/app -w /app
 LANG_YARN = $(DOCKER) $(IMAGE) yarn --cwd src/lang
 CLI_YARN = $(DOCKER) $(IMAGE) yarn --cwd src/cli
 WEB_YARN = $(DOCKER) $(IMAGE) yarn --cwd src/web
+LAMBDA_YARN = $(DOCKER) $(IMAGE) yarn --cwd src/lambda
 
 .PHONY: lang/install
 lang/install:
@@ -36,6 +37,15 @@ web/test:
 .PHONY: web/build
 web/build:
 	@$(WEB_YARN) build
+
+.PHONY: lambda/install
+lambda/install:
+	@$(LAMBDA_YARN) install --immutable
+
+.PHONY: lambda/build
+lambda/build:
+	@$(LAMBDA_YARN) compile
+	$(DOCKER) $(IMAGE) sh -c "apk --no-cache add zip && yarn --cwd src/lambda package:layer"
 
 .PHONY: shell
 shell:
