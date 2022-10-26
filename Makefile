@@ -47,6 +47,26 @@ lambda/build:
 	@$(LAMBDA_YARN) compile
 	$(DOCKER) $(IMAGE) sh -c "apk --no-cache add zip && yarn --cwd src/lambda package:layer"
 
+.PHONY: lambda/publish
+lambda/publish:
+	LAYER_VERSION=$$( \
+		aws lambda publish-layer-version \
+		--region eu-west-1 \
+		--layer-name "santa-lang" \
+		--zip-file "fileb://src/lambda/dist/layer.zip" \
+		--compatible-runtimes provided \
+		--license-info MIT \
+		--output text \
+		--query Version \
+	) && \
+	aws lambda add-layer-version-permission \
+		--region eu-west-1 \
+		--layer-name "santa-lang" \
+		--version-number "$${LAYER_VERSION}" \
+		--action lambda:GetLayerVersion \
+		--statement-id public \
+		--principal "*"
+
 .PHONY: shell
 shell:
 	@$(DOCKER) -it $(IMAGE) sh
