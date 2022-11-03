@@ -371,6 +371,38 @@ export class List implements ValueObj {
       })
     );
   }
+
+  rotate(steps: Obj) {
+    if (!(steps instanceof Integer)) {
+      throw new Error('Expected List steps to be an Integer');
+    }
+
+    const times = steps.value;
+
+    if (times === 0) {
+      return this;
+    }
+
+    const items = this.items.asMutable();
+
+    if (times > 0) {
+      for (let i = 0; i < times; i++) {
+        const last = items.last();
+        items.pop();
+        items.unshift(last);
+      }
+    }
+
+    if (times < 0) {
+      for (let i = 0; i < Math.abs(times); i++) {
+        const head = items.first();
+        items.shift();
+        items.push(head);
+      }
+    }
+
+    return new List(items.asImmutable());
+  }
 }
 
 export class Hash {

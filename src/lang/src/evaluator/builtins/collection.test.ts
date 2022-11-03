@@ -1311,6 +1311,24 @@ describe('shuffle', () => {
   });
 });
 
+describe('rotate', () => {
+  test('positive step (in-bounds)', () => {
+    expect(doEvaluate('rotate(2, [1, 2, 3])')).toEqual('[2, 3, 1]');
+  });
+
+  test('positive step (out-of-bounds)', () => {
+    expect(doEvaluate('rotate(6, [1, 2, 3])')).toEqual('[1, 2, 3]');
+  });
+
+  test('negative step (in-bounds)', () => {
+    expect(doEvaluate('rotate(-2, [1, 2, 3])')).toEqual('[3, 1, 2]');
+  });
+
+  test('negative step (out-of-bounds)', () => {
+    expect(doEvaluate('rotate(-6, [1, 2, 3])')).toEqual('[1, 2, 3]');
+  });
+});
+
 const doEvaluate = (source: string): string => {
   const lexer = new Lexer(source);
   const parser = new Parser(lexer);

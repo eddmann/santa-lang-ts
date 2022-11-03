@@ -600,6 +600,22 @@ const shuffle: O.BuiltinFuncTemplate = {
   },
 };
 
+const rotate: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'steps',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment.getVariable('collection').rotate(environment.getVariable('steps'));
+  },
+};
+
 export default {
   map,
   filter,
@@ -637,4 +653,5 @@ export default {
   remove,
   remove_value,
   shuffle,
+  rotate,
 };
