@@ -11,6 +11,18 @@ export class List implements ValueObj {
     this.items = Immutable.List(items);
   }
 
+  public asMutable() {
+    return new List(this.items.asMutable());
+  }
+
+  public asImmutable() {
+    return new List(this.items.asImmutable());
+  }
+
+  public isImmutable(): boolean {
+    return !this.items.__ownerID;
+  }
+
   public static from(collection: Obj): List {
     if (collection instanceof List) {
       return new List(collection.items);
@@ -356,6 +368,18 @@ export class List implements ValueObj {
     );
   }
 
+  public assign(index: Obj, value: Obj): List {
+    if (!(index instanceof Integer)) {
+      throw new Error('Expected List index to be an Integer');
+    }
+
+    return new List(this.items.set(index.value, value));
+  }
+
+  public push(value: Obj): List {
+    return new List(this.items.push(value));
+  }
+
   shuffle() {
     return new List(
       // Fisher-Yates shuffle
@@ -410,6 +434,18 @@ export class Hash {
 
   constructor(items: Iterable<[Obj, Obj]>) {
     this.items = Immutable.Map(items);
+  }
+
+  public asMutable() {
+    return new Hash(this.items.asMutable());
+  }
+
+  public asImmutable() {
+    return new Hash(this.items.asImmutable());
+  }
+
+  public isImmutable(): boolean {
+    return !this.items.__ownerID;
   }
 
   public static from(collection: Obj): Hash {
@@ -631,6 +667,10 @@ export class Hash {
       })
     );
   }
+
+  public assign(key: Obj, value: Obj): Hash {
+    return new Hash(this.items.set(key, value));
+  }
 }
 
 export class Set {
@@ -638,6 +678,18 @@ export class Set {
 
   constructor(items: Iterable<Obj> | ArrayLike<Obj>) {
     this.items = Immutable.Set(items);
+  }
+
+  public asMutable() {
+    return new Hash(this.items.asMutable());
+  }
+
+  public asImmutable() {
+    return new Hash(this.items.asImmutable());
+  }
+
+  public isImmutable(): boolean {
+    return !this.items.__ownerID;
   }
 
   public static from(collection: Obj): Set {
@@ -772,6 +824,10 @@ export class Set {
     } catch (err) {
       return err;
     }
+  }
+
+  public push(value: Obj): Set {
+    return new Set(this.items.add(value));
   }
 
   public add(that: Obj): Set {

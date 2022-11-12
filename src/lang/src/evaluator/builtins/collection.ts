@@ -413,6 +413,30 @@ const max: O.BuiltinFuncTemplate = {
   },
 };
 
+const mutable: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment.getVariable('collection').asMutable();
+  },
+};
+
+const immutable: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment.getVariable('collection').asImmutable();
+  },
+};
+
 const assoc: O.BuiltinFuncTemplate = {
   parameters: [
     {
@@ -429,6 +453,36 @@ const assoc: O.BuiltinFuncTemplate = {
     },
   ],
   body: (environment: O.Environment) => {
+    if (!environment.getVariable('collection').isImmutable()) {
+      throw new Error('Expected immutable collection');
+    }
+
+    return environment
+      .getVariable('collection')
+      .assoc(environment.getVariable('key'), environment.getVariable('value'));
+  },
+};
+
+const assoc_mutable: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'key',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'value',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    if (environment.getVariable('collection').isImmutable()) {
+      throw new Error('Expected mutable collection');
+    }
+
     return environment
       .getVariable('collection')
       .assoc(environment.getVariable('key'), environment.getVariable('value'));
@@ -455,11 +509,139 @@ const update: O.BuiltinFuncTemplate = {
     },
   ],
   body: (environment: O.Environment) => {
+    if (!environment.getVariable('collection').isImmutable()) {
+      throw new Error('Expected immutable collection');
+    }
+
     return environment
       .getVariable('collection')
       .update(environment.getVariable('key'), environment.getVariable('default'), v =>
         applyFunction(environment.getVariable('updater'), [v])
       );
+  },
+};
+
+const update_mutable: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'key',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'default',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'updater',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    if (environment.getVariable('collection').isImmutable()) {
+      throw new Error('Expected mutable collection');
+    }
+
+    return environment
+      .getVariable('collection')
+      .update(environment.getVariable('key'), environment.getVariable('default'), v =>
+        applyFunction(environment.getVariable('updater'), [v])
+      );
+  },
+};
+
+const assign: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'key',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'value',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    if (!environment.getVariable('collection').isImmutable()) {
+      throw new Error('Expected immutable collection');
+    }
+
+    return environment
+      .getVariable('collection')
+      .assign(environment.getVariable('key'), environment.getVariable('value'));
+  },
+};
+
+const assign_mutable: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'key',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'value',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    if (environment.getVariable('collection').isImmutable()) {
+      throw new Error('Expected mutable collection');
+    }
+
+    return environment
+      .getVariable('collection')
+      .assign(environment.getVariable('key'), environment.getVariable('value'));
+  },
+};
+
+const push: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'value',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    if (!environment.getVariable('collection').isImmutable()) {
+      throw new Error('Expected immutable collection');
+    }
+
+    return environment.getVariable('collection').push(environment.getVariable('value'));
+  },
+};
+
+const push_mutable: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'value',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    if (environment.getVariable('collection').isImmutable()) {
+      throw new Error('Expected mutable collection');
+    }
+
+    return environment.getVariable('collection').push(environment.getVariable('value'));
   },
 };
 
@@ -568,6 +750,30 @@ const remove: O.BuiltinFuncTemplate = {
     },
   ],
   body: (environment: O.Environment) => {
+    if (!environment.getVariable('collection').isImmutable()) {
+      throw new Error('Expected immutable collection');
+    }
+
+    return environment.getVariable('collection').remove(environment.getVariable('key'));
+  },
+};
+
+const remove_mutable: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'key',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    if (environment.getVariable('collection').isImmutable()) {
+      throw new Error('Expected mutable collection');
+    }
+
     return environment.getVariable('collection').remove(environment.getVariable('key'));
   },
 };
@@ -584,6 +790,30 @@ const remove_value: O.BuiltinFuncTemplate = {
     },
   ],
   body: (environment: O.Environment) => {
+    if (!environment.getVariable('collection').isImmutable()) {
+      throw new Error('Expected immutable collection');
+    }
+
+    return environment.getVariable('collection').removeValue(environment.getVariable('value'));
+  },
+};
+
+const remove_value_mutable: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'value',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    if (environment.getVariable('collection').isImmutable()) {
+      throw new Error('Expected mutable collection');
+    }
+
     return environment.getVariable('collection').removeValue(environment.getVariable('value'));
   },
 };
@@ -643,15 +873,25 @@ export default {
   cycle,
   keys,
   values,
+  'mut!': mutable,
+  imut: immutable,
   assoc,
+  'assoc!': assoc_mutable,
   update,
+  'update!': update_mutable,
+  assign,
+  'assign!': assign_mutable,
+  push: push,
+  'push!': push_mutable,
+  remove,
+  'remove!': remove_mutable,
+  remove_value,
+  'remove_value!': remove_value_mutable,
   get,
   repeat,
   range,
   all,
   any,
-  remove,
-  remove_value,
   shuffle,
   rotate,
 };
