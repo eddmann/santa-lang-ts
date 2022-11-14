@@ -1583,6 +1583,125 @@ test('indexing', () => {
   });
 });
 
+test('trailing lambda without call expression', () => {
+  const source = `
+    [1, 2, 3] |> each |x| { puts(x) }
+  `;
+
+  const ast = parse(source);
+
+  expect(ast).toEqual({
+    kind: 'PROGRAM',
+    statements: [
+      {
+        kind: 'EXPRESSION',
+        expression: {
+          kind: 'FUNCTION_THEAD',
+          initial: {
+            kind: 'LIST_EXPRESSION',
+            elements: [
+              { kind: 'INTEGER', value: 1, source: { line: 1, column: 5 } },
+              { kind: 'INTEGER', value: 2, source: { line: 1, column: 8 } },
+              { kind: 'INTEGER', value: 3, source: { line: 1, column: 11 } },
+            ],
+            source: { line: 1, column: 4 },
+          },
+          functions: [
+            {
+              kind: 'CALL_EXPRESSION',
+              function: { kind: 'IDENTIFIER', value: 'each', source: { line: 1, column: 17 } },
+              arguments: [
+                {
+                  kind: 'FUNCTION_LITERAL',
+                  parameters: [{ kind: 'IDENTIFIER', value: 'x', source: { line: 1, column: 23 } }],
+                  body: {
+                    kind: 'BLOCK_STATEMENT',
+                    statements: [
+                      {
+                        kind: 'EXPRESSION',
+                        expression: {
+                          kind: 'CALL_EXPRESSION',
+                          function: {
+                            kind: 'IDENTIFIER',
+                            value: 'puts',
+                            source: { line: 1, column: 28 },
+                          },
+                          arguments: [
+                            { kind: 'IDENTIFIER', value: 'x', source: { line: 1, column: 33 } },
+                          ],
+                          source: { line: 1, column: 32 },
+                        },
+                        source: { line: 1, column: 28 },
+                      },
+                    ],
+                    source: { line: 1, column: 26 },
+                  },
+                  source: { line: 1, column: 22 },
+                },
+              ],
+              source: { line: 1, column: 22 },
+            },
+          ],
+          source: { line: 1, column: 14 },
+        },
+        source: { line: 1, column: 4 },
+      },
+    ],
+    source: { line: 1, column: 4 },
+  });
+});
+
+test('trailing lambda with call expression', () => {
+  const source = `
+    with (greeting) |g| { g + "!" }
+  `;
+
+  const ast = parse(source);
+
+  expect(ast).toEqual({
+    kind: 'PROGRAM',
+    statements: [
+      {
+        kind: 'EXPRESSION',
+        expression: {
+          kind: 'CALL_EXPRESSION',
+          function: { kind: 'IDENTIFIER', value: 'with', source: { line: 1, column: 4 } },
+          arguments: [
+            { kind: 'IDENTIFIER', value: 'greeting', source: { line: 1, column: 10 } },
+            {
+              kind: 'FUNCTION_LITERAL',
+              parameters: [{ kind: 'IDENTIFIER', value: 'g', source: { line: 1, column: 21 } }],
+              body: {
+                kind: 'BLOCK_STATEMENT',
+                statements: [
+                  {
+                    kind: 'EXPRESSION',
+                    expression: {
+                      kind: 'INFIX_EXPRESSION',
+                      function: { kind: 'IDENTIFIER', value: '+', source: { line: 1, column: 28 } },
+                      arguments: [
+                        { kind: 'IDENTIFIER', value: 'g', source: { line: 1, column: 26 } },
+                        { kind: 'STRING', value: '!', source: { line: 1, column: 32 } },
+                      ],
+                      source: { line: 1, column: 28 },
+                    },
+                    source: { line: 1, column: 26 },
+                  },
+                ],
+                source: { line: 1, column: 24 },
+              },
+              source: { line: 1, column: 20 },
+            },
+          ],
+          source: { line: 1, column: 9 },
+        },
+        source: { line: 1, column: 4 },
+      },
+    ],
+    source: { line: 1, column: 4 },
+  });
+});
+
 describe('operator precedence', () => {
   const cases = [
     {

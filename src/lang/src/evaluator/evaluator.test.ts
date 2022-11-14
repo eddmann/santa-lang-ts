@@ -769,6 +769,33 @@ describe('tail recursive function calls', () => {
   });
 });
 
+test('trailing lambda without call expression', () => {
+  const source = `
+    let mut sum = 0;
+    [1, 2, 3] |> each |n| {
+      sum = sum + n;
+    }
+    sum
+  `;
+
+  const result = doEvaluate(source);
+
+  expect(result.inspect()).toEqual('6');
+});
+
+test('trailing lambda with call expression', () => {
+  const source = `
+    let fn = |greeting, fn| { fn(greeting) };
+    fn("hello") |greeting| {
+      greeting + "!" 
+    };
+  `;
+
+  const result = doEvaluate(source);
+
+  expect(result.inspect()).toEqual('"hello!"');
+});
+
 const doEvaluate = (source: string): O.Obj => {
   const lexer = new Lexer(source);
   const parser = new Parser(lexer);

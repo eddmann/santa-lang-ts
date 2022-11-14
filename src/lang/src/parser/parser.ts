@@ -437,12 +437,19 @@ export default class Parser {
 
     const source = this.captureSourceLocation();
 
-    return {
+    const call: AST.CallExpression = {
       kind: AST.ASTKind.CallExpression,
       function: left,
       arguments: this.parseExpressionList(TokenKind.RParen),
       source,
     };
+
+    if (this.peekTokenIs(TokenKind.Pipe)) {
+      this.nextToken();
+      call.arguments.push(this.parseFunctionLiteral());
+    }
+
+    return call;
   };
 
   private parseExpressionList(end: TokenKind): AST.Expression[] {
@@ -655,11 +662,27 @@ export default class Parser {
     };
   };
 
-  private parseIdentifier = (): AST.Identifier => ({
-    kind: AST.ASTKind.Identifier,
-    value: this.curToken.literal,
-    source: this.captureSourceLocation(),
-  });
+  private parseIdentifier = (): AST.Identifier | AST.CallExpression => {
+    const identifier: AST.Identifier = {
+      kind: AST.ASTKind.Identifier,
+      value: this.curToken.literal,
+      source: this.captureSourceLocation(),
+    };
+
+    if (this.peekTokenIs(TokenKind.Pipe)) {
+      this.nextToken();
+      const source = this.captureSourceLocation();
+
+      return {
+        kind: AST.ASTKind.CallExpression,
+        function: identifier,
+        arguments: [this.parseFunctionLiteral()],
+        source,
+      };
+    }
+
+    return identifier;
+  };
 
   private parseBooleon = (): AST.Bool => ({
     kind: AST.ASTKind.Bool,
