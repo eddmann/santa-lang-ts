@@ -142,8 +142,23 @@ export class List implements ValueObj {
     }
   }
 
-  public filter(fn: (v: Obj) => Obj): List {
+  public filter(fn: (v: Obj) => Obj, isMutable: boolean = false): List {
     try {
+      if (isMutable) {
+        this.items = this.items
+          .filter(v => {
+            const result = fn(v);
+
+            if (result instanceof Err) {
+              throw result;
+            }
+
+            return result !== FALSE && result !== NIL;
+          })
+          .asMutable();
+        return this;
+      }
+
       return new List(
         this.items.filter(v => {
           const result = fn(v);
@@ -312,10 +327,6 @@ export class List implements ValueObj {
     }
 
     throw new Error(`remove(${key.constructor.name}, ${this.constructor.name}) is not supported`);
-  }
-
-  public removeValue(value: Obj): Obj {
-    return new List(this.items.filter(v => !v.equals(value)));
   }
 
   public getInteralSeq(): Immutable.Seq {
@@ -536,8 +547,23 @@ export class Hash {
     }
   }
 
-  public filter(fn: (v: Obj, k: Obj) => Obj): Hash {
+  public filter(fn: (v: Obj, k: Obj) => Obj, isMutable: boolean = false): Hash {
     try {
+      if (isMutable) {
+        this.items = this.items
+          .filter((v, k) => {
+            const result = fn(v, k);
+
+            if (result instanceof Err) {
+              throw result;
+            }
+
+            return result !== FALSE && result !== NIL;
+          })
+          .asMutable();
+        return this;
+      }
+
       return new Hash(
         this.items.filter((v, k) => {
           const result = fn(v, k);
@@ -644,10 +670,6 @@ export class Hash {
 
   public remove(key: Obj): Obj {
     return new Hash(this.items.remove(key));
-  }
-
-  public removeValue(value: Obj): Obj {
-    return new Hash(this.items.filter(v => !v.equals(value)));
   }
 
   public assoc(key: Obj, value: Obj): Hash {
@@ -768,8 +790,23 @@ export class Set {
     }
   }
 
-  public filter(fn: (v: Obj) => Obj): Set {
+  public filter(fn: (v: Obj) => Obj, isMutable: boolean = false): Set {
     try {
+      if (isMutable) {
+        this.items = this.items
+          .filter(v => {
+            const result = fn(v);
+
+            if (result instanceof Err) {
+              throw result;
+            }
+
+            return result !== FALSE && result !== NIL;
+          })
+          .asMutable();
+        return this;
+      }
+
       return new Set(
         this.items.filter(v => {
           const result = fn(v);
@@ -866,10 +903,6 @@ export class Set {
 
   public remove(key: Obj): Obj {
     return new Set(this.items.remove(key));
-  }
-
-  public removeValue(value: Obj): Obj {
-    return new Set(this.items.remove(value));
   }
 }
 
@@ -1124,5 +1157,9 @@ export class Range implements ValueObj {
 
   public getInteralSeq(): Immutable.Seq {
     return this.items;
+  }
+
+  public isImmutable(): boolean {
+    return true;
   }
 }

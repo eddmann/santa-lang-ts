@@ -38,6 +38,28 @@ const filter: O.BuiltinFuncTemplate = {
   },
 };
 
+const filter_mutable: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'predicate',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    if (environment.getVariable('collection').isImmutable()) {
+      throw new Error('Expected mutable collection');
+    }
+
+    return environment
+      .getVariable('collection')
+      .filter((v, k) => applyFunction(environment.getVariable('predicate'), [v, k]), true);
+  },
+};
+
 const reduce: O.BuiltinFuncTemplate = {
   parameters: [
     {
@@ -778,46 +800,6 @@ const remove_mutable: O.BuiltinFuncTemplate = {
   },
 };
 
-const remove_value: O.BuiltinFuncTemplate = {
-  parameters: [
-    {
-      kind: AST.ASTKind.Identifier,
-      value: 'value',
-    },
-    {
-      kind: AST.ASTKind.Identifier,
-      value: 'collection',
-    },
-  ],
-  body: (environment: O.Environment) => {
-    if (!environment.getVariable('collection').isImmutable()) {
-      throw new Error('Expected immutable collection');
-    }
-
-    return environment.getVariable('collection').removeValue(environment.getVariable('value'));
-  },
-};
-
-const remove_value_mutable: O.BuiltinFuncTemplate = {
-  parameters: [
-    {
-      kind: AST.ASTKind.Identifier,
-      value: 'value',
-    },
-    {
-      kind: AST.ASTKind.Identifier,
-      value: 'collection',
-    },
-  ],
-  body: (environment: O.Environment) => {
-    if (environment.getVariable('collection').isImmutable()) {
-      throw new Error('Expected mutable collection');
-    }
-
-    return environment.getVariable('collection').removeValue(environment.getVariable('value'));
-  },
-};
-
 const shuffle: O.BuiltinFuncTemplate = {
   parameters: [
     {
@@ -849,6 +831,7 @@ const rotate: O.BuiltinFuncTemplate = {
 export default {
   map,
   filter,
+  'filter!': filter_mutable,
   reduce,
   reduce_s,
   each,
@@ -885,8 +868,6 @@ export default {
   'push!': push_mutable,
   remove,
   'remove!': remove_mutable,
-  remove_value,
-  'remove_value!': remove_value_mutable,
   get,
   repeat,
   range,

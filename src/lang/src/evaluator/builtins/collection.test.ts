@@ -1256,47 +1256,6 @@ describe('remove', () => {
   });
 });
 
-describe('remove_value', () => {
-  const cases = [
-    {
-      source: 'remove_value(1, [1, 2, 3])',
-      expected: '[2, 3]',
-      description: 'list',
-    },
-    {
-      source: 'remove_value(4, [1, 2, 3])',
-      expected: '[1, 2, 3]',
-      description: 'list with unknown value',
-    },
-    {
-      source: 'remove_value(2, #{"a": 1, "b": 2, "c": 3})',
-      expected: '#{"a": 1, "c": 3}',
-      description: 'hash',
-    },
-    {
-      source: 'remove_value(4, #{"a": 1, "b": 2, "c": 3})',
-      expected: '#{"a": 1, "b": 2, "c": 3}',
-      description: 'hash with unknown value',
-    },
-    {
-      source: 'remove_value(1, {1, 2, 3})',
-      expected: '{3, 2}',
-      description: 'set',
-    },
-    {
-      source: 'remove_value(4, {1, 2, 3})',
-      expected: '{1, 2, 3}',
-      description: 'set with unknown value',
-    },
-  ];
-
-  cases.forEach(({ source, expected, description }) => {
-    test(`${description}: ${source}`, () => {
-      expect(doEvaluate(source)).toEqual(expected);
-    });
-  });
-});
-
 describe('shuffle', () => {
   test('multiple items', () => {
     expect(doEvaluate('shuffle([1, 2, 3])')).not.toEqual('[1, 2, 3]');

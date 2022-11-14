@@ -571,6 +571,10 @@ export class Str implements ValueObj {
   public replace(subject: Str, replacement: Str): Str {
     return new Str(this.value.replace(new RegExp(subject.value, 'g'), replacement.value));
   }
+
+  public isImmutable(): boolean {
+    return true;
+  }
 }
 
 export const TRUE = new Bool(true);
