@@ -32,6 +32,9 @@ const generateErrorMessage = (
   return output + '\n';
 };
 
+const toSeconds = (milliseconds: number): string =>
+  `${Math.floor(milliseconds / 1000)}.${milliseconds % 1000}`;
+
 const WorkspaceEditor = () => {
   const [source, setSource] = useState('');
   const [result, setResult] = useState('');
@@ -63,17 +66,17 @@ const WorkspaceEditor = () => {
         case 'run':
           const { result } = response;
 
-          if (result.result) {
-            setResult(result.result);
+          if (result.value) {
+            setResult(result.value);
             return;
           }
 
           if (result.partOne) {
-            output += `Part 1: ${result.partOne}\n`;
+            output += `Part 1: ${result.partOne.value} ${toSeconds(result.partOne.duration)}s\n`;
           }
 
           if (result.partTwo) {
-            output += `Part 2: ${result.partTwo}\n`;
+            output += `Part 2: ${result.partTwo.value} ${toSeconds(result.partTwo.duration)}s\n`;
           }
 
           setResult(output);

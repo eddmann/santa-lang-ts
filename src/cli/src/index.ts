@@ -18,22 +18,33 @@ try {
 // ensure all files read are relative to the `.santa` source location
 process.chdir(require('path').dirname(realpathSync(filename)));
 
+const toSeconds = (milliseconds: number): string =>
+  `${Math.floor(milliseconds / 1000)}.${milliseconds % 1000}`;
+
 const isTestRun = process.argv.includes('-t');
 try {
   if (!isTestRun) {
     const result = run(source, io);
 
-    if (result.result) {
-      console.log(result.result);
+    if (result.value) {
+      console.log(result.value);
       process.exit(0);
     }
 
     if (result.partOne) {
-      console.log('Part 1: \x1b[32m%s\x1b[0m', result.partOne);
+      console.log(
+        'Part 1: \x1b[32m%s\x1b[0m \x1b[90m%ss\x1b[0m',
+        result.partOne.value,
+        toSeconds(result.partOne.duration)
+      );
     }
 
     if (result.partTwo) {
-      console.log('Part 2: \x1b[32m%s\x1b[0m', result.partTwo);
+      console.log(
+        'Part 2: \x1b[32m%s\x1b[0m \x1b[90m%ss\x1b[0m',
+        result.partTwo.value,
+        toSeconds(result.partTwo.duration)
+      );
     }
 
     process.exit(0);

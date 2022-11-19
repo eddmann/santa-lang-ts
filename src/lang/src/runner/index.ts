@@ -96,20 +96,25 @@ const evaluateSource = (
   };
 };
 
+type ResultValue = {
+  value: string;
+  duration: number;
+};
+
 type Result =
   | {
-      partOne: string | undefined;
-      partTwo: string | undefined;
+      partOne?: ResultValue;
+      partTwo?: ResultValue;
     }
-  | {
-      result: string;
-    };
+  | ResultValue;
 
 export const run = (source: string, io: O.IO): Result => {
+  const start = new Date().getTime();
+
   const { environment, result, partOne, partTwo } = evaluateSource(source, io);
 
   if (!partOne && !partTwo) {
-    return { result: result.inspect() };
+    return { value: result.inspect(), duration: new Date().getTime() - start };
   }
 
   const input = environment.getSection('input');
@@ -130,9 +135,29 @@ export const run = (source: string, io: O.IO): Result => {
     };
   }
 
+  let partOneResult: ResultValue | undefined;
+  if (partOne) {
+    const start = new Date().getTime();
+    const value = evaluateSection(partOne, environment, inputResult).inspect();
+    partOneResult = {
+      value,
+      duration: new Date().getTime() - start,
+    };
+  }
+
+  let partTwoResult: ResultValue | undefined;
+  if (partTwo) {
+    const start = new Date().getTime();
+    const value = evaluateSection(partTwo, environment, inputResult).inspect();
+    partTwoResult = {
+      value,
+      duration: new Date().getTime() - start,
+    };
+  }
+
   return {
-    partOne: partOne && evaluateSection(partOne, environment, inputResult).inspect(),
-    partTwo: partTwo && evaluateSection(partTwo, environment, inputResult).inspect(),
+    partOne: partOneResult,
+    partTwo: partTwoResult,
   };
 };
 
