@@ -828,6 +828,25 @@ const rotate: O.BuiltinFuncTemplate = {
   },
 };
 
+const iterate: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'fn',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'initial',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return O.Sequence.iterate(
+      previous => applyFunction(environment.getVariable('fn'), [previous]),
+      environment.getVariable('initial')
+    );
+  },
+};
+
 export default {
   map,
   filter,
@@ -875,4 +894,5 @@ export default {
   any,
   shuffle,
   rotate,
+  iterate,
 };

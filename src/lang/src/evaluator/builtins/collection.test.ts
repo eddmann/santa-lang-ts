@@ -1288,6 +1288,16 @@ describe('rotate', () => {
   });
 });
 
+describe('iterate', () => {
+  test('iteration', () => {
+    expect(doEvaluate('take(3, iterate(_ * 2, 1))')).toEqual('[1, 2, 4]');
+  });
+
+  test('iteration within zip', () => {
+    expect(doEvaluate('take(3, zip(1.., iterate(_ * 2, 1)))')).toEqual('[[1, 1], [2, 2], [3, 4]]');
+  });
+});
+
 const doEvaluate = (source: string): string => {
   const lexer = new Lexer(source);
   const parser = new Parser(lexer);

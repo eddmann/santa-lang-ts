@@ -1024,7 +1024,9 @@ export class Range implements ValueObj {
       ...collections.getInteralSeq().map(collection => collection.getInteralSeq())
     );
 
-    return zipped.size === Infinity ? new Range(this.start, Infinity, zipped) : new List(zipped);
+    return zipped.size === Infinity || zipped.size === undefined
+      ? new Range(this.start, Infinity, zipped)
+      : new List(zipped);
   }
 
   public map(fn: (v: Obj) => Obj): Range {
@@ -1116,6 +1118,228 @@ export class Range implements ValueObj {
       if (this.end === Infinity) {
         this.items.size = Infinity;
       }
+    }
+  }
+
+  public flatMap(fn: (v: Obj) => List | Err): List {
+    try {
+      return new List(
+        this.items.flatMap(v => {
+          const result = fn(v);
+
+          if (result instanceof Err) {
+            throw result;
+          }
+
+          return result.items;
+        })
+      );
+    } catch (err) {
+      return err;
+    }
+  }
+
+  public min(): Obj {
+    const result = this.items.min((a, b) => {
+      if (a.equals(b).value) return 0;
+      return a.lessThan(b).value ? -1 : 1;
+    });
+
+    return result || NIL;
+  }
+
+  public max(): Obj {
+    const result = this.items.max((a, b) => {
+      if (a.equals(b).value) return 0;
+      return a.lessThan(b).value ? -1 : 1;
+    });
+
+    return result || NIL;
+  }
+
+  public getInteralSeq(): Immutable.Seq {
+    return this.items;
+  }
+
+  public isImmutable(): boolean {
+    return true;
+  }
+}
+
+export class Sequence implements ValueObj {
+  private constructor(public items: Immutable.Seq.Indexed<Obj>) {}
+
+  public static iterate(fn: (previous: Obj) => Obj, initial: Obj) {
+    return new Sequence(
+      Immutable.Seq(
+        (function* () {
+          let current = initial;
+          while (true) {
+            yield current;
+            current = fn(current);
+          }
+        })()
+      )
+    );
+  }
+
+  public inspect(): string {
+    return '[' + this.items.map(item => item.inspect()).join(', ') + ']';
+  }
+
+  public hashCode(): number {
+    return this.items.hashCode();
+  }
+
+  public equals(that: Obj): boolean {
+    return that instanceof Sequence && this.items.equals(that.items);
+  }
+
+  public get(index: Obj): Obj {
+    if (index instanceof Integer) {
+      return this.items.get(index.value) || NIL;
+    }
+
+    if (index instanceof Range) {
+      return new Sequence(this.items.slice(index.start, index.end));
+    }
+
+    throw new Error(
+      `Unsupported 'get' operation ${this.constructor.name}, ${index.constructor.name}`
+    );
+  }
+
+  public size(): Err | Integer {
+    return new Integer(Infinity);
+  }
+
+  public contains(subject: Obj): Bool {
+    return subject instanceof Integer && this.items.contains(subject) ? TRUE : FALSE;
+  }
+
+  public first(): Obj | Nil {
+    return this.items.first() || NIL;
+  }
+
+  public rest(): Sequence {
+    return new Sequence(this.items.rest());
+  }
+
+  public last(): Obj | Nil {
+    return this.items.last() || NIL;
+  }
+
+  public take(total: Integer): Sequence {
+    return new Sequence(this.items.take(total.value));
+  }
+
+  public skip(total: Integer): Sequence {
+    return new Sequence(this.items.skip(total.value));
+  }
+
+  public find(fn: (v: Obj) => Obj): Obj {
+    try {
+      const result = this.items.find(v => {
+        const result = fn(v);
+
+        if (result instanceof Err) {
+          throw result;
+        }
+
+        return result !== FALSE && result !== NIL;
+      });
+
+      return result || NIL;
+    } catch (err) {
+      return err;
+    }
+  }
+
+  public zip(collections: List): List | Sequence {
+    const zipped = this.items.zipWith(
+      (...values) => new List(values),
+      ...collections.getInteralSeq().map(collection => collection.getInteralSeq())
+    );
+
+    return zipped.size === Infinity || zipped.size === undefined
+      ? new Sequence(zipped)
+      : new List(zipped);
+  }
+
+  public map(fn: (v: Obj) => Obj): Sequence {
+    try {
+      return new Sequence(
+        this.items.map(v => {
+          const result = fn(v);
+
+          if (result instanceof Err) {
+            throw result;
+          }
+
+          return result;
+        })
+      );
+    } catch (err) {
+      return err;
+    }
+  }
+
+  public filter(fn: (v: Obj) => Obj): Sequence {
+    try {
+      return new Sequence(
+        this.items.filter(v => {
+          const result = fn(v);
+
+          if (result instanceof Err) {
+            throw result;
+          }
+
+          return result !== FALSE && result !== NIL;
+        })
+      );
+    } catch (err) {
+      return err;
+    }
+  }
+
+  public reduce(fn: (acc: Obj, v: Obj) => Obj, initial: Obj): Obj {
+    try {
+      return this.items.reduce((acc, v) => {
+        const result = fn(acc, v);
+
+        if (result instanceof Err) {
+          throw result;
+        }
+
+        if (result instanceof BreakValue) {
+          throw result.value;
+        }
+
+        return result;
+      }, initial);
+    } catch (err) {
+      return err;
+    }
+  }
+
+  public each(fn: (v: Obj) => Nil | Err): Nil {
+    try {
+      this.items.forEach(v => {
+        const result = fn(v);
+
+        if (result instanceof Err) {
+          throw result;
+        }
+
+        if (result instanceof BreakValue) {
+          throw NIL;
+        }
+      });
+
+      return NIL;
+    } catch (err) {
+      return err;
+    } finally {
     }
   }
 
