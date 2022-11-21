@@ -85,6 +85,31 @@ const reduce: O.BuiltinFuncTemplate = {
   },
 };
 
+const fold: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'initial',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'folder',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment
+      .getVariable('collection')
+      .reduce(
+        (acc, v, k) => applyFunction(environment.getVariable('folder'), [acc, v, k]),
+        environment.getVariable('initial')
+      );
+  },
+};
+
 const reduce_s: O.BuiltinFuncTemplate = {
   parameters: [
     {
@@ -853,6 +878,7 @@ export default {
   'filter!': filter_mutable,
   reduce,
   reduce_s,
+  fold,
   each,
   flat_map,
   find,
