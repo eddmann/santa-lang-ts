@@ -439,24 +439,42 @@ const cycle: O.BuiltinFuncTemplate = {
 const min: O.BuiltinFuncTemplate = {
   parameters: [
     {
-      kind: AST.ASTKind.Identifier,
-      value: 'collection',
+      kind: AST.ASTKind.RestElement,
+      argument: {
+        kind: AST.ASTKind.Identifier,
+        value: 'values',
+      },
     },
   ],
   body: (environment: O.Environment) => {
-    return environment.getVariable('collection').min();
+    const values = [...environment.getVariable('values').items];
+
+    if (values.length === 1) {
+      return values[0].min();
+    }
+
+    return new O.List(values).min();
   },
 };
 
 const max: O.BuiltinFuncTemplate = {
   parameters: [
     {
-      kind: AST.ASTKind.Identifier,
-      value: 'collection',
+      kind: AST.ASTKind.RestElement,
+      argument: {
+        kind: AST.ASTKind.Identifier,
+        value: 'values',
+      },
     },
   ],
   body: (environment: O.Environment) => {
-    return environment.getVariable('collection').max();
+    const values = [...environment.getVariable('values').items];
+
+    if (values.length === 1) {
+      return values[0].max();
+    }
+
+    return new O.List(values).max();
   },
 };
 

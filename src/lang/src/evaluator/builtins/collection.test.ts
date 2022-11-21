@@ -381,6 +381,11 @@ describe('min', () => {
       expected: '1',
       description: 'range',
     },
+    {
+      source: 'min(1, 2, 3)',
+      expected: '1',
+      description: 'variadic arguments',
+    },
   ];
 
   cases.forEach(({ source, expected, description }) => {
@@ -441,6 +446,11 @@ describe('max', () => {
       source: 'max(1..10)',
       expected: '10',
       description: 'range',
+    },
+    {
+      source: 'max(1, 2, 3)',
+      expected: '3',
+      description: 'variadic arguments',
     },
   ];
 
