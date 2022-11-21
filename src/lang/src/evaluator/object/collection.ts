@@ -321,6 +321,14 @@ export class List implements ValueObj {
     return result || NIL;
   }
 
+  public sum(): Obj {
+    if (this.items.isEmpty()) {
+      return new Integer(0);
+    }
+
+    return this.items.reduce((acc: Obj, el: Obj) => acc.add(el));
+  }
+
   public remove(key: Obj): Obj {
     if (key instanceof Integer) {
       return new List(this.items.remove(key.value));
@@ -668,6 +676,14 @@ export class Hash {
     return result || NIL;
   }
 
+  public sum(): Obj {
+    if (this.items.isEmpty()) {
+      return new Integer(0);
+    }
+
+    return this.items.reduce((acc: Obj, el: Obj) => acc.add(el));
+  }
+
   public remove(key: Obj): Obj {
     return new Hash(this.items.remove(key));
   }
@@ -899,6 +915,14 @@ export class Set {
     });
 
     return result || NIL;
+  }
+
+  public sum(): Obj {
+    if (this.items.isEmpty()) {
+      return new Integer(0);
+    }
+
+    return this.items.reduce((acc: Obj, el: Obj) => acc.add(el));
   }
 
   public remove(key: Obj): Obj {
@@ -1155,6 +1179,14 @@ export class Range implements ValueObj {
     });
 
     return result || NIL;
+  }
+
+  public sum(): Obj {
+    if (this.items.isEmpty()) {
+      return new Integer(0);
+    }
+
+    return this.items.reduce((acc: Obj, el: Obj) => acc.add(el));
   }
 
   public getInteralSeq(): Immutable.Seq {

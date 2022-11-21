@@ -872,6 +872,18 @@ const iterate: O.BuiltinFuncTemplate = {
   },
 };
 
+const sum: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment.getVariable('collection').sum();
+  },
+};
+
 export default {
   map,
   filter,
@@ -921,4 +933,5 @@ export default {
   shuffle,
   rotate,
   iterate,
+  sum,
 };

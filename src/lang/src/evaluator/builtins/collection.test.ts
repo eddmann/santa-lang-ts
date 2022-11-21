@@ -1298,6 +1298,48 @@ describe('iterate', () => {
   });
 });
 
+describe('sum', () => {
+  test('empty list', () => {
+    expect(doEvaluate('sum([])')).toEqual('0');
+  });
+
+  test('list of integers', () => {
+    expect(doEvaluate('sum([1, 2, 3])')).toEqual('6');
+  });
+
+  test('list of decimals', () => {
+    expect(doEvaluate('sum([1.4, 2.5, 3.2])')).toEqual('7.1');
+  });
+
+  test('empty hash', () => {
+    expect(doEvaluate('sum(#{})')).toEqual('0');
+  });
+
+  test('hash of integers', () => {
+    expect(doEvaluate('sum(#{"a": 1, "b": 2, "c": 3})')).toEqual('6');
+  });
+
+  test('hash of decimals', () => {
+    expect(doEvaluate('sum(#{"a": 1.4, "b": 2.5, "c": 3.2})')).toEqual('7.1');
+  });
+
+  test('empty set', () => {
+    expect(doEvaluate('sum({})')).toEqual('0');
+  });
+
+  test('set of integers', () => {
+    expect(doEvaluate('sum({1, 2, 3})')).toEqual('6');
+  });
+
+  test('set of decimals', () => {
+    expect(doEvaluate('sum({1.4, 2.5, 3.2})')).toEqual('7.1');
+  });
+
+  test('range of integers', () => {
+    expect(doEvaluate('sum(1..3)')).toEqual('6');
+  });
+});
+
 const doEvaluate = (source: string): string => {
   const lexer = new Lexer(source);
   const parser = new Parser(lexer);
