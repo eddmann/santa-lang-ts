@@ -5,6 +5,18 @@ const isTruthy = (object: O.Obj): boolean => {
   return object !== O.FALSE && object !== O.NIL;
 };
 
+const id: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'value',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment.getVariable('value');
+  },
+};
+
 const equals: O.BuiltinFuncTemplate = {
   parameters: [
     {
@@ -142,4 +154,5 @@ export default {
   '||': or,
   'unary_!': not,
   assert,
+  id: id,
 };
