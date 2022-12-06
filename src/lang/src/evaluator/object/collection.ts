@@ -2,7 +2,7 @@ import Immutable from 'immutable';
 import { ValueObj, Obj } from './type';
 import { Err } from './error';
 import { BreakValue } from './function';
-import { Integer, Bool, Nil, TRUE, FALSE, NIL } from './primitive';
+import { Integer, Bool, Nil, Str, TRUE, FALSE, NIL } from './primitive';
 
 export class List implements ValueObj {
   public items: Immutable.List<Obj>;
@@ -741,6 +741,10 @@ export class Set {
 
     if (collection instanceof Range) {
       return new Set(collection.items);
+    }
+
+    if (collection instanceof Str) {
+      return new Set(collection.split(new Str('')).items);
     }
 
     throw new Error(`Unable to convert ${collection.constructor.name} into a Set`);

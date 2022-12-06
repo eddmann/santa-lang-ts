@@ -924,6 +924,11 @@ describe('set', () => {
       description: 'bounded range',
     },
     {
+      source: 'set("abc")',
+      expected: '{"a", "b", "c"}',
+      description: 'string',
+    },
+    {
       source: 'set(1..)',
       expected: 'Runtime error: Cannot perform this action with an infinite size.',
       description: 'unbounded range',
