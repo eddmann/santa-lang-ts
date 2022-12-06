@@ -336,6 +336,18 @@ const first: O.BuiltinFuncTemplate = {
   },
 };
 
+const second: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment.getVariable('collection').get(new O.Integer(1));
+  },
+};
+
 const last: O.BuiltinFuncTemplate = {
   parameters: [
     {
@@ -933,6 +945,7 @@ export default {
   take,
   skip,
   first,
+  second,
   last,
   rest,
   min,
