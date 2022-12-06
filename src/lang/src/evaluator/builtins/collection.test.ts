@@ -1355,6 +1355,32 @@ describe('sum', () => {
   });
 });
 
+describe('reverse', () => {
+  const cases = [
+    {
+      source: 'reverse([])',
+      expected: '[]',
+      description: 'empty list',
+    },
+    {
+      source: 'reverse([1])',
+      expected: '[1]',
+      description: 'list with single element',
+    },
+    {
+      source: 'reverse([1, 2, 3])',
+      expected: '[3, 2, 1]',
+      description: 'list with multiple elements',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
 const doEvaluate = (source: string): string => {
   const lexer = new Lexer(source);
   const parser = new Parser(lexer);

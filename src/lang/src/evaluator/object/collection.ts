@@ -359,6 +359,10 @@ export class List implements ValueObj {
     );
   }
 
+  public reverse(): List {
+    return new List(this.items.reverse());
+  }
+
   public assoc(index: Obj, value: Obj): List {
     if (!(index instanceof Integer)) {
       throw new Error('Expected List index to be an Integer');

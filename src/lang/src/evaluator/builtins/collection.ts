@@ -199,6 +199,18 @@ const find: O.BuiltinFuncTemplate = {
   },
 };
 
+const reverse: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment.getVariable('collection').reverse();
+  },
+};
+
 const sort: O.BuiltinFuncTemplate = {
   parameters: [
     {
@@ -912,6 +924,7 @@ export default {
   each,
   flat_map,
   find,
+  reverse,
   sort,
   contains,
   size,
