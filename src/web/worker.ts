@@ -19,7 +19,7 @@ const io = {
     const request = new XMLHttpRequest();
     request.open('GET', path, false);
     request.send(null);
-    return request.responseText.trim();
+    return request.responseText.trimEnd();
   },
   output: (args: string[]) => console.log(...args),
 };
