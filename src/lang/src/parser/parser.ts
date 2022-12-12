@@ -994,6 +994,7 @@ export default class Parser {
     node.kind === AST.ASTKind.CallExpression ||
     node.kind === AST.ASTKind.InfixExpression ||
     node.kind === AST.ASTKind.PrefixExpression ||
+    node.kind === AST.ASTKind.IndexExpression ||
     node.kind === AST.ASTKind.FunctionComposition;
 
   private captureSourceLocation = (): AST.SourceLocation => ({
