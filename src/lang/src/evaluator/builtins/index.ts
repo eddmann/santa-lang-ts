@@ -3,6 +3,7 @@ import comparision from './comparision';
 import collection from './collection';
 import io from './io';
 import primitive from './primitive';
+import evaluate from './evaluate';
 
 export default {
   ...math,
@@ -10,4 +11,5 @@ export default {
   ...collection,
   ...io,
   ...primitive,
+  ...evaluate,
 };
