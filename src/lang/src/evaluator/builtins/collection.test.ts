@@ -1272,10 +1272,6 @@ describe('remove', () => {
 });
 
 describe('shuffle', () => {
-  test('multiple items', () => {
-    expect(doEvaluate('shuffle([1, 2, 3])')).not.toEqual('[1, 2, 3]');
-  });
-
   test('single items', () => {
     expect(doEvaluate('shuffle([1])')).toEqual('[1]');
   });
