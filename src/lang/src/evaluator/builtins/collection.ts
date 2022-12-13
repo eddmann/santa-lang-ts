@@ -145,6 +145,41 @@ const reduce_s: O.BuiltinFuncTemplate = {
   },
 };
 
+const fold_s: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'initial',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'folder',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    const result = environment
+      .getVariable('collection')
+      .reduce(
+        (acc, v, k) => applyFunction(environment.getVariable('folder'), [acc, v, k]),
+        environment.getVariable('initial')
+      );
+
+    if (result instanceof O.Err) {
+      return result;
+    }
+
+    if (result instanceof O.List) {
+      return result.first();
+    }
+
+    throw new Error('fold_s expects the result to be a List');
+  },
+};
+
 const scan: O.BuiltinFuncTemplate = {
   parameters: [
     {
@@ -958,6 +993,7 @@ export default {
   reduce,
   reduce_s,
   fold,
+  fold_s,
   scan,
   each,
   flat_map,

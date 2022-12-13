@@ -199,6 +199,27 @@ describe('reduce_s', () => {
   });
 });
 
+describe('fold_s', () => {
+  const cases = [
+    {
+      source: 'fold_s([0, 0], |[acc, prev], val| [acc + prev * val, val], 1..10)',
+      expected: '330',
+      description: 'single state',
+    },
+    {
+      source: 'fold_s([0, 0, 0], |[acc, x, y], val| [acc + x * y * val, val, val / 2], 1..10)',
+      expected: '1060',
+      description: 'multi-state',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
 describe('each', () => {
   const cases = [
     {
