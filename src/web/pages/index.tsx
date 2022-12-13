@@ -6,6 +6,12 @@ import Split from 'react-split';
 import Navigation from '../components/Navigation';
 const Editor = dynamic(() => import('../components/Editor'), { ssr: false });
 
+function* range(start: number, end: number) {
+  for (let i = start; i <= end; i++) {
+    yield i;
+  }
+}
+
 const generateErrorMessage = (
   source: string,
   line: number,
@@ -163,74 +169,32 @@ const WorkspaceEditor = () => {
               Select an example...
             </option>
             <optgroup label="2018">
-              <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2018/santa-lang/aoc2018_day01.santa">
-                aoc2018_day01.santa
-              </option>
-              <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2018/santa-lang/aoc2018_day02.santa">
-                aoc2018_day02.santa
-              </option>
-              <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2018/santa-lang/aoc2018_day03.santa">
-                aoc2018_day03.santa
-              </option>
-              <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2018/santa-lang/aoc2018_day04.santa">
-                aoc2018_day04.santa
-              </option>
-              <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2018/santa-lang/aoc2018_day05.santa">
-                aoc2018_day05.santa
-              </option>
-              <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2018/santa-lang/aoc2018_day06.santa">
-                aoc2018_day06.santa
-              </option>
-              <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2018/santa-lang/aoc2018_day07.santa">
-                aoc2018_day07.santa
-              </option>
-              <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2018/santa-lang/aoc2018_day08.santa">
-                aoc2018_day08.santa
-              </option>
-              <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2018/santa-lang/aoc2018_day09.santa">
-                aoc2018_day09.santa
-              </option>
-              <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2018/santa-lang/aoc2018_day10.santa">
-                aoc2018_day10.santa
-              </option>
-              <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2018/santa-lang/aoc2018_day11.santa">
-                aoc2018_day11.santa
-              </option>
-              <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2018/santa-lang/aoc2018_day12.santa">
-                aoc2018_day12.santa
-              </option>
-              <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2018/santa-lang/aoc2018_day13.santa">
-                aoc2018_day13.santa
-              </option>
-              <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2018/santa-lang/aoc2018_day14.santa">
-                aoc2018_day14.santa
-              </option>
+              {[...range(1, 14)].map(day => {
+                const fileName = `aoc2018_day${('' + day).padStart(2, '0')}.santa`;
+
+                return (
+                  <option
+                    key={fileName}
+                    value={`https://raw.githubusercontent.com/eddmann/advent-of-code/master/2018/santa-lang/${fileName}`}
+                  >
+                    {fileName}
+                  </option>
+                );
+              })}
             </optgroup>
             <optgroup label="2022">
-              <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2022/santa-lang/aoc2022_day01.santa">
-                aoc2022_day01.santa
-              </option>
-              <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2022/santa-lang/aoc2022_day02.santa">
-                aoc2022_day02.santa
-              </option>
-              <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2022/santa-lang/aoc2022_day03.santa">
-                aoc2022_day03.santa
-              </option>
-              <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2022/santa-lang/aoc2022_day04.santa">
-                aoc2022_day04.santa
-              </option>
-              <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2022/santa-lang/aoc2022_day05.santa">
-                aoc2022_day05.santa
-              </option>
-              <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2022/santa-lang/aoc2022_day06.santa">
-                aoc2022_day06.santa
-              </option>
-              <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2022/santa-lang/aoc2022_day07.santa">
-                aoc2022_day07.santa
-              </option>
-              <option value="https://raw.githubusercontent.com/eddmann/advent-of-code/master/2022/santa-lang/aoc2022_day08.santa">
-                aoc2022_day08.santa
-              </option>
+              {[...range(1, 12)].map(day => {
+                const fileName = `aoc2022_day${('' + day).padStart(2, '0')}.santa`;
+
+                return (
+                  <option
+                    key={fileName}
+                    value={`https://raw.githubusercontent.com/eddmann/advent-of-code/master/2022/santa-lang/${fileName}`}
+                  >
+                    {fileName}
+                  </option>
+                );
+              })}
             </optgroup>
           </select>
         </div>
