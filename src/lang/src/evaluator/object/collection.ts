@@ -56,6 +56,10 @@ export class List implements ValueObj {
   }
 
   public get(index: Obj): Obj {
+    if (index instanceof Bool) {
+      return this.items.get(index.value ? 1 : 0) || NIL;
+    }
+
     if (index instanceof Integer) {
       return this.items.get(index.value) || NIL;
     }
