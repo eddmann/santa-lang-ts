@@ -43,6 +43,32 @@ describe('map', () => {
   });
 });
 
+describe('scan', () => {
+  const cases = [
+    {
+      source: 'scan(0, +, [1, 2, 3])',
+      expected: '[0, 1, 3, 6]',
+      description: 'list with multiple items',
+    },
+    {
+      source: 'scan(1, +, [2])',
+      expected: '[1, 3]',
+      description: 'list with single item',
+    },
+    {
+      source: 'scan(0, +, [])',
+      expected: '[0]',
+      description: 'empty list',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
 describe('filter', () => {
   const cases = [
     {

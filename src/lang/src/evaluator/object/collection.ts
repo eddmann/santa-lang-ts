@@ -142,6 +142,28 @@ export class List implements ValueObj {
     }
   }
 
+  public scan(fn: (previous: Obj, value: Obj) => Obj, initial: Obj): List {
+    try {
+      let previous = initial;
+
+      return new List(
+        Immutable.List([previous]).merge(
+          this.items.map(value => {
+            previous = fn(previous, value);
+
+            if (previous instanceof Err) {
+              throw previous;
+            }
+
+            return previous;
+          })
+        )
+      );
+    } catch (err) {
+      return err;
+    }
+  }
+
   public filter(fn: (v: Obj) => Obj, isMutable: boolean = false): List {
     try {
       if (isMutable) {

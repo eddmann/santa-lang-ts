@@ -145,6 +145,31 @@ const reduce_s: O.BuiltinFuncTemplate = {
   },
 };
 
+const scan: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'initial',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'mapper',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment
+      .getVariable('collection')
+      .scan(
+        (previous, value) => applyFunction(environment.getVariable('mapper'), [previous, value]),
+        environment.getVariable('initial')
+      );
+  },
+};
+
 const each: O.BuiltinFuncTemplate = {
   parameters: [
     {
@@ -933,6 +958,7 @@ export default {
   reduce,
   reduce_s,
   fold,
+  scan,
   each,
   flat_map,
   find,
