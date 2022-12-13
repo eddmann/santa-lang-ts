@@ -33,6 +33,37 @@ describe('evaluate', () => {
   });
 });
 
+describe('type', () => {
+  const cases = [
+    {
+      source: 'type([1, 2, 3])',
+      expected: '"List"',
+      description: 'list',
+    },
+    {
+      source: 'type(#{})',
+      expected: '"Hash"',
+      description: 'hash',
+    },
+    {
+      source: 'type(1)',
+      expected: '"Integer"',
+      description: 'integer',
+    },
+    {
+      source: 'type(true)',
+      expected: '"Bool"',
+      description: 'boolean',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
 const doEvaluate = (source: string): string => {
   const lexer = new Lexer(source);
   const parser = new Parser(lexer);

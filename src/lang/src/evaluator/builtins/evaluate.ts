@@ -27,6 +27,19 @@ const evaluate: O.BuiltinFuncTemplate = {
   },
 };
 
+const type: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'value',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return new O.Str(environment.getVariable('value').constructor.name);
+  },
+};
+
 export default {
   evaluate,
+  type,
 };
