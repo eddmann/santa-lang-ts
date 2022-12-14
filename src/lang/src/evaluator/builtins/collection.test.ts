@@ -571,6 +571,11 @@ describe('sort', () => {
       expected: '["c", "b", "a"]',
       description: 'strings in descending order',
     },
+    {
+      source: 'sort(|a, b| a - b, [3, 1, 2])',
+      expected: '[1, 2, 3]',
+      description: 'neg/pos/zero comparision',
+    },
   ];
 
   cases.forEach(({ source, expected, description }) => {

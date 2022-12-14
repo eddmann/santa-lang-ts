@@ -367,17 +367,17 @@ export class List implements ValueObj {
     return this.items;
   }
 
-  public sort(comparator: (a: Obj, b: Obj) => Bool): List {
+  public sort(comparator: (a: Obj, b: Obj) => Bool | Integer): List {
     return new List(
       this.items.sort((a, b) => {
-        if (a.equals(b).value) {
-          return 0;
-        }
-
         const result = comparator(a, b);
 
         if (result instanceof Err) {
           throw result;
+        }
+
+        if (result instanceof Integer) {
+          return result.value;
         }
 
         return result !== FALSE && result !== NIL ? 1 : -1;
