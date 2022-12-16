@@ -1429,6 +1429,68 @@ describe('reverse', () => {
   });
 });
 
+describe('union', () => {
+  const cases = [
+    {
+      source: 'union({1, 2, 3}, {1, 2}, {4})',
+      expected: '{4, 1, 2, 3}',
+      description: 'set',
+    },
+    {
+      source: 'union({1, 2, 3}, [1, 2], [4])',
+      expected: '{4, 1, 2, 3}',
+      description: 'set and list',
+    },
+    {
+      source: 'union({}, {})',
+      expected: '{}',
+      description: 'empty sets',
+    },
+    {
+      source: 'union({}, [])',
+      expected: '{}',
+      description: 'empty set and list',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
+describe('intersect', () => {
+  const cases = [
+    {
+      source: 'intersect({1, 2, 3}, {1, 2}, {1, 2, 4})',
+      expected: '{1, 2}',
+      description: 'set',
+    },
+    {
+      source: 'intersect({1, 2}, [1, 2], [1])',
+      expected: '{1}',
+      description: 'set and list',
+    },
+    {
+      source: 'intersect({}, {})',
+      expected: '{}',
+      description: 'empty sets',
+    },
+    {
+      source: 'intersect({}, [])',
+      expected: '{}',
+      description: 'empty set and list',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
 const doEvaluate = (source: string): string => {
   const lexer = new Lexer(source);
   const parser = new Parser(lexer);

@@ -986,6 +986,36 @@ const sum: O.BuiltinFuncTemplate = {
   },
 };
 
+const union: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.RestElement,
+      argument: {
+        kind: AST.ASTKind.Identifier,
+        value: 'collections',
+      },
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return O.Set.union(environment.getVariable('collections'));
+  },
+};
+
+const intersect: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.RestElement,
+      argument: {
+        kind: AST.ASTKind.Identifier,
+        value: 'collections',
+      },
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return O.Set.intersect(environment.getVariable('collections'));
+  },
+};
+
 export default {
   map,
   filter,
@@ -1040,4 +1070,6 @@ export default {
   rotate,
   iterate,
   sum,
+  union,
+  intersect,
 };

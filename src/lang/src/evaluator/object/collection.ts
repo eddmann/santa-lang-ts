@@ -749,15 +749,23 @@ export class Set {
   }
 
   public asMutable() {
-    return new Hash(this.items.asMutable());
+    return new Set(this.items.asMutable());
   }
 
   public asImmutable() {
-    return new Hash(this.items.asImmutable());
+    return new Set(this.items.asImmutable());
   }
 
   public isImmutable(): boolean {
     return !this.items.__ownerID;
+  }
+
+  public static union(collections: List): Set {
+    return new Set(Immutable.Set.union(collections.items.map(collection => collection.items)));
+  }
+
+  public static intersect(collections: List): Set {
+    return new Set(Immutable.Set.intersect(collections.items.map(collection => collection.items)));
   }
 
   public static from(collection: Obj): Set {
