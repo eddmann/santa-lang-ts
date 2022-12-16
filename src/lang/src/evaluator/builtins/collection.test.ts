@@ -1451,6 +1451,11 @@ describe('union', () => {
       expected: '{}',
       description: 'empty set and list',
     },
+    {
+      source: 'union([{1, 2, 3}, {1, 2}, {4}])',
+      expected: '{4, 1, 2, 3}',
+      description: 'single list entry',
+    },
   ];
 
   cases.forEach(({ source, expected, description }) => {
@@ -1481,6 +1486,11 @@ describe('intersect', () => {
       source: 'intersect({}, [])',
       expected: '{}',
       description: 'empty set and list',
+    },
+    {
+      source: 'intersect([{1, 2, 3}, {1, 2}, {1, 2, 4}])',
+      expected: '{1, 2}',
+      description: 'single list entry',
     },
   ];
 

@@ -997,7 +997,13 @@ const union: O.BuiltinFuncTemplate = {
     },
   ],
   body: (environment: O.Environment) => {
-    return O.Set.union(environment.getVariable('collections'));
+    const collections = [...environment.getVariable('collections').items];
+
+    if (collections.length === 1) {
+      return O.Set.union([...collections[0].items]);
+    }
+
+    return O.Set.union(collections);
   },
 };
 
@@ -1012,7 +1018,13 @@ const intersect: O.BuiltinFuncTemplate = {
     },
   ],
   body: (environment: O.Environment) => {
-    return O.Set.intersect(environment.getVariable('collections'));
+    const collections = [...environment.getVariable('collections').items];
+
+    if (collections.length === 1) {
+      return O.Set.intersect([...collections[0].items]);
+    }
+
+    return O.Set.intersect(collections);
   },
 };
 

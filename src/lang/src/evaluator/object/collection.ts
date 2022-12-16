@@ -760,12 +760,12 @@ export class Set {
     return !this.items.__ownerID;
   }
 
-  public static union(collections: List): Set {
-    return new Set(Immutable.Set.union(collections.items.map(collection => collection.items)));
+  public static union(collections: Obj[]): Set {
+    return new Set(Immutable.Set.union(collections.map(collection => collection.items)));
   }
 
-  public static intersect(collections: List): Set {
-    return new Set(Immutable.Set.intersect(collections.items.map(collection => collection.items)));
+  public static intersect(collections: Obj[]): Set {
+    return new Set(Immutable.Set.intersect(collections.map(collection => collection.items)));
   }
 
   public static from(collection: Obj): Set {
