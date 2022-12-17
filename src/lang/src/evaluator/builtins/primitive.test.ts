@@ -304,6 +304,48 @@ describe('regex_match', () => {
   });
 });
 
+describe('regex_match_all', () => {
+  const cases = [
+    {
+      source: 'regex_match_all("([0-9]+)", "1, 22, 333")',
+      expected: '["1", "22", "333"]',
+      description: 'match present',
+    },
+    {
+      source: 'regex_match_all("([0-9]+)", "abc")',
+      expected: '[]',
+      description: 'no match present',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
+describe('ints', () => {
+  const cases = [
+    {
+      source: 'ints("1, -22, 333")',
+      expected: '[1, -22, 333]',
+      description: 'match present',
+    },
+    {
+      source: 'ints("abc")',
+      expected: '[]',
+      description: 'no match present',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
 describe('upper', () => {
   const cases = [
     {

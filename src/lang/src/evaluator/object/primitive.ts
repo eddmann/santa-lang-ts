@@ -560,6 +560,24 @@ export class Str implements ValueObj {
     return new List((match || []).slice(1).map(v => new Str(v)));
   }
 
+  public regExMatchAll(pattern: Obj): List {
+    if (!(pattern instanceof Str)) {
+      throw new Error(
+        `regex_match_all(${pattern.constructor.name}, ${this.constructor.name}) is not supported`
+      );
+    }
+
+    const match = this.value.match(new RegExp(pattern.value, 'g'));
+
+    return new List((match || []).map(v => new Str(v)));
+  }
+
+  public parseInts(): List {
+    const match = this.value.match(new RegExp('(-?[0-9]+)', 'g'));
+
+    return new List((match || []).map(v => new Integer(parseInt(v, 10))));
+  }
+
   public toUpper(): Str {
     return new Str(this.value.toUpperCase());
   }

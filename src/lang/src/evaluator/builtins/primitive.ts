@@ -93,6 +93,34 @@ const regex_match: O.BuiltinFuncTemplate = {
   },
 };
 
+const regex_match_all: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'pattern',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'string',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment.getVariable('string').regExMatchAll(environment.getVariable('pattern'));
+  },
+};
+
+const ints: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'string',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment.getVariable('string').parseInts();
+  },
+};
+
 const upper: O.BuiltinFuncTemplate = {
   parameters: [
     {
@@ -147,6 +175,8 @@ export default {
   split,
   lines,
   regex_match,
+  regex_match_all,
+  ints,
   upper,
   lower,
   replace,
