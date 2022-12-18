@@ -103,6 +103,14 @@ export class Integer implements ValueObj {
     return new Integer(this.value | value.value);
   }
 
+  public bitXor(value: Obj): Integer {
+    if (!(value instanceof Integer)) {
+      throw new Error('Operation only permitted for Integer values');
+    }
+
+    return new Integer(this.value ^ value.value);
+  }
+
   public bitShiftLeft(value: Obj): Integer {
     if (!(value instanceof Integer)) {
       throw new Error('Operation only permitted for Integer values');

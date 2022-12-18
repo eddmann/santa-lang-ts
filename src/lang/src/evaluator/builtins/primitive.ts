@@ -199,6 +199,22 @@ const bit_or: O.BuiltinFuncTemplate = {
   },
 };
 
+const bit_xor: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'a',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'b',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment.getVariable('a').bitXor(environment.getVariable('b'));
+  },
+};
+
 const bit_shift_left: O.BuiltinFuncTemplate = {
   parameters: [
     {
@@ -246,6 +262,7 @@ export default {
   replace,
   bit_or,
   bit_and,
+  bit_xor,
   bit_shift_left,
   bit_shift_right,
 };
