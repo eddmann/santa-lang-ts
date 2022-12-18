@@ -14,9 +14,9 @@ const map: O.BuiltinFuncTemplate = {
     },
   ],
   body: (environment: O.Environment) => {
-    return environment
-      .getVariable('collection')
-      .map((v, k) => applyFunction(environment.getVariable('mapper'), [v, k]));
+    const mapper = environment.getVariable('mapper');
+
+    return environment.getVariable('collection').map((v, k) => applyFunction(mapper, [v, k]));
   },
 };
 
@@ -32,9 +32,9 @@ const filter: O.BuiltinFuncTemplate = {
     },
   ],
   body: (environment: O.Environment) => {
-    return environment
-      .getVariable('collection')
-      .filter((v, k) => applyFunction(environment.getVariable('predicate'), [v, k]));
+    const predicate = environment.getVariable('predicate');
+
+    return environment.getVariable('collection').filter((v, k) => applyFunction(predicate, [v, k]));
   },
 };
 
@@ -54,9 +54,11 @@ const filter_mutable: O.BuiltinFuncTemplate = {
       throw new Error('Expected mutable collection');
     }
 
+    const predicate = environment.getVariable('predicate');
+
     return environment
       .getVariable('collection')
-      .filter((v, k) => applyFunction(environment.getVariable('predicate'), [v, k]), true);
+      .filter((v, k) => applyFunction(predicate, [v, k]), true);
   },
 };
 
@@ -76,10 +78,12 @@ const reduce: O.BuiltinFuncTemplate = {
     },
   ],
   body: (environment: O.Environment) => {
+    const reducer = environment.getVariable('reducer');
+
     return environment
       .getVariable('collection')
       .reduce(
-        (acc, v, k) => applyFunction(environment.getVariable('reducer'), [acc, v, k]),
+        (acc, v, k) => applyFunction(reducer, [acc, v, k]),
         environment.getVariable('initial')
       );
   },
@@ -101,10 +105,12 @@ const fold: O.BuiltinFuncTemplate = {
     },
   ],
   body: (environment: O.Environment) => {
+    const folder = environment.getVariable('folder');
+
     return environment
       .getVariable('collection')
       .reduce(
-        (acc, v, k) => applyFunction(environment.getVariable('folder'), [acc, v, k]),
+        (acc, v, k) => applyFunction(folder, [acc, v, k]),
         environment.getVariable('initial')
       );
   },
@@ -126,10 +132,12 @@ const reduce_s: O.BuiltinFuncTemplate = {
     },
   ],
   body: (environment: O.Environment) => {
+    const reducer = environment.getVariable('reducer');
+
     const result = environment
       .getVariable('collection')
       .reduce(
-        (acc, v, k) => applyFunction(environment.getVariable('reducer'), [acc, v, k]),
+        (acc, v, k) => applyFunction(reducer, [acc, v, k]),
         environment.getVariable('initial')
       );
 
@@ -161,10 +169,12 @@ const fold_s: O.BuiltinFuncTemplate = {
     },
   ],
   body: (environment: O.Environment) => {
+    const folder = environment.getVariable('folder');
+
     const result = environment
       .getVariable('collection')
       .reduce(
-        (acc, v, k) => applyFunction(environment.getVariable('folder'), [acc, v, k]),
+        (acc, v, k) => applyFunction(folder, [acc, v, k]),
         environment.getVariable('initial')
       );
 
@@ -196,10 +206,12 @@ const scan: O.BuiltinFuncTemplate = {
     },
   ],
   body: (environment: O.Environment) => {
+    const mapper = environment.getVariable('mapper');
+
     return environment
       .getVariable('collection')
       .scan(
-        (previous, value) => applyFunction(environment.getVariable('mapper'), [previous, value]),
+        (previous, value) => applyFunction(mapper, [previous, value]),
         environment.getVariable('initial')
       );
   },
@@ -217,9 +229,9 @@ const each: O.BuiltinFuncTemplate = {
     },
   ],
   body: (environment: O.Environment) => {
-    return environment
-      .getVariable('collection')
-      .each((v, k) => applyFunction(environment.getVariable('effect'), [v, k]));
+    const effect = environment.getVariable('effect');
+
+    return environment.getVariable('collection').each((v, k) => applyFunction(effect, [v, k]));
   },
 };
 
@@ -235,9 +247,9 @@ const flat_map: O.BuiltinFuncTemplate = {
     },
   ],
   body: (environment: O.Environment) => {
-    return environment
-      .getVariable('collection')
-      .flatMap((v, k) => applyFunction(environment.getVariable('mapper'), [v, k]));
+    const mapper = environment.getVariable('mapper');
+
+    return environment.getVariable('collection').flatMap((v, k) => applyFunction(mapper, [v, k]));
   },
 };
 
@@ -253,9 +265,9 @@ const find: O.BuiltinFuncTemplate = {
     },
   ],
   body: (environment: O.Environment) => {
-    return environment
-      .getVariable('collection')
-      .find((v, k) => applyFunction(environment.getVariable('predicate'), [v, k]));
+    const predicate = environment.getVariable('predicate');
+
+    return environment.getVariable('collection').find((v, k) => applyFunction(predicate, [v, k]));
   },
 };
 
@@ -283,9 +295,9 @@ const sort: O.BuiltinFuncTemplate = {
     },
   ],
   body: (environment: O.Environment) => {
-    return environment
-      .getVariable('collection')
-      .sort((a, b) => applyFunction(environment.getVariable('comparator'), [a, b]));
+    const comparator = environment.getVariable('comparator');
+
+    return environment.getVariable('collection').sort((a, b) => applyFunction(comparator, [a, b]));
   },
 };
 
