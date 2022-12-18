@@ -87,6 +87,38 @@ export class Integer implements ValueObj {
     );
   }
 
+  public bitAnd(value: Obj): Integer {
+    if (!(value instanceof Integer)) {
+      throw new Error('Operation only permitted for Integer values');
+    }
+
+    return new Integer(this.value & value.value);
+  }
+
+  public bitOr(value: Obj): Integer {
+    if (!(value instanceof Integer)) {
+      throw new Error('Operation only permitted for Integer values');
+    }
+
+    return new Integer(this.value | value.value);
+  }
+
+  public bitShiftLeft(value: Obj): Integer {
+    if (!(value instanceof Integer)) {
+      throw new Error('Operation only permitted for Integer values');
+    }
+
+    return new Integer(this.value << value.value);
+  }
+
+  public bitShiftRight(value: Obj): Integer {
+    if (!(value instanceof Integer)) {
+      throw new Error('Operation only permitted for Integer values');
+    }
+
+    return new Integer(this.value >> value.value);
+  }
+
   public inspect(): string {
     return this.value.toString();
   }

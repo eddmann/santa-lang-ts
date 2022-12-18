@@ -424,6 +424,37 @@ describe('replace', () => {
   });
 });
 
+describe('bit operations', () => {
+  const cases = [
+    {
+      source: 'bit_or(1, 1)',
+      expected: '1',
+      description: 'or',
+    },
+    {
+      source: 'bit_and(3, 5)',
+      expected: '1',
+      description: 'and',
+    },
+    {
+      source: 'bit_shift_left(1, 2)',
+      expected: '4',
+      description: 'shift left',
+    },
+    {
+      source: 'bit_shift_right(16, 1)',
+      expected: '8',
+      description: 'shift right',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
 const doEvaluate = (source: string): string => {
   const lexer = new Lexer(source);
   const parser = new Parser(lexer);

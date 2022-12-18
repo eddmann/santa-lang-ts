@@ -167,6 +167,70 @@ const replace: O.BuiltinFuncTemplate = {
   },
 };
 
+const bit_and: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'a',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'b',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment.getVariable('a').bitAnd(environment.getVariable('b'));
+  },
+};
+
+const bit_or: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'a',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'b',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment.getVariable('a').bitOr(environment.getVariable('b'));
+  },
+};
+
+const bit_shift_left: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'a',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'b',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment.getVariable('a').bitShiftLeft(environment.getVariable('b'));
+  },
+};
+
+const bit_shift_right: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'a',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'b',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment.getVariable('a').bitShiftRight(environment.getVariable('b'));
+  },
+};
+
 export default {
   bool,
   int,
@@ -180,4 +244,8 @@ export default {
   upper,
   lower,
   replace,
+  bit_or,
+  bit_and,
+  bit_shift_left,
+  bit_shift_right,
 };
