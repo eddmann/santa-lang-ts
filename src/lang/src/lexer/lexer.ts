@@ -235,7 +235,11 @@ export default class Lexer {
     const startPosition = this.position;
     let isDecimal = false;
 
-    while (this.isDigit(this.peekChar()) || this.peekChar() === TokenKind.Dot) {
+    while (
+      this.isDigit(this.peekChar()) ||
+      this.peekChar() === TokenKind.Dot ||
+      this.peekChar() === TokenKind.Underscore
+    ) {
       if (this.char === TokenKind.Dot) {
         if (this.peekChar() == TokenKind.Dot) {
           this.position -= 1;
@@ -253,7 +257,7 @@ export default class Lexer {
 
     return this.createToken(
       isDecimal ? TokenKind.Decimal : TokenKind.Integer,
-      this.source.slice(startPosition, this.position + 1)
+      this.source.slice(startPosition, this.position + 1).replace(TokenKind.Underscore, '')
     );
   }
 
