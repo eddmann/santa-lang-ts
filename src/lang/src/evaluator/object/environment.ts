@@ -9,11 +9,13 @@ export type IO = {
 export class Environment {
   sections: { [key: string]: Section[] };
   variables: { [key: string]: { value: Obj; isMutable: boolean } };
+  scopedVariableNames: string[];
   io?: IO;
 
   constructor(public parent: Environment | null = null) {
     this.sections = {};
     this.variables = {};
+    this.scopedVariableNames = this.captureParentVariableNames();
   }
 
   public getVariable(name: string): Obj | undefined {
@@ -23,7 +25,7 @@ export class Environment {
       return value.value;
     }
 
-    if (this.parent) {
+    if (this.parent && this.scopedVariableNames.includes(name)) {
       return this.parent.getVariable(name);
     }
 
@@ -51,7 +53,7 @@ export class Environment {
       return value;
     }
 
-    if (this.parent) {
+    if (this.parent && this.scopedVariableNames.includes(name)) {
       return this.parent.setVariable(name, value);
     }
 
@@ -88,14 +90,10 @@ export class Environment {
   }
 
   private captureParentVariableNames(): string[] {
-    let variables: string[] = [];
-
-    let current = this.parent;
-    while (current) {
-      variables = [...variables, ...Object.keys(current.variables)];
-      current = current.parent;
+    if (this.parent) {
+      return [...this.parent.scopedVariableNames, ...Object.keys(this.parent.variables)];
     }
 
-    return variables;
+    return [];
   }
 }
