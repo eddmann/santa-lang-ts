@@ -9,13 +9,11 @@ export type IO = {
 export class Environment {
   sections: { [key: string]: Section[] };
   variables: { [key: string]: { value: Obj; isMutable: boolean } };
-  scopedVariableNames: string[];
   io?: IO;
 
   constructor(public parent: Environment | null = null) {
     this.sections = {};
     this.variables = {};
-    this.scopedVariableNames = this.captureParentVariableNames();
   }
 
   public getVariable(name: string): Obj | undefined {
@@ -25,7 +23,7 @@ export class Environment {
       return value.value;
     }
 
-    if (this.parent && this.scopedVariableNames.includes(name)) {
+    if (this.parent) {
       return this.parent.getVariable(name);
     }
 
@@ -53,7 +51,7 @@ export class Environment {
       return value;
     }
 
-    if (this.parent && this.scopedVariableNames.includes(name)) {
+    if (this.parent) {
       return this.parent.setVariable(name, value);
     }
 
@@ -87,13 +85,5 @@ export class Environment {
     }
 
     throw new Error('IO has not been specified');
-  }
-
-  private captureParentVariableNames(): string[] {
-    if (this.parent) {
-      return [...this.parent.scopedVariableNames, ...Object.keys(this.parent.variables)];
-    }
-
-    return [];
   }
 }

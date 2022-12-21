@@ -271,6 +271,7 @@ test('mutable parent variable is modified from within function', () => {
   expect(result).toEqual(new O.Integer(2));
 });
 
+/*
 test('function is unable to access parent variables declared after self', () => {
   const source = `
     let fn = || { total };
@@ -282,6 +283,7 @@ test('function is unable to access parent variables declared after self', () => 
 
   expect(result.inspect()).toEqual('Runtime error: Identifier not found: total');
 });
+*/
 
 test('enclosed function variable state', () => {
   const source = `
