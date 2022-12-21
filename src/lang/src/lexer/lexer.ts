@@ -257,9 +257,7 @@ export default class Lexer {
 
     return this.createToken(
       isDecimal ? TokenKind.Decimal : TokenKind.Integer,
-      this.source
-        .slice(startPosition, this.position + 1)
-        .replace(new RegExp(TokenKind.Underscore, 'g'), '')
+      this.source.slice(startPosition, this.position + 1)
     );
   }
 

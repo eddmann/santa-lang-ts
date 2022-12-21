@@ -17,7 +17,7 @@ test('integer with seperators', () => {
   const tokens = tokenize(source);
 
   expect(tokens).toEqual([
-    { kind: 'INTEGER', literal: '1000000', line: 0, column: 2 },
+    { kind: 'INTEGER', literal: '1_000_000', line: 0, column: 0 },
     { kind: 'EOF', literal: '', line: 0, column: 9 },
   ]);
 });
@@ -30,6 +30,17 @@ test('decimal', () => {
   expect(tokens).toEqual([
     { kind: 'DECIMAL', literal: '1.5', line: 0, column: 0 },
     { kind: 'EOF', literal: '', line: 0, column: 3 },
+  ]);
+});
+
+test('decimal with seperators', () => {
+  const source = '1_000_000.50';
+
+  const tokens = tokenize(source);
+
+  expect(tokens).toEqual([
+    { kind: 'DECIMAL', literal: '1_000_000.50', line: 0, column: 0 },
+    { kind: 'EOF', literal: '', line: 0, column: 12 },
   ]);
 });
 

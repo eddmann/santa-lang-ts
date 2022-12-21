@@ -692,13 +692,13 @@ export default class Parser {
 
   private parseInteger = (): AST.Integer => ({
     kind: AST.ASTKind.Integer,
-    value: parseInt(this.curToken.literal, 10),
+    value: parseInt(this.curToken.literal.replace(new RegExp(TokenKind.Underscore, 'g'), ''), 10),
     source: this.captureSourceLocation(),
   });
 
   private parseDecimal = (): AST.Decimal => ({
     kind: AST.ASTKind.Decimal,
-    value: parseFloat(this.curToken.literal),
+    value: parseFloat(this.curToken.literal.replace(new RegExp(TokenKind.Underscore, 'g'), '')),
     source: this.captureSourceLocation(),
   });
 

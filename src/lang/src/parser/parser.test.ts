@@ -19,6 +19,24 @@ test('integer', () => {
   });
 });
 
+test('integer with seperators', () => {
+  const source = '1_000_000';
+
+  const ast = parse(source);
+
+  expect(ast).toEqual({
+    kind: 'PROGRAM',
+    statements: [
+      {
+        kind: 'EXPRESSION',
+        expression: { kind: 'INTEGER', value: 1000000, source: { line: 0, column: 0 } },
+        source: { line: 0, column: 0 },
+      },
+    ],
+    source: { line: 0, column: 0 },
+  });
+});
+
 test('decimal', () => {
   const source = '1.5';
 
@@ -30,6 +48,24 @@ test('decimal', () => {
       {
         kind: 'EXPRESSION',
         expression: { kind: 'DECIMAL', value: 1.5, source: { line: 0, column: 0 } },
+        source: { line: 0, column: 0 },
+      },
+    ],
+    source: { line: 0, column: 0 },
+  });
+});
+
+test('decimal with seperators', () => {
+  const source = '1_000_000.50';
+
+  const ast = parse(source);
+
+  expect(ast).toEqual({
+    kind: 'PROGRAM',
+    statements: [
+      {
+        kind: 'EXPRESSION',
+        expression: { kind: 'DECIMAL', value: 1000000.5, source: { line: 0, column: 0 } },
         source: { line: 0, column: 0 },
       },
     ],
