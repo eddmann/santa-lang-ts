@@ -64,6 +64,15 @@ describe('type', () => {
   });
 });
 
+test(`memoize`, () => {
+  const source = `
+    let fibonacci = memoize |n| if (n > 1) { fibonacci(n - 1) + fibonacci(n - 2) } else { n };
+    fibonacci(50)
+  `;
+
+  expect(doEvaluate(source)).toEqual('12586269025');
+});
+
 const doEvaluate = (source: string): string => {
   const lexer = new Lexer(source);
   const parser = new Parser(lexer);
