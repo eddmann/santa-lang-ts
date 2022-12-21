@@ -11,14 +11,14 @@ test('integer', () => {
   ]);
 });
 
-test('integer with seperator', () => {
-  const source = '1_000';
+test('integer with seperators', () => {
+  const source = '1_000_000';
 
   const tokens = tokenize(source);
 
   expect(tokens).toEqual([
-    { kind: 'INTEGER', literal: '1000', line: 0, column: 1 },
-    { kind: 'EOF', literal: '', line: 0, column: 5 },
+    { kind: 'INTEGER', literal: '1000000', line: 0, column: 2 },
+    { kind: 'EOF', literal: '', line: 0, column: 9 },
   ]);
 });
 
