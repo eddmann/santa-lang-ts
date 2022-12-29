@@ -963,6 +963,30 @@ const rotate: O.BuiltinFuncTemplate = {
     },
   ],
   body: (environment: O.Environment) => {
+    if (!environment.getVariable('collection').isImmutable()) {
+      throw new Error('Expected immutable collection');
+    }
+
+    return environment.getVariable('collection').rotate(environment.getVariable('steps'));
+  },
+};
+
+const rotate_mutable: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'steps',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    if (environment.getVariable('collection').isImmutable()) {
+      throw new Error('Expected mutable collection');
+    }
+
     return environment.getVariable('collection').rotate(environment.getVariable('steps'));
   },
 };
@@ -1092,6 +1116,7 @@ export default {
   any,
   shuffle,
   rotate,
+  'rotate!': rotate_mutable,
   iterate,
   sum,
   union,

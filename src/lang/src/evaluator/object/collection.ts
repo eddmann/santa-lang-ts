@@ -456,7 +456,7 @@ export class List implements ValueObj {
       return this;
     }
 
-    const items = this.items.asMutable();
+    const items = this.isImmutable() ? this.items.asMutable() : this.items;
 
     if (times > 0) {
       for (let i = 0; i < times; i++) {
@@ -474,7 +474,7 @@ export class List implements ValueObj {
       }
     }
 
-    return new List(items.asImmutable());
+    return this.isImmutable() ? new List(items.asImmutable()) : this;
   }
 }
 
