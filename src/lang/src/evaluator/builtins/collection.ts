@@ -650,7 +650,7 @@ const assoc_mutable: O.BuiltinFuncTemplate = {
   },
 };
 
-const update: O.BuiltinFuncTemplate = {
+const update_with_default: O.BuiltinFuncTemplate = {
   parameters: [
     {
       kind: AST.ASTKind.Identifier,
@@ -682,7 +682,7 @@ const update: O.BuiltinFuncTemplate = {
   },
 };
 
-const update_mutable: O.BuiltinFuncTemplate = {
+const update_with_default_mutable: O.BuiltinFuncTemplate = {
   parameters: [
     {
       kind: AST.ASTKind.Identifier,
@@ -709,6 +709,63 @@ const update_mutable: O.BuiltinFuncTemplate = {
     return environment
       .getVariable('collection')
       .update(environment.getVariable('key'), environment.getVariable('default'), v =>
+        applyFunction(environment.getVariable('updater'), [v])
+      );
+  },
+};
+
+const update: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'key',
+    },
+
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'updater',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    if (!environment.getVariable('collection').isImmutable()) {
+      throw new Error('Expected immutable collection');
+    }
+
+    return environment
+      .getVariable('collection')
+      .update(environment.getVariable('key'), O.NIL, v =>
+        applyFunction(environment.getVariable('updater'), [v])
+      );
+  },
+};
+
+const update_mutable: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'key',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'updater',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    if (environment.getVariable('collection').isImmutable()) {
+      throw new Error('Expected mutable collection');
+    }
+
+    return environment
+      .getVariable('collection')
+      .update(environment.getVariable('key'), O.NIL, v =>
         applyFunction(environment.getVariable('updater'), [v])
       );
   },
@@ -1103,6 +1160,8 @@ export default {
   'assoc!': assoc_mutable,
   update,
   'update!': update_mutable,
+  update_d: update_with_default,
+  'update_d!': update_with_default_mutable,
   assign,
   'assign!': assign_mutable,
   push: push,

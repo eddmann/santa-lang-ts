@@ -1143,30 +1143,51 @@ describe('assoc', () => {
   });
 });
 
-describe('update', () => {
+describe('update_d', () => {
   const cases = [
     {
-      source: 'update(0, 0, _ + 1, [])',
+      source: 'update_d(0, 0, _ + 1, [])',
       expected: '[1]',
       description: 'empty list',
     },
     {
-      source: 'update(1, 0, _ + 1, [])',
+      source: 'update_d(1, 0, _ + 1, [])',
       expected: '[nil, 1]',
       description: 'empty list, specifying second index',
     },
     {
-      source: 'update(1, 0, _ * 2, [1, 2, 3])',
+      source: 'update_d(1, 0, _ * 2, [1, 2, 3])',
       expected: '[1, 4, 3]',
       description: 'list with existing value',
     },
     {
-      source: 'update(1, 0, _ + 1, #{})',
+      source: 'update_d(1, 0, _ + 1, #{})',
       expected: '#{1: 1}',
       description: 'empty hash',
     },
     {
-      source: 'update(1, 0, _ - 10, #{1: 20})',
+      source: 'update_d(1, 0, _ - 10, #{1: 20})',
+      expected: '#{1: 10}',
+      description: 'hash with existing value',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
+describe('update', () => {
+  const cases = [
+    {
+      source: 'update(0, _ + 1, [1])',
+      expected: '[2]',
+      description: 'list with existing value',
+    },
+    {
+      source: 'update(1, _ - 10, #{1: 20})',
       expected: '#{1: 10}',
       description: 'hash with existing value',
     },
