@@ -1303,8 +1303,8 @@ export class Sequence implements ValueObj {
     return this.items.last() || NIL;
   }
 
-  public take(total: Integer): Sequence {
-    return new Sequence(this.items.take(total.value));
+  public take(total: Integer): List {
+    return new List(this.items.take(total.value).toList());
   }
 
   public skip(total: Integer): Sequence {
