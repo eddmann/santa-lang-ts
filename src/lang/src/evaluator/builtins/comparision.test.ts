@@ -33,6 +33,47 @@ describe('less than <', () => {
   });
 });
 
+describe('less than equal <=', () => {
+  const cases = [
+    {
+      source: '2 <= 3',
+      expected: 'true',
+      description: 'integer',
+    },
+    {
+      source: '3 <= 3',
+      expected: 'true',
+      description: 'integer',
+    },
+    {
+      source: '2.5 <= 4.5',
+      expected: 'true',
+      description: 'decimal',
+    },
+    {
+      source: '4.5 <= 4.5',
+      expected: 'true',
+      description: 'decimal',
+    },
+    {
+      source: '2 <= 3.0',
+      expected: 'true',
+      description: 'integer-decimal',
+    },
+    {
+      source: '1.50 <= 2',
+      expected: 'true',
+      description: 'decimal-integer',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
 describe('greater than >', () => {
   const cases = [
     {
@@ -52,6 +93,47 @@ describe('greater than >', () => {
     },
     {
       source: '2.5 > 1',
+      expected: 'true',
+      description: 'decimal-integer',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
+describe('greater than equal >=', () => {
+  const cases = [
+    {
+      source: '3 >= 2',
+      expected: 'true',
+      description: 'integer',
+    },
+    {
+      source: '3 >= 3',
+      expected: 'true',
+      description: 'integer',
+    },
+    {
+      source: '4.5 >= 2.5',
+      expected: 'true',
+      description: 'decimal',
+    },
+    {
+      source: '4.5 >= 4.5',
+      expected: 'true',
+      description: 'decimal',
+    },
+    {
+      source: '3 >= 2.0',
+      expected: 'true',
+      description: 'integer-decimal',
+    },
+    {
+      source: '2.5 >= 1',
       expected: 'true',
       description: 'decimal-integer',
     },

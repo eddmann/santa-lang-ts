@@ -72,9 +72,19 @@ export default class Lexer {
         return this.createToken(TokenKind.Modulo);
 
       case TokenKind.LessThan:
+        if (this.peekChar() == TokenKind.Assign) {
+          this.readChar();
+          return this.createToken(TokenKind.LessThanEqual, TokenKind.LessThanEqual);
+        }
+
         return this.createToken(TokenKind.LessThan);
 
       case TokenKind.GreaterThan:
+        if (this.peekChar() == TokenKind.Assign) {
+          this.readChar();
+          return this.createToken(TokenKind.GreaterThanEqual, TokenKind.GreaterThanEqual);
+        }
+
         if (this.peekChar() === TokenKind.GreaterThan) {
           this.readChar();
           return this.createToken(TokenKind.GreaterGreater, TokenKind.GreaterGreater);

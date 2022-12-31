@@ -1791,6 +1791,11 @@ describe('operator precedence', () => {
       description: 'greater than, less than, and equality',
     },
     {
+      input: '5 >= 4 == 3 <= 4',
+      expected: '((5 >= 4) == (3 <= 4));',
+      description: 'greater than equal, less than equal, and equality',
+    },
+    {
       input: '5 < 4 != 3 > 4',
       expected: '((5 < 4) != (3 > 4));',
       description: 'greater than, less than, and inequality',

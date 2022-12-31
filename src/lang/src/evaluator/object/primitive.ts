@@ -211,6 +211,10 @@ export class Integer implements ValueObj {
     throw new Error(`${this.constructor.name} < ${that.constructor.name} is not supported`);
   }
 
+  public lessThanEqual(that: Obj): Bool {
+    return this.lessThan(that) == TRUE ? TRUE : this.equals(that) ? TRUE : FALSE;
+  }
+
   public greaterThan(that: Obj): Bool {
     if (that instanceof Integer) {
       return this.value > that.value ? TRUE : FALSE;
@@ -221,6 +225,10 @@ export class Integer implements ValueObj {
     }
 
     throw new Error(`${this.constructor.name} > ${that.constructor.name} is not supported`);
+  }
+
+  public greaterThanEqual(that: Obj): Bool {
+    return this.greaterThan(that) == TRUE ? TRUE : this.equals(that) ? TRUE : FALSE;
   }
 
   public negative(): Integer {
@@ -345,6 +353,10 @@ export class Decimal implements ValueObj {
     throw new Error(`${this.constructor.name} < ${that.constructor.name} is not supported`);
   }
 
+  public lessThanEqual(that: Obj): Bool {
+    return this.lessThan(that) == TRUE ? TRUE : this.equals(that) ? TRUE : FALSE;
+  }
+
   public greaterThan(that: Obj): Bool {
     if (that instanceof Integer) {
       return this.value > that.value ? TRUE : FALSE;
@@ -355,6 +367,10 @@ export class Decimal implements ValueObj {
     }
 
     throw new Error(`${this.constructor.name} > ${that.constructor.name} is not supported`);
+  }
+
+  public greaterThanEqual(that: Obj): Bool {
+    return this.greaterThan(that) == TRUE ? TRUE : this.equals(that) ? TRUE : FALSE;
   }
 
   public negative(): Decimal {

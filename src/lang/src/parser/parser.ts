@@ -94,6 +94,16 @@ export default class Parser {
         prefix: this.parseIdentifier,
         infix: this.parseInfixExpression,
       },
+      [TokenKind.LessThanEqual]: {
+        precedence: Precedence.LessGreater,
+        prefix: this.parseIdentifier,
+        infix: this.parseInfixExpression,
+      },
+      [TokenKind.GreaterThanEqual]: {
+        precedence: Precedence.LessGreater,
+        prefix: this.parseIdentifier,
+        infix: this.parseInfixExpression,
+      },
       [TokenKind.GreaterThan]: {
         precedence: Precedence.LessGreater,
         prefix: this.parseIdentifier,
