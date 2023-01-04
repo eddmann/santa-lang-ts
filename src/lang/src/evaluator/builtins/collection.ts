@@ -70,10 +70,6 @@ const reduce: O.BuiltinFuncTemplate = {
     },
     {
       kind: AST.ASTKind.Identifier,
-      value: 'initial',
-    },
-    {
-      kind: AST.ASTKind.Identifier,
       value: 'collection',
     },
   ],
@@ -82,10 +78,7 @@ const reduce: O.BuiltinFuncTemplate = {
 
     return environment
       .getVariable('collection')
-      .reduce(
-        (acc, v, k) => applyFunction(reducer, [acc, v, k]),
-        environment.getVariable('initial')
-      );
+      .reduce((acc, v, k) => applyFunction(reducer, [acc, v, k]));
   },
 };
 
@@ -109,47 +102,7 @@ const fold: O.BuiltinFuncTemplate = {
 
     return environment
       .getVariable('collection')
-      .reduce(
-        (acc, v, k) => applyFunction(folder, [acc, v, k]),
-        environment.getVariable('initial')
-      );
-  },
-};
-
-const reduce_s: O.BuiltinFuncTemplate = {
-  parameters: [
-    {
-      kind: AST.ASTKind.Identifier,
-      value: 'reducer',
-    },
-    {
-      kind: AST.ASTKind.Identifier,
-      value: 'initial',
-    },
-    {
-      kind: AST.ASTKind.Identifier,
-      value: 'collection',
-    },
-  ],
-  body: (environment: O.Environment) => {
-    const reducer = environment.getVariable('reducer');
-
-    const result = environment
-      .getVariable('collection')
-      .reduce(
-        (acc, v, k) => applyFunction(reducer, [acc, v, k]),
-        environment.getVariable('initial')
-      );
-
-    if (result instanceof O.Err) {
-      return result;
-    }
-
-    if (result instanceof O.List) {
-      return result.get(new O.Integer(0));
-    }
-
-    throw new Error('reduce_s expects the result to be a List');
+      .fold((acc, v, k) => applyFunction(folder, [acc, v, k]), environment.getVariable('initial'));
   },
 };
 
@@ -173,10 +126,7 @@ const fold_s: O.BuiltinFuncTemplate = {
 
     const result = environment
       .getVariable('collection')
-      .reduce(
-        (acc, v, k) => applyFunction(folder, [acc, v, k]),
-        environment.getVariable('initial')
-      );
+      .fold((acc, v, k) => applyFunction(folder, [acc, v, k]), environment.getVariable('initial'));
 
     if (result instanceof O.Err) {
       return result;
@@ -1126,7 +1076,6 @@ export default {
   filter,
   'filter!': filter_mutable,
   reduce,
-  reduce_s,
   fold,
   fold_s,
   scan,

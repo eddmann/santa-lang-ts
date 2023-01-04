@@ -201,7 +201,7 @@ export class List implements ValueObj {
     }
   }
 
-  public reduce(fn: (acc: Obj, v: Obj) => Obj, initial: Obj): Obj {
+  public fold(fn: (acc: Obj, v: Obj) => Obj, initial: Obj): Obj {
     try {
       return this.items.reduce((acc, v) => {
         const result = fn(acc, v);
@@ -216,6 +216,26 @@ export class List implements ValueObj {
 
         return result;
       }, initial);
+    } catch (err) {
+      return err;
+    }
+  }
+
+  public reduce(fn: (acc: Obj, v: Obj) => Obj): Obj {
+    try {
+      return this.items.reduce((acc, v) => {
+        const result = fn(acc, v);
+
+        if (result instanceof Err) {
+          throw result;
+        }
+
+        if (result instanceof BreakValue) {
+          throw result.value;
+        }
+
+        return result;
+      });
     } catch (err) {
       return err;
     }
@@ -618,7 +638,7 @@ export class Hash {
     }
   }
 
-  public reduce(fn: (acc: Obj, v: Obj, k: Obj) => Obj, initial: Obj): Obj {
+  public fold(fn: (acc: Obj, v: Obj, k: Obj) => Obj, initial: Obj): Obj {
     try {
       return this.items.reduce((acc, v, k) => {
         const result = fn(acc, v, k);
@@ -633,6 +653,26 @@ export class Hash {
 
         return result;
       }, initial);
+    } catch (err) {
+      return err;
+    }
+  }
+
+  public reduce(fn: (acc: Obj, v: Obj, k: Obj) => Obj): Obj {
+    try {
+      return this.items.reduce((acc, v, k) => {
+        const result = fn(acc, v, k);
+
+        if (result instanceof Err) {
+          throw result;
+        }
+
+        if (result instanceof BreakValue) {
+          throw result.value;
+        }
+
+        return result;
+      });
     } catch (err) {
       return err;
     }
@@ -881,7 +921,7 @@ export class Set {
     }
   }
 
-  public reduce(fn: (acc: Obj, v: Obj) => Obj, initial: Obj): Obj {
+  public fold(fn: (acc: Obj, v: Obj) => Obj, initial: Obj): Obj {
     try {
       return this.items.reduce((acc, v) => {
         const result = fn(acc, v);
@@ -896,6 +936,26 @@ export class Set {
 
         return result;
       }, initial);
+    } catch (err) {
+      return err;
+    }
+  }
+
+  public reduce(fn: (acc: Obj, v: Obj) => Obj): Obj {
+    try {
+      return this.items.reduce((acc, v) => {
+        const result = fn(acc, v);
+
+        if (result instanceof Err) {
+          throw result;
+        }
+
+        if (result instanceof BreakValue) {
+          throw result.value;
+        }
+
+        return result;
+      });
     } catch (err) {
       return err;
     }
@@ -1135,7 +1195,31 @@ export class Range implements ValueObj {
     }
   }
 
-  public reduce(fn: (acc: Obj, v: Obj) => Obj, initial: Obj): Obj {
+  public fold(fn: (acc: Obj, v: Obj) => Obj, initial: Obj): Obj {
+    if (this.end === Infinity) {
+      throw new Error('Unable to fold an infinite range');
+    }
+
+    try {
+      return this.items.reduce((acc, v) => {
+        const result = fn(acc, v);
+
+        if (result instanceof Err) {
+          throw result;
+        }
+
+        if (result instanceof BreakValue) {
+          throw result.value;
+        }
+
+        return result;
+      }, initial);
+    } catch (err) {
+      return err;
+    }
+  }
+
+  public reduce(fn: (acc: Obj, v: Obj) => Obj): Obj {
     if (this.end === Infinity) {
       throw new Error('Unable to reduce an infinite range');
     }
@@ -1153,7 +1237,7 @@ export class Range implements ValueObj {
         }
 
         return result;
-      }, initial);
+      });
     } catch (err) {
       return err;
     }
@@ -1376,7 +1460,7 @@ export class Sequence implements ValueObj {
     }
   }
 
-  public reduce(fn: (acc: Obj, v: Obj) => Obj, initial: Obj): Obj {
+  public fold(fn: (acc: Obj, v: Obj) => Obj, initial: Obj): Obj {
     try {
       return this.items.reduce((acc, v) => {
         const result = fn(acc, v);
@@ -1391,6 +1475,26 @@ export class Sequence implements ValueObj {
 
         return result;
       }, initial);
+    } catch (err) {
+      return err;
+    }
+  }
+
+  public reduce(fn: (acc: Obj, v: Obj) => Obj): Obj {
+    try {
+      return this.items.reduce((acc, v) => {
+        const result = fn(acc, v);
+
+        if (result instanceof Err) {
+          throw result;
+        }
+
+        if (result instanceof BreakValue) {
+          throw result.value;
+        }
+
+        return result;
+      });
     } catch (err) {
       return err;
     }

@@ -115,23 +115,23 @@ describe('filter', () => {
   });
 });
 
-describe('reduce', () => {
+describe('fold', () => {
   const cases = [
     {
-      source: 'reduce(+, 0, [1, 2, 3])',
+      source: 'fold(0, +, [1, 2, 3])',
       expected: '6',
       description: 'list',
     },
     {
-      source: 'reduce(+, 0, #{"a": 1, "b": 2, "c": 3})',
+      source: 'fold(0, +, #{"a": 1, "b": 2, "c": 3})',
       expected: '6',
       description: 'hash (using value)',
     },
     {
       source: `
-          reduce(
-            |acc, v, k| if k == "a" { v } else { acc },
+          fold(
             -1,
+            |acc, v, k| if k == "a" { v } else { acc },
             #{"a": 1, "b": 2, "c": 3}
           )
         `,
@@ -139,20 +139,20 @@ describe('reduce', () => {
       description: 'hash (using key)',
     },
     {
-      source: 'reduce(+, 0, {1, 2, 3})',
+      source: 'fold(0, +, {1, 2, 3})',
       expected: '6',
       description: 'set',
     },
     {
-      source: 'reduce(|acc, v| v + acc, "", "hello")',
+      source: 'fold("", |acc, v| v + acc, "hello")',
       expected: '"olleh"',
       description: 'string',
     },
     {
       source: `
-          reduce(
-            |acc, v, k| if k == "a" { break v } else { acc },
+          fold(
             false,
+            |acc, v, k| if k == "a" { break v } else { acc },
             #{"a": 1, "b": 2, "c": 3}
           )
         `,
@@ -160,35 +160,14 @@ describe('reduce', () => {
       description: 'break short-circuit',
     },
     {
-      source: 'reduce(+, 0, 1..5)',
+      source: 'fold(0, +, 1..5)',
       expected: '15',
       description: 'bounded range',
     },
     {
-      source: 'reduce(+, 0, 1..)',
-      expected: 'Runtime error: Unable to reduce an infinite range',
+      source: 'fold(0, +, 1..)',
+      expected: 'Runtime error: Unable to fold an infinite range',
       description: 'unbounded range',
-    },
-  ];
-
-  cases.forEach(({ source, expected, description }) => {
-    test(`${description}: ${source}`, () => {
-      expect(doEvaluate(source)).toEqual(expected);
-    });
-  });
-});
-
-describe('reduce_s', () => {
-  const cases = [
-    {
-      source: 'reduce_s(|[acc, prev], val| [acc + prev * val, val], [0, 0], 1..10)',
-      expected: '330',
-      description: 'single state',
-    },
-    {
-      source: 'reduce_s(|[acc, x, y], val| [acc + x * y * val, val, val / 2], [0, 0, 0], 1..10)',
-      expected: '1060',
-      description: 'multi-state',
     },
   ];
 
@@ -210,6 +189,47 @@ describe('fold_s', () => {
       source: 'fold_s([0, 0, 0], |[acc, x, y], val| [acc + x * y * val, val, val / 2], 1..10)',
       expected: '1060',
       description: 'multi-state',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
+describe('reduce', () => {
+  const cases = [
+    {
+      source: 'reduce(+, [1, 2, 3])',
+      expected: '6',
+      description: 'list',
+    },
+    {
+      source: 'reduce(+, #{"a": 1, "b": 2, "c": 3})',
+      expected: '6',
+      description: 'hash (using value)',
+    },
+    {
+      source: 'reduce(+, {1, 2, 3})',
+      expected: '6',
+      description: 'set',
+    },
+    {
+      source: 'reduce(|acc, v| v + acc, "hello")',
+      expected: '"olleh"',
+      description: 'string',
+    },
+    {
+      source: 'reduce(+, 1..5)',
+      expected: '15',
+      description: 'bounded range',
+    },
+    {
+      source: 'reduce(+, 1..)',
+      expected: 'Runtime error: Unable to reduce an infinite range',
+      description: 'unbounded range',
     },
   ];
 

@@ -532,7 +532,7 @@ export class Str implements ValueObj {
     }
   }
 
-  public reduce(fn: (acc: Obj, v: Obj) => Obj, initial: Obj): Obj {
+  public fold(fn: (acc: Obj, v: Obj) => Obj, initial: Obj): Obj {
     try {
       return this.getInteralSeq().reduce((acc, v) => {
         const result = fn(acc, v);
@@ -547,6 +547,26 @@ export class Str implements ValueObj {
 
         return result;
       }, initial);
+    } catch (err) {
+      return err;
+    }
+  }
+
+  public reduce(fn: (acc: Obj, v: Obj) => Obj): Obj {
+    try {
+      return this.getInteralSeq().reduce((acc, v) => {
+        const result = fn(acc, v);
+
+        if (result instanceof Err) {
+          throw result;
+        }
+
+        if (result instanceof BreakValue) {
+          throw result.value;
+        }
+
+        return result;
+      });
     } catch (err) {
       return err;
     }
