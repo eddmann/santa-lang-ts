@@ -313,6 +313,14 @@ export class List implements ValueObj {
     throw new Error(`${this.constructor.name} + ${that.constructor.name} is not supported`);
   }
 
+  public vectorAdd(that: Obj): List {
+    if (!(that instanceof List)) {
+      throw new Error(`${this.constructor.name} + ${that.constructor.name} is not supported`);
+    }
+
+    return new List(this.items.zip(that.items).map(row => new List(row).sum()));
+  }
+
   public subtract(that: Obj): List {
     if (that instanceof List) {
       return new List(this.items.filter(item => !that.items.includes(item)));

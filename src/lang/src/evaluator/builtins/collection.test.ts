@@ -1542,6 +1542,32 @@ describe('intersect', () => {
   });
 });
 
+describe('vec_add', () => {
+  const cases = [
+    {
+      source: 'vec_add([1], [2])',
+      expected: '[3]',
+      description: '1d vector',
+    },
+    {
+      source: 'vec_add([1, 2], [2, 3])',
+      expected: '[3, 5]',
+      description: '2d vector',
+    },
+    {
+      source: 'vec_add([1, 2, 3], [2, 3, 4])',
+      expected: '[3, 5, 7]',
+      description: '3d vector',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
 const doEvaluate = (source: string): string => {
   const lexer = new Lexer(source);
   const parser = new Parser(lexer);

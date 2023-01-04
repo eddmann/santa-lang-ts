@@ -1108,6 +1108,22 @@ const intersect: O.BuiltinFuncTemplate = {
   },
 };
 
+const vec_add: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'a',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'b',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment.getVariable('a').vectorAdd(environment.getVariable('b'));
+  },
+};
+
 export default {
   map,
   filter,
@@ -1168,4 +1184,5 @@ export default {
   sum,
   union,
   intersect,
+  vec_add,
 };
