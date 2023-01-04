@@ -251,7 +251,7 @@ const sort: O.BuiltinFuncTemplate = {
   },
 };
 
-const contains: O.BuiltinFuncTemplate = {
+const includes: O.BuiltinFuncTemplate = {
   parameters: [
     {
       kind: AST.ASTKind.Identifier,
@@ -263,7 +263,26 @@ const contains: O.BuiltinFuncTemplate = {
     },
   ],
   body: (environment: O.Environment) => {
-    return environment.getVariable('collection').contains(environment.getVariable('value'));
+    return environment.getVariable('collection').includes(environment.getVariable('value'));
+  },
+};
+
+const excludes: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'value',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment.getVariable('collection').includes(environment.getVariable('value')) ===
+      O.TRUE
+      ? O.FALSE
+      : O.TRUE;
   },
 };
 
@@ -1084,7 +1103,8 @@ export default {
   find,
   reverse,
   sort,
-  contains,
+  includes,
+  excludes,
   size,
   chunk,
   zip,

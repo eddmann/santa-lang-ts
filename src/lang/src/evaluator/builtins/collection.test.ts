@@ -528,25 +528,25 @@ describe('max', () => {
   });
 });
 
-describe('contains', () => {
+describe('includes', () => {
   const cases = [
     {
-      source: '[1, 2, 3] `contains` 1',
+      source: '[1, 2, 3] `includes` 1',
       expected: 'true',
       description: 'list',
     },
     {
-      source: '#{"a": 1, "b": 2, "c": 3} `contains` 1',
+      source: '#{"a": 1, "b": 2, "c": 3} `includes` 1',
       expected: 'true',
       description: 'hash (using value)',
     },
     {
-      source: '{1, 2, 3} `contains` 1',
+      source: '{1, 2, 3} `includes` 1',
       expected: 'true',
       description: 'set',
     },
     {
-      source: '"hello" `contains` "h"',
+      source: '"hello" `includes` "h"',
       expected: 'true',
       description: 'string',
     },

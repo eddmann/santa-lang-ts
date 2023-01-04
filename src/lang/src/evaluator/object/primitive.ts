@@ -431,7 +431,7 @@ export class Str implements ValueObj {
     return new Integer(this.value.length);
   }
 
-  public contains(subject: Obj): Bool {
+  public includes(subject: Obj): Bool {
     return subject instanceof Str && this.value.includes(subject.value) ? TRUE : FALSE;
   }
 

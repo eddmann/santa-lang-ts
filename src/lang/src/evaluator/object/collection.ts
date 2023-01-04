@@ -77,8 +77,8 @@ export class List implements ValueObj {
     return new Integer(this.items.size);
   }
 
-  public contains(subject: Obj): Bool {
-    return this.items.contains(subject) ? TRUE : FALSE;
+  public includes(subject: Obj): Bool {
+    return this.items.includes(subject) ? TRUE : FALSE;
   }
 
   public first(): Obj | Nil {
@@ -289,7 +289,7 @@ export class List implements ValueObj {
 
   public subtract(that: Obj): List {
     if (that instanceof List) {
-      return new List(this.items.filter(item => !that.items.contains(item)));
+      return new List(this.items.filter(item => !that.items.includes(item)));
     }
 
     throw new Error(`${this.constructor.name} - ${that.constructor.name} is not supported`);
@@ -565,8 +565,8 @@ export class Hash {
     return new Integer(this.items.size);
   }
 
-  public contains(subject: Obj): Bool {
-    return this.items.contains(subject) ? TRUE : FALSE;
+  public includes(subject: Obj): Bool {
+    return this.items.includes(subject) ? TRUE : FALSE;
   }
 
   public find(fn: (v: Obj, k: Obj) => Obj): Obj {
@@ -848,8 +848,8 @@ export class Set {
     return new Integer(this.items.size);
   }
 
-  public contains(subject: Obj): Bool {
-    return this.items.contains(subject) ? TRUE : FALSE;
+  public includes(subject: Obj): Bool {
+    return this.items.includes(subject) ? TRUE : FALSE;
   }
 
   public find(fn: (v: Obj) => Obj): Obj {
@@ -1098,8 +1098,8 @@ export class Range implements ValueObj {
     return new Integer(this.items.size);
   }
 
-  public contains(subject: Obj): Bool {
-    return subject instanceof Integer && this.items.contains(subject) ? TRUE : FALSE;
+  public includes(subject: Obj): Bool {
+    return subject instanceof Integer && this.items.includes(subject) ? TRUE : FALSE;
   }
 
   public first(): Obj | Nil {
@@ -1371,8 +1371,8 @@ export class Sequence implements ValueObj {
     return new Integer(Infinity);
   }
 
-  public contains(subject: Obj): Bool {
-    return subject instanceof Integer && this.items.contains(subject) ? TRUE : FALSE;
+  public includes(subject: Obj): Bool {
+    return subject instanceof Integer && this.items.includes(subject) ? TRUE : FALSE;
   }
 
   public first(): Obj | Nil {
