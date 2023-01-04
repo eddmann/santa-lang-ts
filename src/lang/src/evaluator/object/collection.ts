@@ -201,6 +201,24 @@ export class List implements ValueObj {
     }
   }
 
+  public count(fn: (v: Obj) => Obj): Integer {
+    try {
+      return new Integer(
+        this.items.count(v => {
+          const result = fn(v);
+
+          if (result instanceof Err) {
+            throw result;
+          }
+
+          return result !== FALSE && result !== NIL;
+        })
+      );
+    } catch (err) {
+      return err;
+    }
+  }
+
   public fold(fn: (acc: Obj, v: Obj) => Obj, initial: Obj): Obj {
     try {
       return this.items.reduce((acc, v) => {
@@ -638,6 +656,24 @@ export class Hash {
     }
   }
 
+  public count(fn: (v: Obj, k: Obj) => Obj): Integer {
+    try {
+      return new Integer(
+        this.items.count((v, k) => {
+          const result = fn(v, k);
+
+          if (result instanceof Err) {
+            throw result;
+          }
+
+          return result !== FALSE && result !== NIL;
+        })
+      );
+    } catch (err) {
+      return err;
+    }
+  }
+
   public fold(fn: (acc: Obj, v: Obj, k: Obj) => Obj, initial: Obj): Obj {
     try {
       return this.items.reduce((acc, v, k) => {
@@ -907,6 +943,24 @@ export class Set {
 
       return new Set(
         this.items.filter(v => {
+          const result = fn(v);
+
+          if (result instanceof Err) {
+            throw result;
+          }
+
+          return result !== FALSE && result !== NIL;
+        })
+      );
+    } catch (err) {
+      return err;
+    }
+  }
+
+  public count(fn: (v: Obj) => Obj): Integer {
+    try {
+      return new Integer(
+        this.items.count(v => {
           const result = fn(v);
 
           if (result instanceof Err) {
@@ -1195,6 +1249,24 @@ export class Range implements ValueObj {
     }
   }
 
+  public count(fn: (v: Obj) => Obj): Integer {
+    try {
+      return new Integer(
+        this.items.count(v => {
+          const result = fn(v);
+
+          if (result instanceof Err) {
+            throw result;
+          }
+
+          return result !== FALSE && result !== NIL;
+        })
+      );
+    } catch (err) {
+      return err;
+    }
+  }
+
   public fold(fn: (acc: Obj, v: Obj) => Obj, initial: Obj): Obj {
     if (this.end === Infinity) {
       throw new Error('Unable to fold an infinite range');
@@ -1446,6 +1518,24 @@ export class Sequence implements ValueObj {
     try {
       return new Sequence(
         this.items.filter(v => {
+          const result = fn(v);
+
+          if (result instanceof Err) {
+            throw result;
+          }
+
+          return result !== FALSE && result !== NIL;
+        })
+      );
+    } catch (err) {
+      return err;
+    }
+  }
+
+  public count(fn: (v: Obj) => Obj): Integer {
+    try {
+      return new Integer(
+        this.items.count(v => {
           const result = fn(v);
 
           if (result instanceof Err) {

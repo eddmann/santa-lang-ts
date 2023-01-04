@@ -532,6 +532,24 @@ export class Str implements ValueObj {
     }
   }
 
+  public count(fn: (v: Obj) => Obj): Integer {
+    try {
+      return new Integer(
+        this.getInteralSeq().count(v => {
+          const result = fn(v);
+
+          if (result instanceof Err) {
+            throw result;
+          }
+
+          return result !== FALSE && result !== NIL;
+        })
+      );
+    } catch (err) {
+      return err;
+    }
+  }
+
   public fold(fn: (acc: Obj, v: Obj) => Obj, initial: Obj): Obj {
     try {
       return this.getInteralSeq().reduce((acc, v) => {

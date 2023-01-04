@@ -298,6 +298,24 @@ const size: O.BuiltinFuncTemplate = {
   },
 };
 
+const count: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'predicate',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    const predicate = environment.getVariable('predicate');
+
+    return environment.getVariable('collection').count((v, k) => applyFunction(predicate, [v, k]));
+  },
+};
+
 const chunk: O.BuiltinFuncTemplate = {
   parameters: [
     {
@@ -1106,6 +1124,7 @@ export default {
   includes,
   excludes,
   size,
+  count,
   chunk,
   zip,
   take,
