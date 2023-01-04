@@ -318,6 +318,10 @@ export class List implements ValueObj {
       return new List(this.items.filter(item => !that.items.includes(item)));
     }
 
+    if (that instanceof Set) {
+      return new List(this.items.filter(item => !that.items.includes(item)));
+    }
+
     throw new Error(`${this.constructor.name} - ${that.constructor.name} is not supported`);
   }
 
@@ -1065,6 +1069,10 @@ export class Set {
 
   public subtract(that: Obj): Set {
     if (that instanceof Set) {
+      return new Set(this.items.subtract(that.items));
+    }
+
+    if (that instanceof List) {
       return new Set(this.items.subtract(that.items));
     }
 
