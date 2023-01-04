@@ -302,6 +302,14 @@ export class List implements ValueObj {
       return new List(this.items.concat(that.items));
     }
 
+    if (that instanceof Set) {
+      return new List(this.items.concat(that.items));
+    }
+
+    if (that instanceof Range) {
+      return new List(this.items.concat(that.items));
+    }
+
     throw new Error(`${this.constructor.name} + ${that.constructor.name} is not supported`);
   }
 
@@ -1040,7 +1048,15 @@ export class Set {
   }
 
   public add(that: Obj): Set {
+    if (that instanceof List) {
+      return new Set(this.items.concat(that.items));
+    }
+
     if (that instanceof Set) {
+      return new Set(this.items.concat(that.items));
+    }
+
+    if (that instanceof Range) {
       return new Set(this.items.concat(that.items));
     }
 
