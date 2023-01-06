@@ -347,6 +347,14 @@ test('if expression', () => {
   expect(result).toEqual(new O.Integer(1));
 });
 
+test('if expression (with let binding)', () => {
+  const source = 'if let x = 1 { x } else { 2 }';
+
+  const result = doEvaluate(source);
+
+  expect(result).toEqual(new O.Integer(1));
+});
+
 test('function threading', () => {
   const source = `
     let add = |a, b| { a + b };

@@ -512,7 +512,12 @@ export default class Parser {
 
     this.nextToken();
 
-    const condition = this.parseExpression(Precedence.Lowest);
+    let condition;
+    if (this.curTokenIs(TokenKind.Let)) {
+      condition = this.parseLetStatement();
+    } else {
+      condition = this.parseExpression(Precedence.Lowest);
+    }
 
     this.expectPeek(TokenKind.LBrace);
 

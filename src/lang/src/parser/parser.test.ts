@@ -1011,6 +1011,56 @@ test('if expression', () => {
   });
 });
 
+test('if expression (with let binding)', () => {
+  const source = 'if let x = 1 { x } else { 2 }';
+
+  const ast = parse(source);
+
+  expect(ast).toEqual({
+    kind: 'PROGRAM',
+    statements: [
+      {
+        kind: 'EXPRESSION',
+        expression: {
+          kind: 'IF_EXPRESSION',
+          condition: {
+            kind: 'LET',
+            name: { kind: 'IDENTIFIER', value: 'x', source: { line: 0, column: 7 } },
+            value: { kind: 'INTEGER', value: 1, source: { line: 0, column: 11 } },
+            isMutable: false,
+            source: { line: 0, column: 3 },
+          },
+          consequence: {
+            kind: 'BLOCK_STATEMENT',
+            statements: [
+              {
+                kind: 'EXPRESSION',
+                expression: { kind: 'IDENTIFIER', value: 'x', source: { line: 0, column: 15 } },
+                source: { line: 0, column: 15 },
+              },
+            ],
+            source: { line: 0, column: 13 },
+          },
+          alternative: {
+            kind: 'BLOCK_STATEMENT',
+            statements: [
+              {
+                kind: 'EXPRESSION',
+                expression: { kind: 'INTEGER', value: 2, source: { line: 0, column: 26 } },
+                source: { line: 0, column: 26 },
+              },
+            ],
+            source: { line: 0, column: 24 },
+          },
+          source: { line: 0, column: 0 },
+        },
+        source: { line: 0, column: 0 },
+      },
+    ],
+    source: { line: 0, column: 0 },
+  });
+});
+
 test('call expression', () => {
   const source = 'add(1, 2)';
 
