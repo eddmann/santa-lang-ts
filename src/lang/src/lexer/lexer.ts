@@ -306,7 +306,7 @@ export default class Lexer {
 
   private isLetterOrDigit = (char: SourceChar): boolean =>
     char !== null &&
-    'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_!'.includes(char);
+    'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_!?'.includes(char);
 
   private isDigit = (char: SourceChar): boolean => char !== null && '0123456789'.includes(char);
 

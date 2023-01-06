@@ -528,25 +528,25 @@ describe('max', () => {
   });
 });
 
-describe('includes', () => {
+describe('includes?', () => {
   const cases = [
     {
-      source: '[1, 2, 3] `includes` 1',
+      source: '[1, 2, 3] `includes?` 1',
       expected: 'true',
       description: 'list',
     },
     {
-      source: '#{"a": 1, "b": 2, "c": 3} `includes` 1',
+      source: '#{"a": 1, "b": 2, "c": 3} `includes?` 1',
       expected: 'true',
       description: 'hash (using value)',
     },
     {
-      source: '{1, 2, 3} `includes` 1',
+      source: '{1, 2, 3} `includes?` 1',
       expected: 'true',
       description: 'set',
     },
     {
-      source: '"hello" `includes` "h"',
+      source: '"hello" `includes?` "h"',
       expected: 'true',
       description: 'string',
     },
@@ -1271,20 +1271,20 @@ describe('get', () => {
   });
 });
 
-describe('all', () => {
+describe('all?', () => {
   const cases = [
     {
-      source: 'all(_ > 1, [2, 3, 4])',
+      source: 'all?(_ > 1, [2, 3, 4])',
       expected: 'true',
       description: 'list values match predicate',
     },
     {
-      source: 'all(_ > 1, [])',
+      source: 'all?(_ > 1, [])',
       expected: 'true',
       description: 'empty list',
     },
     {
-      source: 'all(_ > 1, [0, 1, 2])',
+      source: 'all?(_ > 1, [0, 1, 2])',
       expected: 'false',
       description: 'list value does not match predicate',
     },
@@ -1297,20 +1297,20 @@ describe('all', () => {
   });
 });
 
-describe('any', () => {
+describe('any?', () => {
   const cases = [
     {
-      source: 'any(_ > 1, [0, 1, 2])',
+      source: 'any?(_ > 1, [0, 1, 2])',
       expected: 'true',
       description: 'list value matches predicate',
     },
     {
-      source: 'any(_ > 1, [])',
+      source: 'any?(_ > 1, [])',
       expected: 'false',
       description: 'empty list',
     },
     {
-      source: 'any(_ > 1, [0, 1])',
+      source: 'any?(_ > 1, [0, 1])',
       expected: 'false',
       description: 'no list value matches predicate',
     },
