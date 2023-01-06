@@ -31,6 +31,37 @@ let hash_map = #{"a": 1, 2.5: "b", [1, 2, 3]: true, range};
 let set = {1, 2, 3};
 ```
 
+### Persistent (Immutable) data-structures
+
+Lists, Maps and Sets are all [persistent data-structures](https://en.wikipedia.org/wiki/Persistent_data_structure), yielding new values upon mutation.
+
+```
+let list = [1, 2, 3];
+list |> push(4); // [1, 2, 3, 4]
+list; // [1, 2, 3]
+
+let hash_map = #{"a": 1};
+hash_map |> assoc("a", 2); // #{"a": 2}
+hash_map; // #{"a": 1}
+
+let set = {1, 2, 3};
+set |> push(4); // {1, 2, 3, 4};
+set; // {1, 2, 3}
+```
+
+Data-structures follow the same value semantics as Integers, Decimals and Strings.
+
+```
+[1, 2, 3] == [1, 2, 3]; // true
+[1, 2, 3] == [1, 2, 3, 4]; // false
+
+#{"a": 1} == #{"a": 1}; // true
+#{"a": 1} == #{"a": 1, "b": 2}; // false
+
+{1, 2, 3} == {1, 2, 3}; // true
+{1, 2, 3} == {1, 2, 3, 4}; // false
+```
+
 ### Let bindings
 
 ```
