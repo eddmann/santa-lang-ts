@@ -65,6 +65,7 @@ const divide: O.BuiltinFuncTemplate = {
   },
 };
 
+// https://www.nickivance.com/writing/20181129_remainders/index.html
 const modulo: O.BuiltinFuncTemplate = {
   parameters: [
     {

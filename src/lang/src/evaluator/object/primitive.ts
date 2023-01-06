@@ -189,11 +189,24 @@ export class Integer implements ValueObj {
 
   public modulo(that: Obj): Integer {
     if (that instanceof Integer) {
-      return new Integer(this.value % that.value);
+      const remainder = this.value % that.value;
+
+      const result =
+        remainder === 0 || Math.sign(this.value) === Math.sign(that.value)
+          ? remainder
+          : remainder + that.value;
+
+      return new Integer(result);
     }
 
     if (that instanceof Decimal) {
-      return new Integer(Math.floor(this.value % that.value));
+      const remainder = this.value % that.value;
+      const result =
+        remainder === 0 || Math.sign(this.value) === Math.sign(that.value)
+          ? remainder
+          : remainder + that.value;
+
+      return new Integer(Math.floor(result));
     }
 
     throw new Error(`${this.constructor.name} % ${that.constructor.name} is not supported`);
@@ -330,12 +343,14 @@ export class Decimal implements ValueObj {
   }
 
   public modulo(that: Obj): Decimal {
-    if (that instanceof Integer) {
-      return new Decimal(this.value % that.value);
-    }
+    if (that instanceof Integer || that instanceof Decimal) {
+      const remainder = this.value % that.value;
+      const result =
+        remainder === 0 || Math.sign(this.value) === Math.sign(that.value)
+          ? remainder
+          : remainder + that.value;
 
-    if (that instanceof Decimal) {
-      return new Decimal(this.value % that.value);
+      return new Decimal(result);
     }
 
     throw new Error(`${this.constructor.name} % ${that.constructor.name} is not supported`);

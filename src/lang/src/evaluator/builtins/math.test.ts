@@ -183,6 +183,11 @@ describe('modulo %', () => {
       expected: '0.5',
       description: 'decimal-integer',
     },
+    {
+      source: '-4 % 3',
+      expected: '2',
+      description: 'negative',
+    },
   ];
 
   cases.forEach(({ source, expected, description }) => {
