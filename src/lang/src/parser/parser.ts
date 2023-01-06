@@ -921,10 +921,6 @@ export default class Parser {
       functions.push(this.parseCallable());
     }
 
-    if (this.peekTokenIs(TokenKind.Semicolon)) {
-      this.nextToken();
-    }
-
     return {
       kind: AST.ASTKind.FunctionThread,
       initial: left,
