@@ -376,7 +376,7 @@ export default class Parser {
         value: `unary_${expression.value}`,
         source: this.captureSourceLocation(),
       },
-      argument: this.parseExpression(Precedence.Prefix),
+      argument: this.parseExpression(Precedence.Product),
       source,
     };
   };

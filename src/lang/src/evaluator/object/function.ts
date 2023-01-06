@@ -14,6 +14,10 @@ export class Func implements Obj {
     const parameters = this.parameters.map(parameter => parameter.value).join(', ');
     return `|${parameters}| {…}`;
   }
+
+  public isTruthy(): boolean {
+    return true;
+  }
 }
 
 export type BuiltinFuncTemplate = {
@@ -32,6 +36,10 @@ export class BuiltinFunc implements Obj {
     const parameters = this.parameters.map(parameter => parameter.value).join(', ');
     return `|${parameters}| {…}`;
   }
+
+  public isTruthy(): boolean {
+    return true;
+  }
 }
 
 export class TailCallFunc implements Obj {
@@ -45,6 +53,10 @@ export class TailCallFunc implements Obj {
     const parameters = this.parameters.map(parameter => parameter.value).join(', ');
     return `|${parameters}| {…}`;
   }
+
+  public isTruthy(): boolean {
+    return true;
+  }
 }
 
 export class ReturnValue implements Obj {
@@ -53,6 +65,10 @@ export class ReturnValue implements Obj {
   public inspect(): string {
     return this.value.inspect();
   }
+
+  public isTruthy(): boolean {
+    return true;
+  }
 }
 
 export class BreakValue implements Obj {
@@ -60,6 +76,10 @@ export class BreakValue implements Obj {
 
   public inspect(): string {
     return this.value.inspect();
+  }
+
+  public isTruthy(): boolean {
+    return true;
   }
 }
 
@@ -74,6 +94,10 @@ export class Placeholder implements ValueObj {
 
   public equals(that: Obj): boolean {
     return that instanceof Placeholder;
+  }
+
+  public isTruthy(): boolean {
+    return true;
   }
 }
 

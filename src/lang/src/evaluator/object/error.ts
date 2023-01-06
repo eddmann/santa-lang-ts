@@ -7,4 +7,8 @@ export class Err implements Obj {
   public inspect(): string {
     return `Runtime error: ${this.message}`;
   }
+
+  public isTruthy(): boolean {
+    return true;
+  }
 }

@@ -2,10 +2,6 @@ import { AST } from '../parser';
 import O from './object';
 import builtins from './builtins';
 
-const isTruthy = (object: O.Obj): boolean => {
-  return object !== O.FALSE && object !== O.NIL;
-};
-
 const isError = (object: O.Obj): object is O.Err => {
   return object instanceof O.Err;
 };
@@ -221,7 +217,7 @@ const evalIfExpression = (node: AST.IfExpression, environment: O.Environment): O
     return condition;
   }
 
-  if (isTruthy(condition)) {
+  if (condition.isTruthy()) {
     return evalStatementsLoop(node.consequence.statements, environment);
   }
 
@@ -372,7 +368,7 @@ const evalMatchExpression = (node: AST.MatchExpression, environment: O.Environme
       if (case_.guard) {
         const result = evaluate(case_.guard, matchEnvironment);
         if (isError(result)) return result;
-        if (!isTruthy(result)) continue;
+        if (!result.isTruthy()) continue;
       }
 
       return evaluate(case_.consequence, matchEnvironment);
@@ -382,7 +378,7 @@ const evalMatchExpression = (node: AST.MatchExpression, environment: O.Environme
       if (case_.guard) {
         const result = evaluate(case_.guard, environment);
         if (isError(result)) return result;
-        if (!isTruthy(result)) continue;
+        if (!result.isTruthy()) continue;
       }
 
       return evaluate(case_.consequence, environment);
@@ -396,7 +392,7 @@ const evalMatchExpression = (node: AST.MatchExpression, environment: O.Environme
         if (case_.guard) {
           const result = evaluate(case_.guard, matchEnvironment);
           if (isError(result)) return result;
-          if (!isTruthy(result)) continue;
+          if (!result.isTruthy()) continue;
         }
 
         return evaluate(case_.consequence, matchEnvironment);
@@ -423,7 +419,7 @@ const evalMatchExpression = (node: AST.MatchExpression, environment: O.Environme
     if (case_.guard) {
       const result = evaluate(case_.guard, environment);
       if (isError(result)) return result;
-      if (!isTruthy(result)) continue;
+      if (!result.isTruthy()) continue;
     }
 
     return evaluate(case_.consequence, environment);

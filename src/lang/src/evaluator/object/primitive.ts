@@ -12,23 +12,15 @@ export class Bool implements ValueObj {
       return value;
     }
 
-    if (value instanceof Str) {
-      return new Bool(value.value !== '');
-    }
-
-    if (value instanceof Integer) {
-      return new Bool(value.value !== 0);
-    }
-
-    if (value instanceof Decimal) {
-      return new Bool(value.value !== 0.0);
-    }
-
-    return new Bool(value !== FALSE && value !== NIL);
+    return new Bool(value.isTruthy());
   }
 
   public inspect(): string {
     return this.value.toString();
+  }
+
+  public isTruthy(): boolean {
+    return this.value;
   }
 
   public hashCode(): number {
@@ -37,10 +29,6 @@ export class Bool implements ValueObj {
 
   public equals(that: Obj): boolean {
     return that instanceof Bool && this.value === that.value;
-  }
-
-  public not(): Bool {
-    return this.value ? FALSE : TRUE;
   }
 }
 
@@ -55,6 +43,10 @@ export class Nil implements ValueObj {
 
   public equals(that: Obj): boolean {
     return that instanceof Nil;
+  }
+
+  public isTruthy(): boolean {
+    return false;
   }
 }
 
@@ -129,6 +121,10 @@ export class Integer implements ValueObj {
 
   public inspect(): string {
     return this.value.toString();
+  }
+
+  public isTruthy(): boolean {
+    return this.value !== 0;
   }
 
   public hashCode(): number {
@@ -286,6 +282,10 @@ export class Decimal implements ValueObj {
     return this.value.toString();
   }
 
+  public isTruthy(): boolean {
+    return this.value !== 0;
+  }
+
   public hashCode(): number {
     return Immutable.hash(this.value);
   }
@@ -412,6 +412,10 @@ export class Str implements ValueObj {
     return `"${this.value}"`;
   }
 
+  public isTruthy(): boolean {
+    return this.value !== '';
+  }
+
   public hashCode(): number {
     return Immutable.hash(this.value);
   }
@@ -479,7 +483,7 @@ export class Str implements ValueObj {
           throw result;
         }
 
-        return result !== FALSE && result !== NIL;
+        return result.isTruthy();
       });
 
       return result !== undefined ? result : NIL;
@@ -539,7 +543,7 @@ export class Str implements ValueObj {
             throw result;
           }
 
-          return result !== FALSE && result !== NIL;
+          return result.isTruthy();
         })
       );
     } catch (err) {
@@ -557,7 +561,7 @@ export class Str implements ValueObj {
             throw result;
           }
 
-          return result !== FALSE && result !== NIL;
+          return result.isTruthy();
         })
       );
     } catch (err) {

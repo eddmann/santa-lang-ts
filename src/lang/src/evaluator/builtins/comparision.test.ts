@@ -287,6 +287,31 @@ describe('negation !', () => {
       expected: 'false',
       description: 'boolean expression',
     },
+    {
+      source: '!nil',
+      expected: 'true',
+      description: 'nil',
+    },
+    {
+      source: '!""',
+      expected: 'true',
+      description: 'empty string',
+    },
+    {
+      source: '![]',
+      expected: 'true',
+      description: 'empty list',
+    },
+    {
+      source: '!{}',
+      expected: 'true',
+      description: 'empty set',
+    },
+    {
+      source: 'let fn = || false; !fn()',
+      expected: 'true',
+      description: 'function invocation',
+    },
   ];
 
   cases.forEach(({ source, expected, description }) => {

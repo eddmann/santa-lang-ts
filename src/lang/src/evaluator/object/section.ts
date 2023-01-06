@@ -12,4 +12,8 @@ export class Section implements Obj {
   public inspect(): string {
     return `${this.name}: {…}`;
   }
+
+  public isTruthy(): boolean {
+    return true;
+  }
 }

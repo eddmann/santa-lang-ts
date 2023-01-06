@@ -47,6 +47,10 @@ export class List implements ValueObj {
     return '[' + this.items.map(item => item.inspect()).join(', ') + ']';
   }
 
+  public isTruthy(): boolean {
+    return this.items.size > 0;
+  }
+
   public hashCode(): number {
     return this.items.hashCode();
   }
@@ -110,7 +114,7 @@ export class List implements ValueObj {
           throw result;
         }
 
-        return result !== FALSE && result !== NIL;
+        return result.isTruthy();
       });
 
       return result || NIL;
@@ -179,7 +183,7 @@ export class List implements ValueObj {
               throw result;
             }
 
-            return result !== FALSE && result !== NIL;
+            return result.isTruthy();
           })
           .asMutable();
         return this;
@@ -193,7 +197,7 @@ export class List implements ValueObj {
             throw result;
           }
 
-          return result !== FALSE && result !== NIL;
+          return result.isTruthy();
         })
       );
     } catch (err) {
@@ -211,7 +215,7 @@ export class List implements ValueObj {
             throw result;
           }
 
-          return result !== FALSE && result !== NIL;
+          return result.isTruthy();
         })
       );
     } catch (err) {
@@ -438,7 +442,7 @@ export class List implements ValueObj {
           return result.value;
         }
 
-        return result !== FALSE && result !== NIL ? 1 : -1;
+        return result.isTruthy() ? 1 : -1;
       })
     );
   }
@@ -587,6 +591,10 @@ export class Hash {
     );
   }
 
+  public isTruthy(): boolean {
+    return this.items.size > 0;
+  }
+
   public hashCode(): number {
     return this.items.hashCode();
   }
@@ -616,7 +624,7 @@ export class Hash {
           throw result;
         }
 
-        return result !== FALSE && result !== NIL;
+        return result.isTruthy();
       });
 
       return result || NIL;
@@ -654,7 +662,7 @@ export class Hash {
               throw result;
             }
 
-            return result !== FALSE && result !== NIL;
+            return result.isTruthy();
           })
           .asMutable();
         return this;
@@ -668,7 +676,7 @@ export class Hash {
             throw result;
           }
 
-          return result !== FALSE && result !== NIL;
+          return result.isTruthy();
         })
       );
     } catch (err) {
@@ -686,7 +694,7 @@ export class Hash {
             throw result;
           }
 
-          return result !== FALSE && result !== NIL;
+          return result.isTruthy();
         })
       );
     } catch (err) {
@@ -888,6 +896,10 @@ export class Set {
     return '{' + this.items.map(item => item.inspect()).join(', ') + '}';
   }
 
+  public isTruthy(): boolean {
+    return this.items.size > 0;
+  }
+
   public hashCode(): number {
     return this.items.hashCode();
   }
@@ -917,7 +929,7 @@ export class Set {
           throw result;
         }
 
-        return result !== FALSE && result !== NIL;
+        return result.isTruthy();
       });
 
       return result || NIL;
@@ -955,7 +967,7 @@ export class Set {
               throw result;
             }
 
-            return result !== FALSE && result !== NIL;
+            return result.isTruthy();
           })
           .asMutable();
         return this;
@@ -969,7 +981,7 @@ export class Set {
             throw result;
           }
 
-          return result !== FALSE && result !== NIL;
+          return result.isTruthy();
         })
       );
     } catch (err) {
@@ -987,7 +999,7 @@ export class Set {
             throw result;
           }
 
-          return result !== FALSE && result !== NIL;
+          return result.isTruthy();
         })
       );
     } catch (err) {
@@ -1152,6 +1164,16 @@ export class Range implements ValueObj {
     return '[' + this.items.map(item => item.inspect()).join(', ') + ']';
   }
 
+  public isTruthy(): boolean {
+    if (this.end === Infinity) {
+      return true;
+    }
+
+    this.items.cacheResult();
+
+    return this.items.size > 0;
+  }
+
   public hashCode(): number {
     return this.items.hashCode();
   }
@@ -1221,7 +1243,7 @@ export class Range implements ValueObj {
           throw result;
         }
 
-        return result !== FALSE && result !== NIL;
+        return result.isTruthy();
       });
 
       return result || NIL;
@@ -1273,7 +1295,7 @@ export class Range implements ValueObj {
             throw result;
           }
 
-          return result !== FALSE && result !== NIL;
+          return result.isTruthy();
         })
       );
     } catch (err) {
@@ -1291,7 +1313,7 @@ export class Range implements ValueObj {
             throw result;
           }
 
-          return result !== FALSE && result !== NIL;
+          return result.isTruthy();
         })
       );
     } catch (err) {
@@ -1449,6 +1471,10 @@ export class Sequence implements ValueObj {
     return '[' + this.items.map(item => item.inspect()).join(', ') + ']';
   }
 
+  public isTruthy(): boolean {
+    return true;
+  }
+
   public hashCode(): number {
     return this.items.hashCode();
   }
@@ -1508,7 +1534,7 @@ export class Sequence implements ValueObj {
           throw result;
         }
 
-        return result !== FALSE && result !== NIL;
+        return result.isTruthy();
       });
 
       return result || NIL;
@@ -1556,7 +1582,7 @@ export class Sequence implements ValueObj {
             throw result;
           }
 
-          return result !== FALSE && result !== NIL;
+          return result.isTruthy();
         })
       );
     } catch (err) {
@@ -1574,7 +1600,7 @@ export class Sequence implements ValueObj {
             throw result;
           }
 
-          return result !== FALSE && result !== NIL;
+          return result.isTruthy();
         })
       );
     } catch (err) {

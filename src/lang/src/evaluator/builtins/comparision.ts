@@ -1,10 +1,6 @@
 import { AST } from '../../parser';
 import O from '../object';
 
-const isTruthy = (object: O.Obj): boolean => {
-  return object !== O.FALSE && object !== O.NIL;
-};
-
 const id: O.BuiltinFuncTemplate = {
   parameters: [
     {
@@ -125,7 +121,7 @@ const and: O.BuiltinFuncTemplate = {
     },
   ],
   body: (environment: O.Environment) => {
-    return isTruthy(environment.getVariable('a')) && isTruthy(environment.getVariable('b'))
+    return environment.getVariable('a').isTruthy() && environment.getVariable('b').isTruthy()
       ? O.TRUE
       : O.FALSE;
   },
@@ -143,7 +139,7 @@ const or: O.BuiltinFuncTemplate = {
     },
   ],
   body: (environment: O.Environment) => {
-    return isTruthy(environment.getVariable('a')) || isTruthy(environment.getVariable('b'))
+    return environment.getVariable('a').isTruthy() || environment.getVariable('b').isTruthy()
       ? O.TRUE
       : O.FALSE;
   },
@@ -157,7 +153,7 @@ const not: O.BuiltinFuncTemplate = {
     },
   ],
   body: (environment: O.Environment) => {
-    return environment.getVariable('a').not();
+    return environment.getVariable('a').isTruthy() ? O.FALSE : O.TRUE;
   },
 };
 
@@ -169,7 +165,7 @@ const assert: O.BuiltinFuncTemplate = {
     },
   ],
   body: (environment: O.Environment) => {
-    if (!isTruthy(environment.getVariable('assertion'))) {
+    if (!environment.getVariable('assertion').isTruthy()) {
       throw new Error('Assertion failed');
     }
 
