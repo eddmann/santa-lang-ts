@@ -4,7 +4,7 @@
 
 An functional, C-like programming language for solving Advent of Code puzzles.
 
-_Influenced by:_ Rust, JavaScript, F#, Scala
+_Influenced by:_ Rust, Python, JavaScript, F#, Scala
 
 ## Why?
 
@@ -87,10 +87,14 @@ If the last parameter of a function is a function, then a lambda expression pass
 [1, 2, 3] |> each |x| {
   puts(x);
 }
+// vs
+each(|x| { puts(x) }, [1, 2, 3]);
 
 [1, 2, 3] |> fold(1) |acc, x| {
   acc + x * x;
 }
+// vs
+fold(1, |acc, x| acc + x * x, [1, 2, 3]);
 ```
 
 ### Infix function calls
