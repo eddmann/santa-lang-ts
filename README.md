@@ -16,8 +16,6 @@ That way if I grow to dislike this language, I only have myself to blame!
 
 Welcome `santa-lang`, my [tree-walking interpreted](<https://en.wikipedia.org/wiki/Interpreter_(computing)>) programming language designed to help tackle Advent of Code puzzles.
 
-<p align="center"><img src="docs/aoc.png" alt="AoC template runner" width="500px" /></p>
-
 ## Examples
 
 ### Types
@@ -50,6 +48,13 @@ let mut [x, y] = [1, 2];
 x = 2;
 ```
 
+### Conditionals (with let bindings)
+
+```
+if x < 10 { 1 } else { 2 }
+if let x = 10 { x } else { 20 }
+```
+
 ### Functions, functions, functions!
 
 ```
@@ -59,7 +64,8 @@ let inc = |x| x + 1;
 
 map(inc, 1..5); // [2, 3, 4, 5, 6]
 filter(2 != _, 1..5); // [1, 3, 4, 5]
-reduce(+, 0, 1..5); // 15
+reduce(+, 1..5); // 15
+fold(10, +, 1..5); // 25
 ```
 
 ### Function composition and threading
@@ -68,9 +74,23 @@ reduce(+, 0, 1..5); // 15
 let inc_dbl = _ + 1 >> |x| x * x;
 inc_dbl(15); // 256
 
-reduce(*, 1, map(inc_dbl, 1..5));
+reduce(*, map(inc_dbl, 1..5));
 // vs
-1..5 |> map(inc_dbl) |> reduce(*, 1); // 518400
+1..5 |> map(inc_dbl) |> reduce(*); // 518400
+```
+
+### Invocation with trailing lambdas
+
+If the last parameter of a function is a function, then a lambda expression passed as the corresponding argument can be placed outside the parentheses.
+
+```
+[1, 2, 3] |> each |x| {
+  puts(x);
+}
+
+[1, 2, 3] |> fold(1) |acc, x| {
+  acc + x * x;
+}
 ```
 
 ### Infix function calls
@@ -78,9 +98,9 @@ reduce(*, 1, map(inc_dbl, 1..5));
 Functions which accept two arguments (binary) can be called within the infix position like so:
 
 ```
-contains([1, 2, 3], 3);
+includes?([1, 2, 3], 3);
 // vs
-[1, 2, 3] `contains` 3;
+[1, 2, 3] `includes?` 3;
 ```
 
 ### Lazy sequences
@@ -143,17 +163,27 @@ let fibonacci = |n| match n {
 let a = [2];
 let b = [1, ..a, 3]; // [1, 2, 3]
 
-let sum = |..xs| reduce(+, 0, xs);
+let sum = |..xs| reduce(+, xs);
 sum(1, 2, 3) == sum(..b) // 6
+```
+
+### Memoization
+
+Referential transparent function calls can be memoized using the built-in higher-order function.
+
+```
+let fibonacci = memoize |n| if (n > 1) { fibonacci(n - 1) + fibonacci(n - 2) } else { n };
+
+fibonacci(50); // 12586269025
 ```
 
 ### Detailed error handling
 
 <img src="docs/error.png" alt="santa-lang" width="400px" />
 
-### Reimplementing `map`, `filter` and `reduce`
+### Reimplementing `map`, `filter`, `fold` and `reduce`
 
-These fundamental functions come part of the standard library, however, they can be reimplemented on-top of the language itself like so:
+These fundamental functions come part of the standard library, however, they can be re-implemented within the language itself like so:
 
 ```
 let map = |fn, list| match list {
@@ -173,13 +203,24 @@ let filter = |fn, list| match list {
 ```
 
 ```
-let reduce = |fn, initial, list| {
+let fold = |initial, fn, list| {
   let recur = |acc, list| match list {
     [] { acc }
     [head] { fn(acc, head) }
     [head, ..tail] { recur(fn(acc, head), tail) }
   };
   recur(initial, list);
+};
+```
+
+```
+let reduce = |fn, list| {
+  let recur = |acc, list| match list {
+    [] { acc }
+    [head] { fn(acc, head) }
+    [head, ..tail] { recur(fn(acc, head), tail) }
+  };
+  recur(list[0], list[1..]);
 };
 ```
 
