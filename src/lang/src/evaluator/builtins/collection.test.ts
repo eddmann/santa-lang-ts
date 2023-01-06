@@ -115,6 +115,27 @@ describe('filter', () => {
   });
 });
 
+describe('filter_map', () => {
+  const cases = [
+    {
+      source: 'filter_map(|x| if x > 1 { [x, 1] }, [1, 2, 3])',
+      expected: '[[2, 1], [3, 1]]',
+      description: 'present',
+    },
+    {
+      source: 'filter_map(|x| if x > 3 { [x, 1] }, [1, 2, 3])',
+      expected: '[]',
+      description: 'not present',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
 describe('fold', () => {
   const cases = [
     {
@@ -386,6 +407,27 @@ describe('find', () => {
       source: 'find(_ != "h", "hello")',
       expected: '"e"',
       description: 'string',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
+describe('find_map', () => {
+  const cases = [
+    {
+      source: 'find_map(|x| if x > 1 { [x, 1] }, [1, 2, 3])',
+      expected: '[2, 1]',
+      description: 'present',
+    },
+    {
+      source: 'find_map(|x| if x > 3 { [x, 1] }, [1, 2, 3])',
+      expected: 'nil',
+      description: 'not present',
     },
   ];
 

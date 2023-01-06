@@ -38,6 +38,27 @@ const filter: O.BuiltinFuncTemplate = {
   },
 };
 
+const filter_map: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'mapper',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    const mapper = environment.getVariable('mapper');
+
+    return environment
+      .getVariable('collection')
+      .map((v, k) => applyFunction(mapper, [v, k]))
+      .filter(v => v);
+  },
+};
+
 const filter_mutable: O.BuiltinFuncTemplate = {
   parameters: [
     {
@@ -218,6 +239,27 @@ const find: O.BuiltinFuncTemplate = {
     const predicate = environment.getVariable('predicate');
 
     return environment.getVariable('collection').find((v, k) => applyFunction(predicate, [v, k]));
+  },
+};
+
+const find_map: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'mapper',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    const mapper = environment.getVariable('mapper');
+
+    return environment
+      .getVariable('collection')
+      .map((v, k) => applyFunction(mapper, [v, k]))
+      .find(v => v);
   },
 };
 
@@ -1128,6 +1170,7 @@ export default {
   map,
   filter,
   'filter!': filter_mutable,
+  filter_map,
   reduce,
   fold,
   fold_s,
@@ -1135,6 +1178,7 @@ export default {
   each,
   flat_map,
   find,
+  find_map,
   reverse,
   sort,
   'includes?': includes,
