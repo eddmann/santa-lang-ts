@@ -1207,7 +1207,15 @@ export class Range implements ValueObj {
   }
 
   public includes(subject: Obj): Bool {
-    return subject instanceof Integer && this.items.includes(subject) ? TRUE : FALSE;
+    if (!(subject instanceof Integer)) {
+      return FALSE;
+    }
+
+    if (this.end === Infinity) {
+      return subject.value >= this.start ? TRUE : FALSE;
+    }
+
+    return this.items.includes(subject) ? TRUE : FALSE;
   }
 
   public first(): Obj | Nil {

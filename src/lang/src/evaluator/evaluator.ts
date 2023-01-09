@@ -414,7 +414,12 @@ const evalMatchExpression = (node: AST.MatchExpression, environment: O.Environme
     const value = evaluate(case_.pattern, environment);
 
     if (isError(value)) return value;
-    if (!subject.equals(value)) continue;
+
+    if (value instanceof O.Range) {
+      if (!value.includes(subject).value) {
+        continue;
+      }
+    } else if (!subject.equals(value)) continue;
 
     if (case_.guard) {
       const result = evaluate(case_.guard, environment);
@@ -597,9 +602,10 @@ const matchListPatternIntoEnv = (
       throw new Error(literal);
     }
 
-    if (value.get(new O.Integer(i)).equals(literal)) {
-      continue;
-    }
+    const element = value.get(new O.Integer(i));
+
+    if (literal instanceof O.Range && literal.includes(element).value) continue;
+    else if (value.get(new O.Integer(i)).equals(literal)) continue;
 
     throw new NoPatternMatchError();
   }

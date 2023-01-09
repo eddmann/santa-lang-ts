@@ -597,11 +597,44 @@ export default class Parser {
       [TokenKind.Identifier]: this.parseIdentifier,
       [TokenKind.True]: this.parseBooleon,
       [TokenKind.False]: this.parseBooleon,
-      [TokenKind.Integer]: this.parseInteger,
+      [TokenKind.Integer]: () => {
+        const integerOrStart = this.parseInteger();
+
+        if (!this.peekTokenIs(TokenKind.DotDot)) {
+          return integerOrStart;
+        }
+
+        this.nextToken();
+
+        let end = {
+          kind: AST.ASTKind.Integer,
+          value: Infinity,
+          source: this.captureSourceLocation(),
+        };
+        if (this.peekTokenIs(TokenKind.Integer)) {
+          this.nextToken();
+          end = this.parseInteger();
+        }
+
+        return {
+          kind: AST.ASTKind.RangeExpression,
+          start: integerOrStart,
+          end,
+          source: this.captureSourceLocation(),
+        };
+      },
       [TokenKind.Decimal]: this.parseDecimal,
       [TokenKind.Str]: this.parseString,
       [TokenKind.Underscore]: this.parsePlaceholder,
       [TokenKind.LBracket]: this.parseMatchListPattern,
+      [TokenKind.Minus]: () => {
+        this.nextToken();
+        const expression = this.parseMatchPattern();
+        if (expression.kind === 'INTEGER' || expression.kind === 'DECIMAL') {
+          expression.value = -expression.value;
+        }
+        return expression;
+      },
       [TokenKind.DotDot]: () => {
         this.nextToken();
         return {

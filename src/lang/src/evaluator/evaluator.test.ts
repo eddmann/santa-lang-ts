@@ -693,6 +693,53 @@ test('unexhaustive match returns nil', () => {
   expect(doEvaluate(source).inspect()).toEqual('nil');
 });
 
+test('match negative value', () => {
+  const source = `
+    match -1 {
+      -1 { "-" }
+      1 { "+" }
+    };
+  `;
+
+  expect(doEvaluate(source).inspect()).toEqual('"-"');
+});
+
+describe('match expression with range', () => {
+  const sut = `
+    let sut = |x| match x {
+      [2..4, 1] { "1" },
+      [2.., -1] { "2" },
+      2..4 { "3" }
+      2.. { "4" }
+    };
+  `;
+
+  const cases = [
+    {
+      source: 'sut([3, 1])',
+      expected: '"1"',
+    },
+    {
+      source: 'sut([5, -1])',
+      expected: '"2"',
+    },
+    {
+      source: 'sut(2)',
+      expected: '"3"',
+    },
+    {
+      source: 'sut(5)',
+      expected: '"4"',
+    },
+  ];
+
+  cases.forEach(({ source, expected }) => {
+    test(source, () => {
+      expect(doEvaluate(`${sut} ${source}`).inspect()).toEqual(expected);
+    });
+  });
+});
+
 describe('match expression with guards', () => {
   const sut = `
     let sut = |x| match x {
