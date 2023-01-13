@@ -23,6 +23,10 @@ export class Bool implements ValueObj {
     return this.value;
   }
 
+  public getName(): string {
+    return 'Bool';
+  }
+
   public hashCode(): number {
     return Immutable.hash(this.value);
   }
@@ -47,6 +51,10 @@ export class Nil implements ValueObj {
 
   public isTruthy(): boolean {
     return false;
+  }
+
+  public getName(): string {
+    return 'Nil';
   }
 }
 
@@ -75,7 +83,7 @@ export class Integer implements ValueObj {
     }
 
     throw new Error(
-      `Parsing ${value.constructor.name} as a ${this.constructor.name} is not supported`
+      `Parsing ${value.getName()} as a ${this.getName()} is not supported`
     );
   }
 
@@ -127,6 +135,10 @@ export class Integer implements ValueObj {
     return this.value !== 0;
   }
 
+  public getName(): string {
+    return 'Integer';
+  }
+
   public hashCode(): number {
     return Immutable.hash(this.value);
   }
@@ -144,7 +156,7 @@ export class Integer implements ValueObj {
       return new Integer(Math.floor(this.value + that.value));
     }
 
-    throw new Error(`${this.constructor.name} + ${that.constructor.name} is not supported`);
+    throw new Error(`${this.getName()} + ${that.getName()} is not supported`);
   }
 
   public subtract(that: Obj): Integer {
@@ -156,7 +168,7 @@ export class Integer implements ValueObj {
       return new Integer(Math.floor(this.value - that.value));
     }
 
-    throw new Error(`${this.constructor.name} - ${that.constructor.name} is not supported`);
+    throw new Error(`${this.getName()} - ${that.getName()} is not supported`);
   }
 
   public multiply(that: Obj): Integer {
@@ -168,7 +180,7 @@ export class Integer implements ValueObj {
       return new Integer(Math.floor(this.value * that.value));
     }
 
-    throw new Error(`${this.constructor.name} * ${that.constructor.name} is not supported`);
+    throw new Error(`${this.getName()} * ${that.getName()} is not supported`);
   }
 
   public divide(that: Obj): Integer {
@@ -180,7 +192,7 @@ export class Integer implements ValueObj {
       return new Integer(Math.floor(this.value / that.value));
     }
 
-    throw new Error(`${this.constructor.name} / ${that.constructor.name} is not supported`);
+    throw new Error(`${this.getName()} / ${that.getName()} is not supported`);
   }
 
   public modulo(that: Obj): Integer {
@@ -205,7 +217,7 @@ export class Integer implements ValueObj {
       return new Integer(Math.floor(result));
     }
 
-    throw new Error(`${this.constructor.name} % ${that.constructor.name} is not supported`);
+    throw new Error(`${this.getName()} % ${that.getName()} is not supported`);
   }
 
   public lessThan(that: Obj): Bool {
@@ -217,7 +229,7 @@ export class Integer implements ValueObj {
       return this.value < that.value ? TRUE : FALSE;
     }
 
-    throw new Error(`${this.constructor.name} < ${that.constructor.name} is not supported`);
+    throw new Error(`${this.getName()} < ${that.getName()} is not supported`);
   }
 
   public lessThanEqual(that: Obj): Bool {
@@ -233,7 +245,7 @@ export class Integer implements ValueObj {
       return this.value > that.value ? TRUE : FALSE;
     }
 
-    throw new Error(`${this.constructor.name} > ${that.constructor.name} is not supported`);
+    throw new Error(`${this.getName()} > ${that.getName()} is not supported`);
   }
 
   public greaterThanEqual(that: Obj): Bool {
@@ -274,7 +286,7 @@ export class Decimal implements ValueObj {
     }
 
     throw new Error(
-      `Parsing ${value.constructor.name} as a ${this.constructor.name} is not supported`
+      `Parsing ${value.getName()} as a ${this.getName()} is not supported`
     );
   }
 
@@ -284,6 +296,10 @@ export class Decimal implements ValueObj {
 
   public isTruthy(): boolean {
     return this.value !== 0;
+  }
+
+  public getName(): string {
+    return 'Decimal';
   }
 
   public hashCode(): number {
@@ -303,7 +319,7 @@ export class Decimal implements ValueObj {
       return new Decimal(this.value + that.value);
     }
 
-    throw new Error(`${this.constructor.name} + ${that.constructor.name} is not supported`);
+    throw new Error(`${this.getName()} + ${that.getName()} is not supported`);
   }
 
   public subtract(that: Obj): Decimal {
@@ -315,7 +331,7 @@ export class Decimal implements ValueObj {
       return new Decimal(this.value - that.value);
     }
 
-    throw new Error(`${this.constructor.name} / ${that.constructor.name} is not supported`);
+    throw new Error(`${this.getName()} / ${that.getName()} is not supported`);
   }
 
   public multiply(that: Obj): Decimal {
@@ -327,7 +343,7 @@ export class Decimal implements ValueObj {
       return new Decimal(this.value * that.value);
     }
 
-    throw new Error(`${this.constructor.name} * ${that.constructor.name} is not supported`);
+    throw new Error(`${this.getName()} * ${that.getName()} is not supported`);
   }
 
   public divide(that: Obj): Decimal {
@@ -339,7 +355,7 @@ export class Decimal implements ValueObj {
       return new Decimal(this.value / that.value);
     }
 
-    throw new Error(`${this.constructor.name} / ${that.constructor.name} is not supported`);
+    throw new Error(`${this.getName()} / ${that.getName()} is not supported`);
   }
 
   public modulo(that: Obj): Decimal {
@@ -353,7 +369,7 @@ export class Decimal implements ValueObj {
       return new Decimal(result);
     }
 
-    throw new Error(`${this.constructor.name} % ${that.constructor.name} is not supported`);
+    throw new Error(`${this.getName()} % ${that.getName()} is not supported`);
   }
 
   public lessThan(that: Obj): Bool {
@@ -365,7 +381,7 @@ export class Decimal implements ValueObj {
       return this.value < that.value ? TRUE : FALSE;
     }
 
-    throw new Error(`${this.constructor.name} < ${that.constructor.name} is not supported`);
+    throw new Error(`${this.getName()} < ${that.getName()} is not supported`);
   }
 
   public lessThanEqual(that: Obj): Bool {
@@ -381,7 +397,7 @@ export class Decimal implements ValueObj {
       return this.value > that.value ? TRUE : FALSE;
     }
 
-    throw new Error(`${this.constructor.name} > ${that.constructor.name} is not supported`);
+    throw new Error(`${this.getName()} > ${that.getName()} is not supported`);
   }
 
   public greaterThanEqual(that: Obj): Bool {
@@ -416,6 +432,10 @@ export class Str implements ValueObj {
     return this.value !== '';
   }
 
+  public getName(): string {
+    return 'Str';
+  }
+
   public hashCode(): number {
     return Immutable.hash(this.value);
   }
@@ -443,7 +463,7 @@ export class Str implements ValueObj {
       return new Str(this.value.substring(index.start, index.end + 1));
     }
 
-    throw new Error(`${this.constructor.name}[${index.constructor.name}] is not supported`);
+    throw new Error(`${this.getName()}[${index.getName()}] is not supported`);
   }
 
   public size(): Err | Integer {
@@ -640,7 +660,7 @@ export class Str implements ValueObj {
       return this.value.localeCompare(that.value) < 0 ? TRUE : FALSE;
     }
 
-    throw new Error(`${this.constructor.name} < ${that.constructor.name} is not supported`);
+    throw new Error(`${this.getName()} < ${that.getName()} is not supported`);
   }
 
   public greaterThan(that: Obj): Bool {
@@ -648,7 +668,7 @@ export class Str implements ValueObj {
       return this.value.localeCompare(that.value) > 0 ? TRUE : FALSE;
     }
 
-    throw new Error(`${this.constructor.name} > ${that.constructor.name} is not supported`);
+    throw new Error(`${this.getName()} > ${that.getName()} is not supported`);
   }
 
   public split(delimiter: Obj): List {
@@ -657,14 +677,14 @@ export class Str implements ValueObj {
     }
 
     throw new Error(
-      `split(${delimiter.constructor.name}, ${this.constructor.name}) is not supported`
+      `split(${delimiter.getName()}, ${this.getName()}) is not supported`
     );
   }
 
   public regExMatch(pattern: Obj): List {
     if (!(pattern instanceof Str)) {
       throw new Error(
-        `regex_match(${pattern.constructor.name}, ${this.constructor.name}) is not supported`
+        `regex_match(${pattern.getName()}, ${this.getName()}) is not supported`
       );
     }
 
@@ -676,7 +696,7 @@ export class Str implements ValueObj {
   public regExMatchAll(pattern: Obj): List {
     if (!(pattern instanceof Str)) {
       throw new Error(
-        `regex_match_all(${pattern.constructor.name}, ${this.constructor.name}) is not supported`
+        `regex_match_all(${pattern.getName()}, ${this.getName()}) is not supported`
       );
     }
 

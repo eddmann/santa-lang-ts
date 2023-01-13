@@ -36,7 +36,7 @@ const type: O.BuiltinFuncTemplate = {
     },
   ],
   body: (environment: O.Environment) => {
-    return new O.Str(environment.getVariable('value').constructor.name);
+    return new O.Str(environment.getVariable('value').getName());
   },
 };
 

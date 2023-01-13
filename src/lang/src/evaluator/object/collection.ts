@@ -40,7 +40,7 @@ export class List implements ValueObj {
       return new List(collection.items);
     }
 
-    throw new Error(`Unable to convert ${collection.constructor.name} into a List`);
+    throw new Error(`Unable to convert ${collection.getName()} into a List`);
   }
 
   public inspect(): string {
@@ -49,6 +49,10 @@ export class List implements ValueObj {
 
   public isTruthy(): boolean {
     return this.items.size > 0;
+  }
+
+  public getName(): string {
+    return 'List';
   }
 
   public hashCode(): number {
@@ -72,9 +76,7 @@ export class List implements ValueObj {
       return new List(this.items.slice(index.start, index.end));
     }
 
-    throw new Error(
-      `Unsupported 'get' operation ${this.constructor.name}, ${index.constructor.name}`
-    );
+    throw new Error(`Unsupported 'get' operation ${this.getName()}, ${index.getName()}`);
   }
 
   public size(): Err | Integer {
@@ -314,12 +316,12 @@ export class List implements ValueObj {
       return new List(this.items.concat(that.items));
     }
 
-    throw new Error(`${this.constructor.name} + ${that.constructor.name} is not supported`);
+    throw new Error(`${this.getName()} + ${that.getName()} is not supported`);
   }
 
   public vectorAdd(that: Obj): List {
     if (!(that instanceof List)) {
-      throw new Error(`${this.constructor.name} + ${that.constructor.name} is not supported`);
+      throw new Error(`${this.getName()} + ${that.getName()} is not supported`);
     }
 
     return new List(this.items.zip(that.items).map(row => new List(row).sum()));
@@ -334,7 +336,7 @@ export class List implements ValueObj {
       return new List(this.items.filter(item => !that.items.includes(item)));
     }
 
-    throw new Error(`${this.constructor.name} - ${that.constructor.name} is not supported`);
+    throw new Error(`${this.getName()} - ${that.getName()} is not supported`);
   }
 
   public multiply(that: Obj): List {
@@ -349,7 +351,7 @@ export class List implements ValueObj {
       return new List(items.asImmutable());
     }
 
-    throw new Error(`${this.constructor.name} * ${that.constructor.name} is not supported`);
+    throw new Error(`${this.getName()} * ${that.getName()} is not supported`);
   }
 
   public chunk(size: Integer): List {
@@ -422,7 +424,7 @@ export class List implements ValueObj {
       return new List(this.items.remove(key.value));
     }
 
-    throw new Error(`remove(${key.constructor.name}, ${this.constructor.name}) is not supported`);
+    throw new Error(`remove(${key.getName()}, ${this.getName()}) is not supported`);
   }
 
   public getInteralSeq(): Immutable.Seq {
@@ -578,7 +580,7 @@ export class Hash {
       return new Hash(collection.items);
     }
 
-    throw new Error(`Unable to convert ${collection.constructor.name} into a Hash`);
+    throw new Error(`Unable to convert ${collection.getName()} into a Hash`);
   }
 
   public inspect(): string {
@@ -593,6 +595,10 @@ export class Hash {
 
   public isTruthy(): boolean {
     return this.items.size > 0;
+  }
+
+  public getName(): string {
+    return 'Hash';
   }
 
   public hashCode(): number {
@@ -767,7 +773,7 @@ export class Hash {
       return new Hash(this.items.concat(that.items));
     }
 
-    throw new Error(`${this.constructor.name} + ${that.constructor.name} is not supported`);
+    throw new Error(`${this.getName()} + ${that.getName()} is not supported`);
   }
 
   public keys(): List {
@@ -789,7 +795,7 @@ export class Hash {
       return new Hash(items.toMap());
     }
 
-    throw new Error(`${this.constructor.name} - ${that.constructor.name} is not supported`);
+    throw new Error(`${this.getName()} - ${that.getName()} is not supported`);
   }
 
   public min(): Obj {
@@ -889,7 +895,7 @@ export class Set {
       return new Set(collection.split(new Str('')).items);
     }
 
-    throw new Error(`Unable to convert ${collection.constructor.name} into a Set`);
+    throw new Error(`Unable to convert ${collection.getName()} into a Set`);
   }
 
   public inspect(): string {
@@ -898,6 +904,10 @@ export class Set {
 
   public isTruthy(): boolean {
     return this.items.size > 0;
+  }
+
+  public getName(): string {
+    return 'Set';
   }
 
   public hashCode(): number {
@@ -1084,7 +1094,7 @@ export class Set {
       return new Set(this.items.concat(that.items));
     }
 
-    throw new Error(`${this.constructor.name} + ${that.constructor.name} is not supported`);
+    throw new Error(`${this.getName()} + ${that.getName()} is not supported`);
   }
 
   public subtract(that: Obj): Set {
@@ -1096,7 +1106,7 @@ export class Set {
       return new Set(this.items.subtract(that.items));
     }
 
-    throw new Error(`${this.constructor.name} - ${that.constructor.name} is not supported`);
+    throw new Error(`${this.getName()} - ${that.getName()} is not supported`);
   }
 
   public min(): Obj {
@@ -1174,6 +1184,10 @@ export class Range implements ValueObj {
     return this.items.size > 0;
   }
 
+  public getName(): string {
+    return 'Range';
+  }
+
   public hashCode(): number {
     return this.items.hashCode();
   }
@@ -1191,9 +1205,7 @@ export class Range implements ValueObj {
       return new Range(this.start, this.end, this.items.slice(index.start, index.end));
     }
 
-    throw new Error(
-      `Unsupported 'get' operation ${this.constructor.name}, ${index.constructor.name}`
-    );
+    throw new Error(`Unsupported 'get' operation ${this.getName()}, ${index.getName()}`);
   }
 
   public size(): Err | Integer {
@@ -1483,6 +1495,10 @@ export class Sequence implements ValueObj {
     return true;
   }
 
+  public getName(): string {
+    return 'Sequence';
+  }
+
   public hashCode(): number {
     return this.items.hashCode();
   }
@@ -1500,9 +1516,7 @@ export class Sequence implements ValueObj {
       return new Sequence(this.items.slice(index.start, index.end));
     }
 
-    throw new Error(
-      `Unsupported 'get' operation ${this.constructor.name}, ${index.constructor.name}`
-    );
+    throw new Error(`Unsupported 'get' operation ${this.getName()}, ${index.getName()}`);
   }
 
   public size(): Err | Integer {

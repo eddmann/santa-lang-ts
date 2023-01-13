@@ -11,4 +11,8 @@ export class Err implements Obj {
   public isTruthy(): boolean {
     return true;
   }
+
+  public getName(): string {
+    return 'Err';
+  }
 }

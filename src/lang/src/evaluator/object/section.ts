@@ -16,4 +16,8 @@ export class Section implements Obj {
   public isTruthy(): boolean {
     return true;
   }
+
+  public getName(): string {
+    return 'Section';
+  }
 }

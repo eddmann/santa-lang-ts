@@ -18,6 +18,10 @@ export class Func implements Obj {
   public isTruthy(): boolean {
     return true;
   }
+
+  public getName(): string {
+    return 'Func';
+  }
 }
 
 export type BuiltinFuncTemplate = {
@@ -40,6 +44,10 @@ export class BuiltinFunc implements Obj {
   public isTruthy(): boolean {
     return true;
   }
+
+  public getName(): string {
+    return 'BuiltinFn';
+  }
 }
 
 export class TailCallFunc implements Obj {
@@ -57,6 +65,10 @@ export class TailCallFunc implements Obj {
   public isTruthy(): boolean {
     return true;
   }
+
+  public getName(): string {
+    return 'TailCallFn';
+  }
 }
 
 export class ReturnValue implements Obj {
@@ -69,6 +81,10 @@ export class ReturnValue implements Obj {
   public isTruthy(): boolean {
     return true;
   }
+
+  public getName(): string {
+    return 'ReturnValue';
+  }
 }
 
 export class BreakValue implements Obj {
@@ -80,6 +96,10 @@ export class BreakValue implements Obj {
 
   public isTruthy(): boolean {
     return true;
+  }
+
+  public getName(): string {
+    return 'Break';
   }
 }
 
@@ -98,6 +118,10 @@ export class Placeholder implements ValueObj {
 
   public isTruthy(): boolean {
     return true;
+  }
+
+  public getName(): string {
+    return 'Placeholder';
   }
 }
 
