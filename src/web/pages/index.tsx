@@ -183,7 +183,7 @@ const WorkspaceEditor = () => {
               })}
             </optgroup>
             <optgroup label="2022">
-              {[...range(1, 16)].map(day => {
+              {[...range(1, 25)].map(day => {
                 const fileName = `aoc2022_day${('' + day).padStart(2, '0')}.santa`;
 
                 return (
