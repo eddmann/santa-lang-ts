@@ -73,7 +73,7 @@ export class List implements ValueObj {
     }
 
     if (index instanceof Range) {
-      return new List(this.items.slice(index.start, index.end));
+      return new List(this.items.slice(index.start, index.end >= 0 ? index.end + 1 : index.end));
     }
 
     throw new Error(`Unsupported 'get' operation ${this.getName()}, ${index.getName()}`);
@@ -1202,7 +1202,11 @@ export class Range implements ValueObj {
     }
 
     if (index instanceof Range) {
-      return new Range(this.start, this.end, this.items.slice(index.start, index.end));
+      return new Range(
+        this.start,
+        this.end,
+        this.items.slice(index.start, index.end >= 0 ? index.end + 1 : index.end)
+      );
     }
 
     throw new Error(`Unsupported 'get' operation ${this.getName()}, ${index.getName()}`);
@@ -1513,7 +1517,7 @@ export class Sequence implements ValueObj {
     }
 
     if (index instanceof Range) {
-      return new Sequence(this.items.slice(index.start, index.end));
+      return new Sequence(this.items.slice(index.start, index.end >= 0 ? index.end + 1 : 0));
     }
 
     throw new Error(`Unsupported 'get' operation ${this.getName()}, ${index.getName()}`);

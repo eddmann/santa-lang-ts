@@ -394,7 +394,7 @@ describe('list indexing', () => {
     },
     {
       source: 'let list = [1, 2, 3]; list[1..2]',
-      expected: '[2]',
+      expected: '[2, 3]',
       description: 'bounded range list index',
     },
     {
