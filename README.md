@@ -1,4 +1,5 @@
 <p align="center"><img src="docs/logo-3.png" alt="santa-lang" width="400px" /></p>
+<p align="center"><a href="src/cli/">Cli</a> - <a href="https://eddmann.com/santa-lang-ts/">Web</a> - <a href="src/lambda/">Lambda</a></p>
 
 # santa-lang
 
