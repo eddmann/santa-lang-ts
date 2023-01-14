@@ -14,7 +14,12 @@ However, there comes a time in each calendar that I grow to dislike some aspect 
 So I had an idea... why not give this whole programming langauge design a go.
 That way if I grow to dislike this language, I only have myself to blame!
 
-Welcome `santa-lang`, my [tree-walking interpreted](<https://en.wikipedia.org/wiki/Interpreter_(computing)>) programming language designed to help tackle Advent of Code puzzles.
+Welcome **santa-lang**, my [tree-walking interpreted](<https://en.wikipedia.org/wiki/Interpreter_(computing)>) programming language designed to help tackle Advent of Code puzzles.
+
+### Examples
+
+- [Advent of Code 2022](https://github.com/eddmann/advent-of-code/tree/master/2022/santa-lang) - full calendar primarily solved in _santa-lang_ 🎉.
+- [Advent of Code 2018](https://github.com/eddmann/advent-of-code/tree/master/2018/santa-lang) _WIP_ - completed the first half of this year to aid development of the language.
 
 ## Features
 
