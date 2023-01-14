@@ -2,24 +2,34 @@ let map = |fn, list| match list {
   [] { [] }
   [head] { [fn(head)] }
   [head, ..tail] { [fn(head), ..map(fn, tail)] }
-};
+}
 
 let filter = |fn, list| match list {
   [] { [] }
   [head] if fn(head) { [head] }
   [head, ..tail] if fn(head) { [head, ..filter(fn, tail)] }
   [_, ..tail] { filter(fn, tail) }
-};
+}
 
-let reduce = |fn, initial, list| {
+let fold = |initial, fn, list| {
   let recur = |acc, list| match list {
     [] { acc }
     [head] { fn(acc, head) }
     [head, ..tail] { recur(fn(acc, head), tail) }
   };
   recur(initial, list);
-};
+}
+
+let reduce = |fn, list| {
+  let recur = |acc, list| match list {
+    [] { acc }
+    [head] { fn(acc, head) }
+    [head, ..tail] { recur(fn(acc, head), tail) }
+  };
+  recur(list[0], list[1..]);
+}
 
 assert([1, 2, 3] |> map(_ * 2) == [2, 4, 6]);
 assert([1, 2, 3] |> filter(_ != 2) == [1, 3]);
-assert([1, 2, 3] |> reduce(+, 0) == 6);
+assert([1, 2, 3] |> fold(2, *) == 12);
+assert([1, 2, 3] |> reduce(+) == 6);

@@ -243,7 +243,7 @@ fibonacci(50); // 12586269025
 
 ### Reimplementing `map`, `filter`, `fold` and `reduce`
 
-These fundamental functions come part of the standard library, however, they can be re-implemented within the language itself like so:
+These fundamental functions come part of the standard library, however, they can be [re-implemented](/examples/map-filter-fold-reduce.santa) within the language itself like so:
 
 ```
 let map = |fn, list| match list {
