@@ -16,7 +16,7 @@ That way if I grow to dislike this language, I only have myself to blame!
 
 Welcome `santa-lang`, my [tree-walking interpreted](<https://en.wikipedia.org/wiki/Interpreter_(computing)>) programming language designed to help tackle Advent of Code puzzles.
 
-## Examples
+## Features
 
 ### Types
 
@@ -60,6 +60,17 @@ Data-structures follow the same value semantics as Integers, Decimals and String
 
 {1, 2, 3} == {1, 2, 3}; // true
 {1, 2, 3} == {1, 2, 3, 4}; // false
+```
+
+### List Slicing
+
+```
+let xs = [1, 2, 3, 4];
+
+xs[0]; // 1
+xs[-1]; // 4
+xs[1..2]; // [2, 3]
+xs[1..-1]; // 2, 3]
 ```
 
 ### Let bindings
@@ -189,6 +200,15 @@ let fibonacci = |n| match n {
   0 { 0 }
   1 { 1 }
   n { fibonacci(n - 1) + fibonacci(n - 2) }
+};
+```
+
+```
+let step = |face, [y, x]| match [face, [y, x]] {
+  ["N", [7, 3..6]]   { ["S", [3 - x, 4]] }
+  ["S", [3, _]]      { ["N", [y - 1, x]] }
+  ["E", [0..3, 1..]] { ["W", [1 - y, 4]] }
+  ["W", _]           { ["E", [y, x - 1]] }
 };
 ```
 
