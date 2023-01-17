@@ -2,33 +2,33 @@ input: read("aoc://2021/2")
 
 let parse_course = lines >> map(|line| {
   let [move, steps] = split(" ", line);
-  [move, int(steps)]
+  [move, int(steps)];
 });
 
 part_one: {
   parse_course(input)
-    |> reduce(
+    |> fold(
+      [0, 0],
       |[horizontal, depth], action| match action {
         ["forward", steps] { [horizontal + steps, depth] }
         ["up", steps] { [horizontal, depth - steps] }
         ["down", steps] { [horizontal, depth + steps] }
-      },
-      [0, 0]
+      }
     )
-    |> |[x, y]| x * y
+    |> |[x, y]| x * y;
 }
 
 part_two: {
   parse_course(input)
-    |> reduce(
+    |> fold(
+      [0, 0, 0],
       |[horizontal, depth, aim], action| match action {
         ["forward", steps] { [horizontal + steps, depth + aim * steps, aim] }
         ["up", steps] { [horizontal, depth, aim - steps] }
         ["down", steps] { [horizontal, depth, aim + steps] }
-      },
-      [0, 0, 0]
+      }
     )
-    |> |[x, y]| x * y
+    |> |[x, y]| x * y;
 }
 
 test: {

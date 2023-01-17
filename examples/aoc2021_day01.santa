@@ -1,24 +1,22 @@
 input: read("aoc://2021/1")
 
-let parse_measurements = lines >> map(int)
+let parse_measurements = lines >> map(int);
 
 part_one: {
   let measurements = parse_measurements(input);
 
   zip(measurements, measurements[1..])
-    |> filter(|[a, b]| a < b)
-    |> size
+    |> count(|[a, b]| a < b);
 }
 
 part_two: {
   let measurements = parse_measurements(input);
 
   let windows = zip(measurements, measurements[1..], measurements[2..])
-    |> map(reduce(+, 0))
+    |> map(sum);
 
   zip(windows, windows[1..])
-    |> filter(|[a, b]| a < b)
-    |> size
+    |> count(|[a, b]| a < b);
 }
 
 test: {

@@ -1,39 +1,41 @@
 input: read("aoc://2015/3")
 
-let move = |direction, [x, y]| match direction {
-  "^" { [x + 1, y] }
-  "v" { [x - 1, y] }
-  ">" { [x, y + 1] }
-  "<" { [x, y - 1] }
-};
+let move = |direction, [y, x]| match direction {
+  "^" { [y - 1, x] }
+  "v" { [y + 1, x] }
+  ">" { [y, x + 1] }
+  "<" { [y, x - 1] }
+}
 
-let deliver_presents = reduce_s(
+let deliver_presents = fold_s(
+  [{[0, 0]}, [0, 0]],
   |[houses, position], direction| {
-    let next_pos = move(direction, position)
-    return [houses + {next_pos}, next_pos];
-  },
-  [{[0, 0]}, [0, 0]]
-);
+    let next_pos = move(direction, position);
+    [houses + {next_pos}, next_pos];
+  }
+)
 
 part_one: {
-  input |> deliver_presents |> size
+  input
+    |> deliver_presents
+    |> size;
 }
 
 part_two: {
   zip(0.., input)
-    |> reduce(
+    |> fold(
+      [[], []],
       |[santa, robot], [index, direction]| {
-        if (index % 2 == 0) {
+        if index % 2 == 0 {
           [santa + [direction], robot]
         } else {
           [santa, robot + [direction]]
         }
-      },
-      [[], []]
+      }
     )
     |> map(deliver_presents)
-    |> reduce(+, {})
-    |> size
+    |> reduce(+)
+    |> size;
 }
 
 test: {
