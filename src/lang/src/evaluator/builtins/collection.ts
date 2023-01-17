@@ -936,7 +936,7 @@ const range: O.BuiltinFuncTemplate = {
     },
   ],
   body: (environment: O.Environment) => {
-    return O.Range.fromRange(
+    return O.Range.fromInclusiveRange(
       environment.getVariable('start').value,
       environment.getVariable('end').value,
       environment.getVariable('step').value

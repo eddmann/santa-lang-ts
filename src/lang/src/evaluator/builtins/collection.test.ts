@@ -25,7 +25,7 @@ describe('map', () => {
       description: 'string',
     },
     {
-      source: 'map(_ + 1, 1..5)',
+      source: 'map(_ + 1, 1..=5)',
       expected: '[2, 3, 4, 5, 6]',
       description: 'bounded range',
     },
@@ -97,7 +97,7 @@ describe('filter', () => {
       description: 'string',
     },
     {
-      source: 'filter(_ != 2, 1..5)',
+      source: 'filter(_ != 2, 1..=5)',
       expected: '[1, 3, 4, 5]',
       description: 'bounded range',
     },
@@ -181,7 +181,7 @@ describe('fold', () => {
       description: 'break short-circuit',
     },
     {
-      source: 'fold(0, +, 1..5)',
+      source: 'fold(0, +, 1..=5)',
       expected: '15',
       description: 'bounded range',
     },
@@ -202,12 +202,12 @@ describe('fold', () => {
 describe('fold_s', () => {
   const cases = [
     {
-      source: 'fold_s([0, 0], |[acc, prev], val| [acc + prev * val, val], 1..10)',
+      source: 'fold_s([0, 0], |[acc, prev], val| [acc + prev * val, val], 1..=10)',
       expected: '330',
       description: 'single state',
     },
     {
-      source: 'fold_s([0, 0, 0], |[acc, x, y], val| [acc + x * y * val, val, val / 2], 1..10)',
+      source: 'fold_s([0, 0, 0], |[acc, x, y], val| [acc + x * y * val, val, val / 2], 1..=10)',
       expected: '1060',
       description: 'multi-state',
     },
@@ -243,7 +243,7 @@ describe('reduce', () => {
       description: 'string',
     },
     {
-      source: 'reduce(+, 1..5)',
+      source: 'reduce(+, 1..=5)',
       expected: '15',
       description: 'bounded range',
     },
@@ -328,7 +328,7 @@ describe('each', () => {
     {
       source: `
         let mut acc = 0;
-        each(|v| acc = acc + v, 1..5)
+        each(|v| acc = acc + v, 1..=5)
         acc
       `,
       expected: '15',
@@ -486,7 +486,7 @@ describe('min', () => {
       description: 'hash of string values',
     },
     {
-      source: 'min(1..10)',
+      source: 'min(1..=10)',
       expected: '1',
       description: 'range',
     },
@@ -552,7 +552,7 @@ describe('max', () => {
       description: 'hash of string values',
     },
     {
-      source: 'max(1..10)',
+      source: 'max(1..=10)',
       expected: '10',
       description: 'range',
     },
@@ -997,7 +997,7 @@ describe('list', () => {
       description: 'set',
     },
     {
-      source: 'list(1..5)',
+      source: 'list(1..=5)',
       expected: '[1, 2, 3, 4, 5]',
       description: 'bounded range',
     },
@@ -1033,7 +1033,7 @@ describe('set', () => {
       description: 'set',
     },
     {
-      source: 'set(1..5)',
+      source: 'set(1..=5)',
       expected: '{1, 2, 3, 4, 5}',
       description: 'bounded range',
     },
@@ -1060,53 +1060,83 @@ describe('range', () => {
   const cases = [
     {
       source: '1..5',
+      expected: '[1, 2, 3, 4]',
+      description: 'positive exclusive low-high',
+    },
+    {
+      source: '1..=5',
       expected: '[1, 2, 3, 4, 5]',
-      description: 'positive low-high',
+      description: 'positive inclusive low-high',
     },
     {
       source: '5..1',
+      expected: '[5, 4, 3, 2]',
+      description: 'positive exclusive high-low',
+    },
+    {
+      source: '5..=1',
       expected: '[5, 4, 3, 2, 1]',
-      description: 'positive high-low',
+      description: 'positive inclusive high-low',
     },
     {
       source: '-5..-10',
+      expected: '[-5, -6, -7, -8, -9]',
+      description: 'negative exclusive high-low',
+    },
+    {
+      source: '-5..=-10',
       expected: '[-5, -6, -7, -8, -9, -10]',
-      description: 'negative high-low',
+      description: 'negative inclusive high-low',
     },
     {
       source: '-10..-5',
+      expected: '[-10, -9, -8, -7, -6]',
+      description: 'negative exclusive low-high',
+    },
+    {
+      source: '-10..=-5',
       expected: '[-10, -9, -8, -7, -6, -5]',
-      description: 'negative low-high',
+      description: 'negative inclusive low-high',
     },
     {
       source: '-3..3',
+      expected: '[-3, -2, -1, 0, 1, 2]',
+      description: 'negative-positive exclusive low-high',
+    },
+    {
+      source: '-3..=3',
       expected: '[-3, -2, -1, 0, 1, 2, 3]',
-      description: 'negative-positive low-high',
+      description: 'negative-positive inclusive low-high',
     },
     {
       source: '3..-3',
+      expected: '[3, 2, 1, 0, -1, -2]',
+      description: 'positive-negative exclusive high-low',
+    },
+    {
+      source: '3..=-3',
       expected: '[3, 2, 1, 0, -1, -2, -3]',
-      description: 'positive-negative high-low',
+      description: 'positive-negative inclusive high-low',
     },
     {
       source: 'range(0, 10, 2)',
       expected: '[0, 2, 4, 6, 8, 10]',
-      description: 'positive low-high with 2 step',
+      description: 'positive inclusive low-high with 2 step',
     },
     {
       source: 'range(10, 0, -2)',
       expected: '[10, 8, 6, 4, 2, 0]',
-      description: 'positive high-low with 2 step',
+      description: 'positive inclusive high-low with 2 step',
     },
     {
       source: 'range(5, -5, -2)',
       expected: '[5, 3, 1, -1, -3, -5]',
-      description: 'positive-negative high-low with 2 step',
+      description: 'positive-negative inclusive high-low with 2 step',
     },
     {
       source: 'range(-5, 5, 2)',
       expected: '[-5, -3, -1, 1, 3, 5]',
-      description: 'negative-positive low-high with 2 step',
+      description: 'negative-positive inclusive low-high with 2 step',
     },
   ];
 
@@ -1482,7 +1512,7 @@ describe('sum', () => {
   });
 
   test('range of integers', () => {
-    expect(doEvaluate('sum(1..3)')).toEqual('6');
+    expect(doEvaluate('sum(1..=3)')).toEqual('6');
   });
 });
 

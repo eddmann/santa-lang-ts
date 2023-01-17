@@ -133,6 +133,12 @@ export default class Lexer {
       case TokenKind.Dot:
         if (this.peekChar() === TokenKind.Dot) {
           this.readChar();
+
+          if (this.peekChar() === TokenKind.Assign) {
+            this.readChar();
+            return this.createToken(TokenKind.DotDotEqual, TokenKind.DotDotEqual);
+          }
+
           return this.createToken(TokenKind.DotDot, TokenKind.DotDot);
         }
 

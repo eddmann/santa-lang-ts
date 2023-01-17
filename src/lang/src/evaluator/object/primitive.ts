@@ -82,9 +82,7 @@ export class Integer implements ValueObj {
       return new Integer(parseInt(value.value, 10));
     }
 
-    throw new Error(
-      `Parsing ${value.getName()} as a ${this.getName()} is not supported`
-    );
+    throw new Error(`Parsing ${value.getName()} as a ${this.getName()} is not supported`);
   }
 
   public bitAnd(value: Obj): Integer {
@@ -285,9 +283,7 @@ export class Decimal implements ValueObj {
       return new Decimal(parseFloat(value.value));
     }
 
-    throw new Error(
-      `Parsing ${value.getName()} as a ${this.getName()} is not supported`
-    );
+    throw new Error(`Parsing ${value.getName()} as a ${this.getName()} is not supported`);
   }
 
   public inspect(): string {
@@ -460,7 +456,9 @@ export class Str implements ValueObj {
         return new Str(this.value.substring(this.value.length + index.start, index.end + 1));
       }
 
-      return new Str(this.value.substring(index.start, index.end + 1));
+      return new Str(
+        this.value.substring(index.start, index.isInclusive ? index.end + 1 : index.end)
+      );
     }
 
     throw new Error(`${this.getName()}[${index.getName()}] is not supported`);
@@ -676,16 +674,12 @@ export class Str implements ValueObj {
       return new List(this.value.split(delimiter.value).map(v => new Str(v)));
     }
 
-    throw new Error(
-      `split(${delimiter.getName()}, ${this.getName()}) is not supported`
-    );
+    throw new Error(`split(${delimiter.getName()}, ${this.getName()}) is not supported`);
   }
 
   public regExMatch(pattern: Obj): List {
     if (!(pattern instanceof Str)) {
-      throw new Error(
-        `regex_match(${pattern.getName()}, ${this.getName()}) is not supported`
-      );
+      throw new Error(`regex_match(${pattern.getName()}, ${this.getName()}) is not supported`);
     }
 
     const match = this.value.match(new RegExp(pattern.value));
@@ -695,9 +689,7 @@ export class Str implements ValueObj {
 
   public regExMatchAll(pattern: Obj): List {
     if (!(pattern instanceof Str)) {
-      throw new Error(
-        `regex_match_all(${pattern.getName()}, ${this.getName()}) is not supported`
-      );
+      throw new Error(`regex_match_all(${pattern.getName()}, ${this.getName()}) is not supported`);
     }
 
     const match = this.value.match(new RegExp(pattern.value, 'g'));

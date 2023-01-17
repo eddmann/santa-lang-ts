@@ -29,7 +29,8 @@ Welcome **santa-lang**, my [tree-walking interpreted](<https://en.wikipedia.org/
 ```
 let int = 1;
 let dec = 1.5;
-let range = 1..5;
+let exc_range = 1..5;
+let inc_range = 1..=5;
 let inf_range = 1..;
 let string = "Hello, world!\n";
 let list = [1, 2, 3];
@@ -75,7 +76,8 @@ let xs = [1, 2, 3, 4];
 
 xs[0]; // 1
 xs[-1]; // 4
-xs[1..2]; // [2, 3]
+xs[1..2]; // [2]
+xs[1..=2]; // [2, 3]
 xs[1..-1]; // 2, 3]
 ```
 
@@ -110,10 +112,10 @@ let inc = +(1);
 let inc = _ + 1;
 let inc = |x| x + 1;
 
-map(inc, 1..5); // [2, 3, 4, 5, 6]
-filter(2 != _, 1..5); // [1, 3, 4, 5]
-reduce(+, 1..5); // 15
-fold(10, +, 1..5); // 25
+map(inc, 1..5); // [2, 3, 4, 5]
+filter(2 != _, 1..5); // [1, 3, 4]
+reduce(+, 1..=5); // 15
+fold(10, +, 1..=5); // 25
 ```
 
 ### Function composition and threading
@@ -124,7 +126,7 @@ inc_dbl(15); // 256
 
 reduce(*, map(inc_dbl, 1..5));
 // vs
-1..5 |> map(inc_dbl) |> reduce(*); // 518400
+1..5 |> map(inc_dbl) |> reduce(*);
 ```
 
 ### Invocation with trailing lambdas
@@ -191,7 +193,7 @@ let fibonacci_seq = || {
     a;
   };
 }();
-1..5 |> each(|n| puts("> " + n + ": " + fibonacci_seq()));
+1..=5 |> each(|n| puts("> " + n + ": " + fibonacci_seq()));
 // "> 1: 1"
 // "> 2: 1"
 // "> 3: 2"

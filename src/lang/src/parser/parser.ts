@@ -51,7 +51,12 @@ export default class Parser {
       [TokenKind.DotDot]: {
         precedence: Precedence.Sum,
         prefix: this.parseIdentifier,
-        infix: this.parseRangeExpression,
+        infix: this.parseExclusiveRangeExpression,
+      },
+      [TokenKind.DotDotEqual]: {
+        precedence: Precedence.Sum,
+        prefix: this.parseIdentifier,
+        infix: this.parseInclusiveRangeExpression,
       },
       [TokenKind.Bang]: { precedence: Precedence.Equals, prefix: this.parsePrefixExpression },
       [TokenKind.Plus]: {
@@ -865,10 +870,11 @@ export default class Parser {
     };
   };
 
-  private parseRangeExpression = (left: AST.Expression): AST.RangeExpression => {
+  private parseExclusiveRangeExpression = (left: AST.Expression): AST.RangeExpression => {
     if (
       !this.peekTokenIs(TokenKind.Identifier) &&
       !this.peekTokenIs(TokenKind.Integer) &&
+      !this.peekTokenIs(TokenKind.LParen) &&
       !this.peekTokenIs(TokenKind.Minus)
     ) {
       return {
@@ -879,6 +885,7 @@ export default class Parser {
           value: Infinity,
           source: this.captureSourceLocation(),
         },
+        isInclusive: false,
         source: this.captureSourceLocation(),
       };
     }
@@ -891,6 +898,21 @@ export default class Parser {
       kind: AST.ASTKind.RangeExpression,
       start: left,
       end: this.parseExpression(Precedence.Identifier),
+      isInclusive: false,
+      source,
+    };
+  };
+
+  private parseInclusiveRangeExpression = (left: AST.Expression): AST.RangeExpression => {
+    const source = this.captureSourceLocation();
+
+    this.nextToken();
+
+    return {
+      kind: AST.ASTKind.RangeExpression,
+      start: left,
+      end: this.parseExpression(Precedence.Identifier),
+      isInclusive: true,
       source,
     };
   };

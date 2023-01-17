@@ -394,8 +394,13 @@ describe('list indexing', () => {
     },
     {
       source: 'let list = [1, 2, 3]; list[1..2]',
+      expected: '[2]',
+      description: 'bounded exclusive range list index',
+    },
+    {
+      source: 'let list = [1, 2, 3]; list[1..=2]',
       expected: '[2, 3]',
-      description: 'bounded range list index',
+      description: 'bounded inclusive range list index',
     },
     {
       source: 'let list = [1, 2, 3]; list[1..-1]',
@@ -516,8 +521,13 @@ describe('string indexing', () => {
     },
     {
       source: 'let string = "hello"; string[1..2]',
+      expected: '"e"',
+      description: 'bounded exclusive range string index',
+    },
+    {
+      source: 'let string = "hello"; string[1..=2]',
       expected: '"el"',
-      description: 'bounded range string index',
+      description: 'bounded inclusive range string index',
     },
     {
       source: 'let string = "hello"; string[1..-1]',
@@ -552,8 +562,13 @@ describe('ranges', () => {
   const cases = [
     {
       source: '1..5',
+      expected: '[1, 2, 3, 4]',
+      description: 'positive exclusive bounded',
+    },
+    {
+      source: '1..=5',
       expected: '[1, 2, 3, 4, 5]',
-      description: 'positive bounded',
+      description: 'positive inclusive bounded',
     },
     {
       source: '1..',
@@ -562,13 +577,23 @@ describe('ranges', () => {
     },
     {
       source: '-5..5',
+      expected: '[-5, -4, -3, -2, -1, 0, 1, 2, 3, 4]',
+      description: 'bounded exclusive negative to positive',
+    },
+    {
+      source: '-5..=5',
       expected: '[-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]',
-      description: 'bounded negative to positive',
+      description: 'bounded inclusive negative to positive',
     },
     {
       source: '5..-5',
+      expected: '[5, 4, 3, 2, 1, 0, -1, -2, -3, -4]',
+      description: 'bounded exlusive positive to negative',
+    },
+    {
+      source: '5..=-5',
       expected: '[5, 4, 3, 2, 1, 0, -1, -2, -3, -4, -5]',
-      description: 'bounded  positive to negative',
+      description: 'bounded inclusive positive to negative',
     },
   ];
 

@@ -184,6 +184,7 @@ export type RangeExpression = {
   kind: ASTKind.RangeExpression;
   start: Expression;
   end: Expression;
+  isInclusive: boolean;
   source: SourceLocation;
 };
 

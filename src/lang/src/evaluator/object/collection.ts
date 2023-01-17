@@ -73,7 +73,12 @@ export class List implements ValueObj {
     }
 
     if (index instanceof Range) {
-      return new List(this.items.slice(index.start, index.end >= 0 ? index.end + 1 : index.end));
+      return new List(
+        this.items.slice(
+          index.start,
+          index.isInclusive && index.end >= 0 ? index.end + 1 : index.end
+        )
+      );
     }
 
     throw new Error(`Unsupported 'get' operation ${this.getName()}, ${index.getName()}`);
@@ -388,7 +393,7 @@ export class List implements ValueObj {
       return this;
     }
 
-    return Range.fromRange(0, Infinity, 1).map(
+    return Range.fromExclusiveRange(0, Infinity, 1).map(
       idx => this.items.get(idx.value % this.items.size) as Obj
     );
   }
@@ -1144,19 +1149,30 @@ export class Range implements ValueObj {
   private constructor(
     public start: number,
     public end: number,
-    public items: Immutable.Seq.Indexed<Obj>
+    public items: Immutable.Seq.Indexed<Obj>,
+    public isInclusive: boolean
   ) {}
 
-  public static fromRange(start: number, end: number, step: number) {
+  public static fromExclusiveRange(start: number, end: number, step: number) {
     return new Range(
       start,
       end,
-      Immutable.Range(start, end + (end < start ? -1 : 1), step).map(v => new Integer(v))
+      Immutable.Range(start, end, step).map(v => new Integer(v)),
+      false
+    );
+  }
+
+  public static fromInclusiveRange(start: number, end: number, step: number) {
+    return new Range(
+      start,
+      end,
+      Immutable.Range(start, end + (end < start ? -1 : 1), step).map(v => new Integer(v)),
+      true
     );
   }
 
   public static repeat(value: Obj) {
-    return new Range(0, Infinity, Immutable.Repeat(value));
+    return new Range(0, Infinity, Immutable.Repeat(value), false);
   }
 
   public inspect(): string {
@@ -1205,7 +1221,11 @@ export class Range implements ValueObj {
       return new Range(
         this.start,
         this.end,
-        this.items.slice(index.start, index.end >= 0 ? index.end + 1 : index.end)
+        this.items.slice(
+          index.start,
+          index.isInclusive && index.end >= 0 ? index.end + 1 : index.end
+        ),
+        this.isInclusive
       );
     }
 
@@ -1239,7 +1259,7 @@ export class Range implements ValueObj {
   }
 
   public rest(): Range {
-    return new Range(this.start, this.end, this.items.rest());
+    return new Range(this.start, this.end, this.items.rest(), this.isInclusive);
   }
 
   public last(): Obj | Nil {
@@ -1251,11 +1271,11 @@ export class Range implements ValueObj {
   }
 
   public take(total: Integer): Range {
-    return new Range(this.start, 0, this.items.take(total.value));
+    return new Range(this.start, 0, this.items.take(total.value), this.isInclusive);
   }
 
   public skip(total: Integer): Range {
-    return new Range(this.start, this.end, this.items.skip(total.value));
+    return new Range(this.start, this.end, this.items.skip(total.value), this.isInclusive);
   }
 
   public find(fn: (v: Obj) => Obj): Obj {
@@ -1283,7 +1303,7 @@ export class Range implements ValueObj {
     );
 
     return zipped.size === Infinity || zipped.size === undefined
-      ? new Range(this.start, Infinity, zipped)
+      ? new Range(this.start, Infinity, zipped, this.isInclusive)
       : new List(zipped);
   }
 
@@ -1300,7 +1320,8 @@ export class Range implements ValueObj {
           }
 
           return result;
-        })
+        }),
+        this.isInclusive
       );
     } catch (err) {
       return err;
@@ -1320,7 +1341,8 @@ export class Range implements ValueObj {
           }
 
           return result.isTruthy();
-        })
+        }),
+        this.isInclusive
       );
     } catch (err) {
       return err;
@@ -1517,7 +1539,9 @@ export class Sequence implements ValueObj {
     }
 
     if (index instanceof Range) {
-      return new Sequence(this.items.slice(index.start, index.end >= 0 ? index.end + 1 : 0));
+      return new Sequence(
+        this.items.slice(index.start, index.isInclusive && index.end >= 0 ? index.end + 1 : 0)
+      );
     }
 
     throw new Error(`Unsupported 'get' operation ${this.getName()}, ${index.getName()}`);

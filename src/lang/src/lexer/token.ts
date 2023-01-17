@@ -32,6 +32,7 @@ export enum TokenKind {
   Underscore = '_',
   Dot = '.',
   DotDot = '..',
+  DotDotEqual = '..=',
   Backtick = '`',
   Hash = '#',
   Pipe = '|',
