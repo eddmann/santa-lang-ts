@@ -5,7 +5,7 @@
 
 An functional, C-like programming language for solving Advent of Code puzzles.
 
-_Influenced by:_ Rust, Python, JavaScript, F#, Scala
+_Influenced by:_ Rust, Python, Clojure, F#, Scala
 
 ## Why?
 
