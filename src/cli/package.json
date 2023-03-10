@@ -17,6 +17,7 @@
   "scripts": {
     "compile": "esbuild ./src --bundle --platform=node --target=node16.16.0 --outfile=build/cli.js",
     "package:binary": "pkg --config=pkg.json --output dist/santa-cli build/cli.js",
+    "package:binary:jitless": "pkg --options jitless,noexpose_wasm --config=pkg.json --output dist/santa-cli-jitless build/cli.js",
     "test": "jest"
   },
   "jest": {
