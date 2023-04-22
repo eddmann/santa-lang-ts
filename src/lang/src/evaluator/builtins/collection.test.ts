@@ -1578,30 +1578,30 @@ describe('union', () => {
   });
 });
 
-describe('intersect', () => {
+describe('intersection', () => {
   const cases = [
     {
-      source: 'intersect({1, 2, 3}, {1, 2}, {1, 2, 4})',
+      source: 'intersection({1, 2, 3}, {1, 2}, {1, 2, 4})',
       expected: '{1, 2}',
       description: 'set',
     },
     {
-      source: 'intersect({1, 2}, [1, 2], [1])',
+      source: 'intersection({1, 2}, [1, 2], [1])',
       expected: '{1}',
       description: 'set and list',
     },
     {
-      source: 'intersect({}, {})',
+      source: 'intersection({}, {})',
       expected: '{}',
       description: 'empty sets',
     },
     {
-      source: 'intersect({}, [])',
+      source: 'intersection({}, [])',
       expected: '{}',
       description: 'empty set and list',
     },
     {
-      source: 'intersect([{1, 2, 3}, {1, 2}, {1, 2, 4}])',
+      source: 'intersection([{1, 2, 3}, {1, 2}, {1, 2, 4}])',
       expected: '{1, 2}',
       description: 'single list entry',
     },

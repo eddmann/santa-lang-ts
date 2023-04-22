@@ -879,7 +879,7 @@ export class Set {
     return new Set(Immutable.Set.union(collections.map(collection => collection.items)));
   }
 
-  public static intersect(collections: Obj[]): Set {
+  public static intersection(collections: Obj[]): Set {
     return new Set(Immutable.Set.intersect(collections.map(collection => collection.items)));
   }
 

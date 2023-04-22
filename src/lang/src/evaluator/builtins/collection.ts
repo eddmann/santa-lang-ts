@@ -1129,7 +1129,7 @@ const union: O.BuiltinFuncTemplate = {
   },
 };
 
-const intersect: O.BuiltinFuncTemplate = {
+const intersection: O.BuiltinFuncTemplate = {
   parameters: [
     {
       kind: AST.ASTKind.RestElement,
@@ -1143,10 +1143,10 @@ const intersect: O.BuiltinFuncTemplate = {
     const collections = [...environment.getVariable('collections').items];
 
     if (collections.length === 1) {
-      return O.Set.intersect([...collections[0].items]);
+      return O.Set.intersection([...collections[0].items]);
     }
 
-    return O.Set.intersect(collections);
+    return O.Set.intersection(collections);
   },
 };
 
@@ -1227,6 +1227,6 @@ export default {
   iterate,
   sum,
   union,
-  intersect,
+  intersection,
   vec_add,
 };
