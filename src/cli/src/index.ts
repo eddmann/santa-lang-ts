@@ -60,7 +60,7 @@ try {
 
     if (testCase.partOne) {
       if (testCase.partOne.hasPassed) {
-        console.log('Part 1: %s \x1b[32m✔️\x1b[0m', testCase.partOne.actual);
+        console.log('Part 1: %s \x1b[32m✔\x1b[0m', testCase.partOne.actual);
       } else {
         console.log(
           'Part 1: %s \x1b[31m✘ (Expected: %s)\x1b[0m',
@@ -73,7 +73,7 @@ try {
 
     if (testCase.partTwo) {
       if (testCase.partTwo.hasPassed) {
-        console.log('Part 2: %s \x1b[32m✔️\x1b[0m', testCase.partTwo.actual);
+        console.log('Part 2: %s \x1b[32m✔\x1b[0m', testCase.partTwo.actual);
       } else {
         console.log(
           'Part 2: %s \x1b[31m✘ (Expected: %s)\x1b[0m',
