@@ -67,10 +67,10 @@ const evalListExpression = (
   return new O.List(elements);
 };
 
-const evalHashExpression = (
-  node: AST.HashExpression,
+const evalDictionaryExpression = (
+  node: AST.DictionaryExpression,
   environment: O.Environment
-): O.Hash | O.Err => {
+): O.Dictionary | O.Err => {
   const pairs: [O.Obj, O.Obj][] = [];
 
   for (const pair of node.pairs) {
@@ -84,7 +84,7 @@ const evalHashExpression = (
     pairs.push(evaluatedPair);
   }
 
-  return new O.Hash(pairs);
+  return new O.Dictionary(pairs);
 };
 
 const evalSetExpression = (node: AST.SetExpression, environment: O.Environment): O.Set | O.Err => {
@@ -652,8 +652,8 @@ export const evaluate = (node: AST.Node, environment: O.Environment): O.Obj => {
       case AST.ASTKind.ListExpression:
         return evalListExpression(node, environment);
 
-      case AST.ASTKind.HashExpression:
-        return evalHashExpression(node, environment);
+      case AST.ASTKind.DictionaryExpression:
+        return evalDictionaryExpression(node, environment);
 
       case AST.ASTKind.SetExpression:
         return evalSetExpression(node, environment);

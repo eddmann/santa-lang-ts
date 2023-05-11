@@ -23,7 +23,7 @@ export enum ASTKind {
   PrefixExpression = 'PREFIX_EXPRESSION',
   InfixExpression = 'INFIX_EXPRESSION',
   ExpressionStatement = 'EXPRESSION',
-  HashExpression = 'HASH_EXPRESSION',
+  DictionaryExpression = 'DICTIONARY_EXPRESSION',
   ListExpression = 'LIST_EXPRESSION',
   SetExpression = 'SET_EXPRESSION',
   RangeExpression = 'RANGE_EXPRESSION',
@@ -53,7 +53,7 @@ export type Expression =
   | FunctionLiteral
   | IndexExpression
   | CallExpression
-  | HashExpression
+  | DictionaryExpression
   | Identifier
   | IfExpression
   | MatchExpression
@@ -247,8 +247,8 @@ export type FunctionComposition = {
   source: SourceLocation;
 };
 
-export type HashExpression = {
-  kind: ASTKind.HashExpression;
+export type DictionaryExpression = {
+  kind: ASTKind.DictionaryExpression;
   pairs: [key: Expression, value: Expression][];
   source: SourceLocation;
 };

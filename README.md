@@ -34,7 +34,7 @@ let inc_range = 1..=5;
 let inf_range = 1..;
 let string = "Hello, world!\n";
 let list = [1, 2, 3];
-let hash_map = #{"a": 1, 2.5: "b", [1, 2, 3]: true, range};
+let dictionary = #{"a": 1, 2.5: "b", [1, 2, 3]: true, range};
 let set = {1, 2, 3};
 ```
 
@@ -47,9 +47,9 @@ let list = [1, 2, 3];
 list |> push(4); // [1, 2, 3, 4]
 list; // [1, 2, 3]
 
-let hash_map = #{"a": 1};
-hash_map |> assoc("a", 2); // #{"a": 2}
-hash_map; // #{"a": 1}
+let dictionary = #{"a": 1};
+dictionary |> assoc("a", 2); // #{"a": 2}
+dictionary; // #{"a": 1}
 
 let set = {1, 2, 3};
 set |> push(4); // {1, 2, 3, 4};

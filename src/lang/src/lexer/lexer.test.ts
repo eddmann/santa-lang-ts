@@ -253,7 +253,7 @@ test('list literal', () => {
   ]);
 });
 
-test('hash literal', () => {
+test('dictionary literal', () => {
   const source = '#{"hello": {x}, 1: "2", [1, 2]: 1.4}';
 
   const tokens = tokenize(source);

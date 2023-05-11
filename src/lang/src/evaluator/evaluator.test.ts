@@ -176,7 +176,7 @@ test('list literal', () => {
   expect(result).toEqual(new O.List([new O.Integer(1), new O.Decimal(2.5), new O.Str('hello')]));
 });
 
-test('hash literal', () => {
+test('dictionary literal', () => {
   const source = `
     let x = 1;
     #{"hello": #{x}, 1: "2", [1, 2]: 1.5};
@@ -184,8 +184,8 @@ test('hash literal', () => {
 
   const result = doEvaluate(source);
 
-  const expected = new O.Hash([
-    [new O.Str('hello'), new O.Hash([[new O.Str('x'), new O.Integer(1)]])],
+  const expected = new O.Dictionary([
+    [new O.Str('hello'), new O.Dictionary([[new O.Str('x'), new O.Integer(1)]])],
     [new O.Integer(1), new O.Str('2')],
     [new O.List([new O.Integer(1), new O.Integer(2)]), new O.Decimal(1.5)],
   ]);
@@ -467,34 +467,34 @@ describe('set indexing', () => {
   });
 });
 
-describe('hash indexing', () => {
+describe('dictionary indexing', () => {
   const cases = [
     {
       source:
-        'let hash = #{1: "integer", 1.5: [1, 2, 3], "hello": "world", [3, 2, 1]: true}; hash[1]',
+        'let dictionary = #{1: "integer", 1.5: [1, 2, 3], "hello": "world", [3, 2, 1]: true}; dictionary[1]',
       expected: '"integer"',
       description: 'integer key',
     },
     {
       source:
-        'let hash = #{1: "integer", 1.5: [1, 2, 3], "hello": "world", [3, 2, 1]: true}; hash[1.5]',
+        'let dictionary = #{1: "integer", 1.5: [1, 2, 3], "hello": "world", [3, 2, 1]: true}; dictionary[1.5]',
       expected: '[1, 2, 3]',
       description: 'decimal key',
     },
     {
       source:
-        'let hash = #{1: "integer", 1.5: [1, 2, 3], "hello": "world", [3, 2, 1]: true}; hash["hello"]',
+        'let dictionary = #{1: "integer", 1.5: [1, 2, 3], "hello": "world", [3, 2, 1]: true}; dictionary["hello"]',
       expected: '"world"',
       description: 'string key',
     },
     {
       source:
-        'let hash = #{1: "integer", 1.5: [1, 2, 3], "hello": "world", [3, 2, 1]: true}; hash[[3, 2, 1]]',
+        'let dictionary = #{1: "integer", 1.5: [1, 2, 3], "hello": "world", [3, 2, 1]: true}; dictionary[[3, 2, 1]]',
       expected: 'true',
       description: 'list key',
     },
     {
-      source: 'let hash = #{}; hash["unknown"]',
+      source: 'let dictionary = #{}; dictionary["unknown"]',
       expected: 'nil',
       description: 'unknown key',
     },

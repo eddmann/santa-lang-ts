@@ -2,7 +2,7 @@ input: read("aoc://2016/2")
 
 let directions = #{"U": [-1, 0], "D": [1, 0], "L": [0, -1], "R": [0, 1]};
 
-let find_key = |value, hash_map| fold(nil, |_, v, k| if v == value { break k }, hash_map);
+let find_key = |value, dictionary| fold(nil, |_, v, k| if v == value { break k }, dictionary);
 
 let generate_keypad = |input| {
   zip(0.., lines(input))
@@ -11,7 +11,7 @@ let generate_keypad = |input| {
         |> filter(|[_, char]| char != ".")
         |> map(|[x, char]| [[y, x], char]);
     })
-    |> hash;
+    |> dict;
 }
 
 let calc_keycode = |keypad, initial_key, instructions| {

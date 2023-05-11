@@ -146,7 +146,10 @@ export default class Parser {
         infix: this.parseInfixExpression,
       },
       [TokenKind.If]: { precedence: Precedence.Identifier, prefix: this.parseIfExpression },
-      [TokenKind.HashLBrace]: { precedence: Precedence.Lowest, prefix: this.parseHashExpression },
+      [TokenKind.HashLBrace]: {
+        precedence: Precedence.Lowest,
+        prefix: this.parseDictionaryExpression,
+      },
       [TokenKind.LBrace]: { precedence: Precedence.Lowest, prefix: this.parseSetExpression },
       [TokenKind.LBracket]: {
         precedence: Precedence.Index,
@@ -801,7 +804,7 @@ export default class Parser {
     };
   };
 
-  private parseHashExpression = (): AST.HashExpression => {
+  private parseDictionaryExpression = (): AST.DictionaryExpression => {
     const source = this.captureSourceLocation();
 
     const pairs: [AST.Expression, AST.Expression][] = [];
@@ -834,7 +837,7 @@ export default class Parser {
     this.expectPeek(TokenKind.RBrace);
 
     return {
-      kind: AST.ASTKind.HashExpression,
+      kind: AST.ASTKind.DictionaryExpression,
       pairs,
       source,
     };

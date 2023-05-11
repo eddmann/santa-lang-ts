@@ -12,7 +12,7 @@ describe('map', () => {
     {
       source: 'map(_ + 1, #{"a": 1, "b": 2, "c": 3})',
       expected: '#{"a": 2, "b": 3, "c": 4}',
-      description: 'hash',
+      description: 'dictionary',
     },
     {
       source: 'map(_ + 1, {1, 2, 3})',
@@ -79,12 +79,12 @@ describe('filter', () => {
     {
       source: 'filter(_ != 1, #{"a": 1, "b": 2, "c": 3})',
       expected: '#{"b": 2, "c": 3}',
-      description: 'hash (using value)',
+      description: 'dictionary (using value)',
     },
     {
       source: 'filter(|_, k| k != "a", #{"a": 1, "b": 2, "c": 3})',
       expected: '#{"b": 2, "c": 3}',
-      description: 'hash (using key)',
+      description: 'dictionary (using key)',
     },
     {
       source: 'filter(_ != 1, {1, 2, 3})',
@@ -146,7 +146,7 @@ describe('fold', () => {
     {
       source: 'fold(0, +, #{"a": 1, "b": 2, "c": 3})',
       expected: '6',
-      description: 'hash (using value)',
+      description: 'dictionary (using value)',
     },
     {
       source: `
@@ -157,7 +157,7 @@ describe('fold', () => {
           )
         `,
       expected: '1',
-      description: 'hash (using key)',
+      description: 'dictionary (using key)',
     },
     {
       source: 'fold(0, +, {1, 2, 3})',
@@ -230,7 +230,7 @@ describe('reduce', () => {
     {
       source: 'reduce(+, #{"a": 1, "b": 2, "c": 3})',
       expected: '6',
-      description: 'hash (using value)',
+      description: 'dictionary (using value)',
     },
     {
       source: 'reduce(+, {1, 2, 3})',
@@ -279,7 +279,7 @@ describe('each', () => {
         acc
       `,
       expected: '6',
-      description: 'hash (using value)',
+      description: 'dictionary (using value)',
     },
     {
       source: `
@@ -288,7 +288,7 @@ describe('each', () => {
         acc
       `,
       expected: '"abc"',
-      description: 'hash (using key)',
+      description: 'dictionary (using key)',
     },
     {
       source: `
@@ -391,12 +391,12 @@ describe('find', () => {
     {
       source: 'find(_ != 1, #{"a": 1, "b": 2, "c": 3})',
       expected: '2',
-      description: 'hash (using value)',
+      description: 'dictionary (using value)',
     },
     {
       source: 'find(|_, k| k != "a", #{"a": 1, "b": 2, "c": 3})',
       expected: '2',
-      description: 'hash (using key)',
+      description: 'dictionary (using key)',
     },
     {
       source: 'find(_ != 1, {1, 2, 3})',
@@ -473,17 +473,17 @@ describe('min', () => {
     {
       source: 'min(#{"a": 3, "b": 2, "c": 1})',
       expected: '1',
-      description: 'hash of integer values',
+      description: 'dictionary of integer values',
     },
     {
       source: 'min(#{"a": 3.2, "b": 1.1, "c": 2.8})',
       expected: '1.1',
-      description: 'hash of decimal values',
+      description: 'dictionary of decimal values',
     },
     {
       source: 'min(#{"b": "b", "a": "a", "c": "c"})',
       expected: '"a"',
-      description: 'hash of string values',
+      description: 'dictionary of string values',
     },
     {
       source: 'min(1..=10)',
@@ -539,17 +539,17 @@ describe('max', () => {
     {
       source: 'max(#{"a": 3, "b": 2, "c": 1})',
       expected: '3',
-      description: 'hash of integer values',
+      description: 'dictionary of integer values',
     },
     {
       source: 'max(#{"a": 3.2, "b": 1.1, "c": 2.8})',
       expected: '3.2',
-      description: 'hash of decimal values',
+      description: 'dictionary of decimal values',
     },
     {
       source: 'max(#{"b": "b", "a": "a", "c": "c"})',
       expected: '"c"',
-      description: 'hash of string values',
+      description: 'dictionary of string values',
     },
     {
       source: 'max(1..=10)',
@@ -580,7 +580,7 @@ describe('includes?', () => {
     {
       source: '#{"a": 1, "b": 2, "c": 3} `includes?` 1',
       expected: 'true',
-      description: 'hash (using value)',
+      description: 'dictionary (using value)',
     },
     {
       source: '{1, 2, 3} `includes?` 1',
@@ -657,7 +657,7 @@ describe('size', () => {
     {
       source: 'size(#{"a": 1, "b": 2, "c": 3})',
       expected: '3',
-      description: 'hash (using value)',
+      description: 'dictionary (using value)',
     },
     {
       source: 'size({1, 2, 3})',
@@ -869,7 +869,7 @@ describe('keys', () => {
     {
       source: 'keys(#{"a": 1, "b": 2, "c": 3})',
       expected: '["a", "b", "c"]',
-      description: 'keys of hash',
+      description: 'keys of dictionary',
     },
   ];
 
@@ -885,7 +885,7 @@ describe('values', () => {
     {
       source: 'values(#{"a": 1, "b": 2, "c": 3})',
       expected: '[1, 2, 3]',
-      description: 'values of hash',
+      description: 'values of dictionary',
     },
   ];
 
@@ -947,28 +947,28 @@ describe('zip', () => {
   });
 });
 
-describe('hash', () => {
+describe('dictionary', () => {
   const cases = [
     {
-      source: 'hash([])',
+      source: 'dict([])',
       expected: '#{}',
       description: 'empty list',
     },
     {
-      source: 'hash([[1, "one"], [2, "two"], [3, "three"]])',
+      source: 'dict([[1, "one"], [2, "two"], [3, "three"]])',
       expected: '#{1: "one", 2: "two", 3: "three"}',
       description: 'list with key-value pairs',
     },
     {
-      source: 'hash([1, 2, 3])',
+      source: 'dict([1, 2, 3])',
       expected:
-        'Runtime error: The List is expected to be of the form [[K, V], ..] to convert to a Hash',
+        'Runtime error: The List is expected to be of the form [[K, V], ..] to convert to a Dictionary',
       description: 'list without pairs',
     },
     {
-      source: 'hash(#{1: "one", 2: "two", 3: "three"})',
+      source: 'dict(#{1: "one", 2: "two", 3: "three"})',
       expected: '#{1: "one", 2: "two", 3: "three"}',
-      description: 'hash',
+      description: 'dictionary',
     },
   ];
 
@@ -989,7 +989,7 @@ describe('list', () => {
     {
       source: 'list(#{1: "one", 2: "two", 3: "three"})',
       expected: '[[1, "one"], [2, "two"], [3, "three"]]',
-      description: 'hash',
+      description: 'dictionary',
     },
     {
       source: 'list({1, 2, 3})',
@@ -1024,8 +1024,8 @@ describe('set', () => {
     },
     {
       source: 'set(#{1: "one", 2: "two", 3: "three"})',
-      expected: 'Runtime error: Unable to convert Hash into a Set',
-      description: 'hash',
+      expected: 'Runtime error: Unable to convert Dictionary into a Set',
+      description: 'dictionary',
     },
     {
       source: 'set({1, 2, 3})',
@@ -1219,12 +1219,12 @@ describe('assoc', () => {
     {
       source: 'assoc(1, 10, #{})',
       expected: '#{1: 10}',
-      description: 'empty hash',
+      description: 'empty dictionary',
     },
     {
       source: 'assoc(1, 10, #{1: 20})',
       expected: '#{1: 10}',
-      description: 'hash with existing value',
+      description: 'dictionary with existing value',
     },
   ];
 
@@ -1255,12 +1255,12 @@ describe('update_d', () => {
     {
       source: 'update_d(1, 0, _ + 1, #{})',
       expected: '#{1: 1}',
-      description: 'empty hash',
+      description: 'empty dictionary',
     },
     {
       source: 'update_d(1, 0, _ - 10, #{1: 20})',
       expected: '#{1: 10}',
-      description: 'hash with existing value',
+      description: 'dictionary with existing value',
     },
   ];
 
@@ -1281,7 +1281,7 @@ describe('update', () => {
     {
       source: 'update(1, _ - 10, #{1: 20})',
       expected: '#{1: 10}',
-      description: 'hash with existing value',
+      description: 'dictionary with existing value',
     },
   ];
 
@@ -1307,12 +1307,12 @@ describe('get', () => {
     {
       source: 'get(1, #{})',
       expected: 'nil',
-      description: 'empty hash',
+      description: 'empty dictionary',
     },
     {
       source: 'get(1, #{1: 20})',
       expected: '20',
-      description: 'hash with values',
+      description: 'dictionary with values',
     },
     {
       source: 'get(1, {})',
@@ -1410,12 +1410,12 @@ describe('remove', () => {
     {
       source: 'remove("b", #{"a": 1, "b": 2, "c": 3})',
       expected: '#{"a": 1, "c": 3}',
-      description: 'hash',
+      description: 'dictionary',
     },
     {
       source: 'remove("d", #{"a": 1, "b": 2, "c": 3})',
       expected: '#{"a": 1, "b": 2, "c": 3}',
-      description: 'hash with unknown key',
+      description: 'dictionary with unknown key',
     },
     {
       source: 'remove(1, {1, 2, 3})',
@@ -1487,15 +1487,15 @@ describe('sum', () => {
     expect(doEvaluate('sum([1.4, 2.5, 3.2])')).toEqual('7.1');
   });
 
-  test('empty hash', () => {
+  test('empty dictionary', () => {
     expect(doEvaluate('sum(#{})')).toEqual('0');
   });
 
-  test('hash of integers', () => {
+  test('dictionary of integers', () => {
     expect(doEvaluate('sum(#{"a": 1, "b": 2, "c": 3})')).toEqual('6');
   });
 
-  test('hash of decimals', () => {
+  test('dictionary of decimals', () => {
     expect(doEvaluate('sum(#{"a": 1.4, "b": 2.5, "c": 3.2})')).toEqual('7.1');
   });
 

@@ -32,7 +32,7 @@ export class List implements ValueObj {
       return new List(collection.items);
     }
 
-    if (collection instanceof Hash) {
+    if (collection instanceof Dictionary) {
       return new List([...collection.items.entries()].map(entry => new List(entry)));
     }
 
@@ -547,7 +547,7 @@ export class List implements ValueObj {
   }
 }
 
-export class Hash {
+export class Dictionary {
   public items: Immutable.Map<Obj, Obj>;
 
   constructor(items: Iterable<[Obj, Obj]>) {
@@ -555,24 +555,24 @@ export class Hash {
   }
 
   public asMutable() {
-    return new Hash(this.items.asMutable());
+    return new Dictionary(this.items.asMutable());
   }
 
   public asImmutable() {
-    return new Hash(this.items.asImmutable());
+    return new Dictionary(this.items.asImmutable());
   }
 
   public isImmutable(): boolean {
     return !this.items.__ownerID;
   }
 
-  public static from(collection: Obj): Hash {
+  public static from(collection: Obj): Dictionary {
     if (collection instanceof List) {
-      return new Hash(
+      return new Dictionary(
         collection.items.map(v => {
           if (!(v instanceof List) || v.items.size !== 2) {
             throw new Error(
-              'The List is expected to be of the form [[K, V], ..] to convert to a Hash'
+              'The List is expected to be of the form [[K, V], ..] to convert to a Dictionary'
             );
           }
 
@@ -581,11 +581,11 @@ export class Hash {
       );
     }
 
-    if (collection instanceof Hash) {
-      return new Hash(collection.items);
+    if (collection instanceof Dictionary) {
+      return new Dictionary(collection.items);
     }
 
-    throw new Error(`Unable to convert ${collection.getName()} into a Hash`);
+    throw new Error(`Unable to convert ${collection.getName()} into a Dictionary`);
   }
 
   public inspect(): string {
@@ -603,7 +603,7 @@ export class Hash {
   }
 
   public getName(): string {
-    return 'Hash';
+    return 'Dictionary';
   }
 
   public hashCode(): number {
@@ -611,7 +611,7 @@ export class Hash {
   }
 
   public equals(that: Obj): boolean {
-    return that instanceof Hash && this.items.equals(that.items);
+    return that instanceof Dictionary && this.items.equals(that.items);
   }
 
   public get(index: Obj): Obj {
@@ -644,9 +644,9 @@ export class Hash {
     }
   }
 
-  public map(fn: (v: Obj, k: Obj) => Obj): Hash {
+  public map(fn: (v: Obj, k: Obj) => Obj): Dictionary {
     try {
-      return new Hash(
+      return new Dictionary(
         this.items.map((v, k) => {
           const result = fn(v, k);
 
@@ -662,7 +662,7 @@ export class Hash {
     }
   }
 
-  public filter(fn: (v: Obj, k: Obj) => Obj, isMutable: boolean = false): Hash {
+  public filter(fn: (v: Obj, k: Obj) => Obj, isMutable: boolean = false): Dictionary {
     try {
       if (isMutable) {
         this.items = this.items
@@ -679,7 +679,7 @@ export class Hash {
         return this;
       }
 
-      return new Hash(
+      return new Dictionary(
         this.items.filter((v, k) => {
           const result = fn(v, k);
 
@@ -773,9 +773,9 @@ export class Hash {
     }
   }
 
-  public add(that: Obj): Hash {
-    if (that instanceof Hash) {
-      return new Hash(this.items.concat(that.items));
+  public add(that: Obj): Dictionary {
+    if (that instanceof Dictionary) {
+      return new Dictionary(this.items.concat(that.items));
     }
 
     throw new Error(`${this.getName()} + ${that.getName()} is not supported`);
@@ -789,7 +789,7 @@ export class Hash {
     return new List(this.items.values());
   }
 
-  public subtract(that: Obj): Hash {
+  public subtract(that: Obj): Dictionary {
     if (that instanceof Set) {
       const items = this.items.asMutable();
 
@@ -797,7 +797,7 @@ export class Hash {
         items.remove(key);
       }
 
-      return new Hash(items.toMap());
+      return new Dictionary(items.toMap());
     }
 
     throw new Error(`${this.getName()} - ${that.getName()} is not supported`);
@@ -830,15 +830,15 @@ export class Hash {
   }
 
   public remove(key: Obj): Obj {
-    return new Hash(this.items.remove(key));
+    return new Dictionary(this.items.remove(key));
   }
 
-  public assoc(key: Obj, value: Obj): Hash {
-    return new Hash(this.items.set(key, value));
+  public assoc(key: Obj, value: Obj): Dictionary {
+    return new Dictionary(this.items.set(key, value));
   }
 
-  public update(key: Obj, defaultValue: Obj, updater: (key: Obj) => Obj): Hash {
-    return new Hash(
+  public update(key: Obj, defaultValue: Obj, updater: (key: Obj) => Obj): Dictionary {
+    return new Dictionary(
       this.items.update(key, defaultValue, value => {
         const nextValue = updater(value);
 
@@ -851,8 +851,8 @@ export class Hash {
     );
   }
 
-  public assign(key: Obj, value: Obj): Hash {
-    return new Hash(this.items.set(key, value));
+  public assign(key: Obj, value: Obj): Dictionary {
+    return new Dictionary(this.items.set(key, value));
   }
 }
 

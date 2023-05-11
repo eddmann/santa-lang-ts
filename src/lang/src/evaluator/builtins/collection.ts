@@ -513,7 +513,7 @@ const values: O.BuiltinFuncTemplate = {
   },
 };
 
-const hash: O.BuiltinFuncTemplate = {
+const dict: O.BuiltinFuncTemplate = {
   parameters: [
     {
       kind: AST.ASTKind.Identifier,
@@ -521,7 +521,7 @@ const hash: O.BuiltinFuncTemplate = {
     },
   ],
   body: (environment: O.Environment) => {
-    return O.Hash.from(environment.getVariable('collection'));
+    return O.Dictionary.from(environment.getVariable('collection'));
   },
 };
 
@@ -1196,7 +1196,7 @@ export default {
   min,
   max,
   combinations,
-  hash,
+  dict,
   set,
   list,
   cycle,

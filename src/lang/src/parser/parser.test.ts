@@ -699,7 +699,7 @@ test('list literal', () => {
   });
 });
 
-test('hash literal', () => {
+test('dictionary literal', () => {
   const source = '#{"hello": #{x}, 1: "2", [1, 2]: 1.4}';
 
   const ast = parse(source);
@@ -710,12 +710,12 @@ test('hash literal', () => {
       {
         kind: 'EXPRESSION',
         expression: {
-          kind: 'HASH_EXPRESSION',
+          kind: 'DICTIONARY_EXPRESSION',
           pairs: [
             [
               { kind: 'STRING', value: 'hello', source: { line: 0, column: 4 } },
               {
-                kind: 'HASH_EXPRESSION',
+                kind: 'DICTIONARY_EXPRESSION',
                 pairs: [
                   [
                     { kind: 'STRING', value: 'x', source: { line: 0, column: 13 } },
@@ -750,7 +750,7 @@ test('hash literal', () => {
   });
 });
 
-test('hash literal with short-hand notation', () => {
+test('dictionary literal with short-hand notation', () => {
   const source = '#{x, y, z}';
 
   const ast = parse(source);
@@ -761,7 +761,7 @@ test('hash literal with short-hand notation', () => {
     statements: [
       {
         expression: {
-          kind: 'HASH_EXPRESSION',
+          kind: 'DICTIONARY_EXPRESSION',
           pairs: [
             [
               { kind: 'STRING', source: { column: 2, line: 0 }, value: 'x' },

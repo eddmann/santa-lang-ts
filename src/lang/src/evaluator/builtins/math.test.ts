@@ -32,7 +32,7 @@ describe('addition +', () => {
     {
       source: '#{1: 2} + #{"hello": "world"}',
       expected: '#{1: 2, "hello": "world"}',
-      description: 'hash',
+      description: 'dictionary',
     },
     {
       source: '{1, 2, 3} + {1, 4, 5}',
@@ -83,7 +83,7 @@ describe('subtraction -', () => {
     {
       source: '#{"hello": "world", 1: 2, [1, 2]: 1.5} - {1, "hello"}',
       expected: '#{[1, 2]: 1.5}',
-      description: 'hash-set',
+      description: 'dictionary-set',
     },
   ];
 

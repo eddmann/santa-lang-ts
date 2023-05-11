@@ -12,7 +12,7 @@ describe('evaluate', () => {
     {
       source: 'evaluate("#{\\"a\\": 1, \\"b\\": 1.5}")',
       expected: '#{"a": 1, "b": 1.5}',
-      description: 'hash',
+      description: 'dictionary',
     },
     {
       source: 'evaluate("{1, 2, 2, 1}")',
@@ -42,8 +42,8 @@ describe('type', () => {
     },
     {
       source: 'type(#{})',
-      expected: '"Hash"',
-      description: 'hash',
+      expected: '"Dictionary"',
+      description: 'dictionary',
     },
     {
       source: 'type(1)',

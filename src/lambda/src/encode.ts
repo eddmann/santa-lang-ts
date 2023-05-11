@@ -18,7 +18,9 @@ export const encode = value => {
       return new O.List(value.map(encode));
     }
 
-    return new O.Hash(Object.entries(value).map(([key, value]) => [encode(key), encode(value)]));
+    return new O.Dictionary(
+      Object.entries(value).map(([key, value]) => [encode(key), encode(value)])
+    );
   }
 
   throw new Error(`Unable to encode ${typeof value}`);
@@ -29,7 +31,7 @@ export const decode = value => {
     return [...value.items.map(decode)];
   }
 
-  if (value instanceof O.Hash) {
+  if (value instanceof O.Dictionary) {
     return [...value.items.entries()].reduce(
       (acc, [key, value]) => ({ ...acc, [decode(key)]: decode(value) }),
       {}
