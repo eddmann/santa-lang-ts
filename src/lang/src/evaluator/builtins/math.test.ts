@@ -39,6 +39,16 @@ describe('addition +', () => {
       expected: '{1, 2, 3, 4, 5}',
       description: 'set',
     },
+    {
+      source: '"a" + 1',
+      expected: '"a1"',
+      description: 'string-integer',
+    },
+    {
+      source: '"a" + 1.5',
+      expected: '"a1.5"',
+      description: 'string-decimal',
+    },
   ];
 
   cases.forEach(({ source, expected, description }) => {
