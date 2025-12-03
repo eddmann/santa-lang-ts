@@ -183,10 +183,16 @@ export class Integer implements ValueObj {
 
   public divide(that: Obj): Integer {
     if (that instanceof Integer) {
+      if (that.value === 0) {
+        throw new Error('Division by zero');
+      }
       return new Integer(Math.floor(this.value / that.value));
     }
 
     if (that instanceof Decimal) {
+      if (that.value === 0) {
+        throw new Error('Division by zero');
+      }
       return new Integer(Math.floor(this.value / that.value));
     }
 
@@ -195,6 +201,9 @@ export class Integer implements ValueObj {
 
   public modulo(that: Obj): Integer {
     if (that instanceof Integer) {
+      if (that.value === 0) {
+        throw new Error('Division by zero');
+      }
       const remainder = this.value % that.value;
 
       const result =
@@ -206,6 +215,9 @@ export class Integer implements ValueObj {
     }
 
     if (that instanceof Decimal) {
+      if (that.value === 0) {
+        throw new Error('Division by zero');
+      }
       const remainder = this.value % that.value;
       const result =
         remainder === 0 || Math.sign(this.value) === Math.sign(that.value)
@@ -344,10 +356,16 @@ export class Decimal implements ValueObj {
 
   public divide(that: Obj): Decimal {
     if (that instanceof Integer) {
+      if (that.value === 0) {
+        throw new Error('Division by zero');
+      }
       return new Decimal(this.value / that.value);
     }
 
     if (that instanceof Decimal) {
+      if (that.value === 0) {
+        throw new Error('Division by zero');
+      }
       return new Decimal(this.value / that.value);
     }
 
@@ -356,6 +374,9 @@ export class Decimal implements ValueObj {
 
   public modulo(that: Obj): Decimal {
     if (that instanceof Integer || that instanceof Decimal) {
+      if (that.value === 0) {
+        throw new Error('Division by zero');
+      }
       const remainder = this.value % that.value;
       const result =
         remainder === 0 || Math.sign(this.value) === Math.sign(that.value)
