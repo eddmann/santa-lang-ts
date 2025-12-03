@@ -7,6 +7,7 @@ enum Precedence {
   Equals,
   Identifier,
   LessGreater,
+  Composition, // >> |> .. ..=
   Sum,
   Product,
   Call,
@@ -49,12 +50,12 @@ export default class Parser {
       [TokenKind.Underscore]: { precedence: Precedence.Identifier, prefix: this.parsePlaceholder },
       [TokenKind.Nil]: { precedence: Precedence.Identifier, prefix: this.parseNil },
       [TokenKind.DotDot]: {
-        precedence: Precedence.Sum,
+        precedence: Precedence.Composition,
         prefix: this.parseIdentifier,
         infix: this.parseExclusiveRangeExpression,
       },
       [TokenKind.DotDotEqual]: {
-        precedence: Precedence.Sum,
+        precedence: Precedence.Composition,
         prefix: this.parseIdentifier,
         infix: this.parseInclusiveRangeExpression,
       },
@@ -126,12 +127,12 @@ export default class Parser {
         infix: this.parseInfixExpression,
       },
       [TokenKind.PipeGreater]: {
-        precedence: Precedence.Identifier,
+        precedence: Precedence.Composition,
         prefix: this.parseIdentifier,
         infix: this.parseFunctionThread,
       },
       [TokenKind.GreaterGreater]: {
-        precedence: Precedence.LessGreater,
+        precedence: Precedence.Composition,
         prefix: this.parseIdentifier,
         infix: this.parseFunctionComposition,
       },
