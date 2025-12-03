@@ -1021,7 +1021,7 @@ export default class Parser {
   private parseCallable = (): AST.Callable => {
     this.nextToken();
 
-    const result = this.parseExpression(Precedence.Identifier);
+    const result = this.parseExpression(Precedence.Composition);
 
     if (!this.isCallable(result)) {
       throw new ParserError(`Expected callable, but received ${result.kind}`, this.curToken);

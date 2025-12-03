@@ -79,6 +79,7 @@ export type Callable =
   | CallExpression
   | InfixExpression
   | PrefixExpression
+  | IndexExpression
   | FunctionComposition;
 
 export type SourceLocation = {
