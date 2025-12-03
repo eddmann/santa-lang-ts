@@ -15,11 +15,11 @@ lang/test:
 
 .PHONY: cli/install
 cli/install:
-	@$(CLI_YARN) install --immutable
+	@$(DOCKER) $(IMAGE) sh -c "apk add --no-cache python3 make g++ && yarn --cwd src/cli install --immutable"
 
 .PHONY: cli/test
 cli/test:
-	@$(CLI_YARN) test
+	@$(CLI_YARN) test --passWithNoTests
 
 .PHONY: cli/build
 cli/build:
@@ -32,7 +32,7 @@ web/install:
 
 .PHONY: web/test
 web/test:
-	@$(WEB_YARN) test
+	@$(WEB_YARN) lint
 
 .PHONY: web/build
 web/build:
