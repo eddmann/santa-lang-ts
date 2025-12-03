@@ -167,6 +167,34 @@ const replace: O.BuiltinFuncTemplate = {
   },
 };
 
+const join: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'separator',
+    },
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'collection',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    const separator = environment.getVariable('separator');
+    const collection = environment.getVariable('collection');
+
+    if (!(separator instanceof O.Str)) {
+      throw new Error(`join expects a string separator, got ${separator.getName()}`);
+    }
+
+    const items: string[] = [];
+    collection.getInteralSeq().forEach((item: O.Obj) => {
+      items.push(item.inspect().replace(/^"|"$/g, ''));
+    });
+
+    return new O.Str(items.join(separator.value));
+  },
+};
+
 const bit_and: O.BuiltinFuncTemplate = {
   parameters: [
     {
@@ -260,6 +288,7 @@ export default {
   upper,
   lower,
   replace,
+  join,
   bit_or,
   bit_and,
   bit_xor,
