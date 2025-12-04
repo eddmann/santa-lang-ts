@@ -1,73 +1,47 @@
-name: 'Build'
+name: Build
 
 on:
   push:
     branches:
-      - main
+      - draft-release
 
 concurrency: build
 
 jobs:
-  build-cli:
-    name: 'Build Cli'
+  update-draft-release:
+    name: Update draft release
     runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      pull-requests: read
+    outputs:
+      tag_name: ${{ steps.update-release-content.outputs.tag_name }}
     steps:
-      - name: 'Checkout'
-        uses: actions/checkout@v4
-      - name: 'Install'
-        run: make cli/install
-      - name: 'Build'
-        run: make cli/build
-      - name: 'Set up QEMU'
-        uses: docker/setup-qemu-action@v3
-      - name: 'Set up Docker Buildx'
-        uses: docker/setup-buildx-action@v3
-      - name: 'Login to GHCR'
-        uses: docker/login-action@v3
+      - name: Update release content
+        id: update-release-content
+        uses: release-drafter/release-drafter@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: 'Build and push multi-platform image'
-        uses: docker/build-push-action@v6
-        with:
-          context: src/cli
-          file: src/cli/Dockerfile
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ghcr.io/eddmann/santa-lang-ts:cli-latest
-      - name: 'Upload binaries'
-        uses: actions/upload-artifact@v4
-        with:
-          name: 'santa-cli'
-          path: 'src/cli/dist/santa-cli-*'
-  build-web:
-    name: 'Build Web'
-    runs-on: ubuntu-24.04
-    steps:
-      - name: 'Checkout'
-        uses: actions/checkout@v4
-      - name: 'Install'
-        run: make web/install
-      - name: 'Build'
-        run: make web/build
-      - name: Publish
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          branch: gh-pages
-          folder: src/web/out
-  build-lambda:
-    name: 'Build Lambda runtime'
-    runs-on: ubuntu-24.04
-    steps:
-      - name: 'Checkout'
-        uses: actions/checkout@v4
-      - name: 'Install'
-        run: make lambda/install
-      - name: 'Build'
-        run: make lambda/build
-      - name: 'Upload layer'
-        uses: actions/upload-artifact@v4
-        with:
-          name: 'santa-lang-lambda-al2.zip'
-          path: 'src/lambda/dist/layer.zip'
+          commitish: 'draft-release'
+
+  cli:
+    needs: update-draft-release
+    name: Build CLI
+    uses: eddmann/santa-lang-ts/.github/workflows/build-cli.yml@draft-release
+    with:
+      release-tag: ${{ needs.update-draft-release.outputs.tag_name }}
+
+  lambda:
+    needs: update-draft-release
+    name: Build Lambda
+    uses: eddmann/santa-lang-ts/.github/workflows/build-lambda.yml@draft-release
+    with:
+      release-tag: ${{ needs.update-draft-release.outputs.tag_name }}
+
+  web:
+    needs: update-draft-release
+    name: Build Web
+    uses: eddmann/santa-lang-ts/.github/workflows/build-web.yml@draft-release
+    with:
+      release-tag: ${{ needs.update-draft-release.outputs.tag_name }}

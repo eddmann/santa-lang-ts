@@ -1,0 +1,26 @@
+name: Build Lambda
+
+on:
+  workflow_call:
+    inputs:
+      release-tag:
+        required: true
+        type: string
+
+jobs:
+  lambda:
+    name: Lambda
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build
+        run: make lambda/build
+      - name: Upload
+        run: |
+          mv src/lambda/dist/layer.zip santa-lang-lambda-${{ inputs.release-tag }}.zip
+          gh release upload ${{ inputs.release-tag }} santa-lang-lambda-${{ inputs.release-tag }}.zip --clobber
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

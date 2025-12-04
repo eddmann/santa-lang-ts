@@ -6,7 +6,7 @@ lang/install:
 	@$(DOCKER) $(IMAGE) sh -c "cd src/lang && bun install"
 
 .PHONY: lang/test
-lang/test:
+lang/test: lang/install
 	@$(DOCKER) $(IMAGE) sh -c "cd src/lang && bun test"
 
 .PHONY: cli/install
@@ -14,11 +14,11 @@ cli/install: lang/install
 	@$(DOCKER) $(IMAGE) sh -c "cd src/cli && bun install"
 
 .PHONY: cli/test
-cli/test:
+cli/test: cli/install
 	@$(DOCKER) $(IMAGE) sh -c "cd src/cli && bun test"
 
 .PHONY: cli/build
-cli/build:
+cli/build: cli/install
 	@$(DOCKER) -e BUN_RUNTIME_TRANSPILER_CACHE_PATH=/tmp $(IMAGE) sh -c "cd /tmp && cp -r /app/src/cli /tmp/cli && cp -r /app/src/lang /tmp/lang && cd /tmp/lang && bun install && cd /tmp/cli && bun install && bun run package:all && cp -r /tmp/cli/dist /app/src/cli/"
 
 .PHONY: web/install
@@ -26,11 +26,11 @@ web/install: lang/install
 	@$(DOCKER) $(IMAGE) sh -c "cd src/web && bun install"
 
 .PHONY: web/test
-web/test:
+web/test: web/install
 	@$(DOCKER) $(IMAGE) sh -c "cd src/web && bun run lint"
 
 .PHONY: web/build
-web/build:
+web/build: web/install
 	@$(DOCKER) $(IMAGE) sh -c "cd src/web && bun run build"
 
 .PHONY: lambda/install
@@ -38,7 +38,7 @@ lambda/install: lang/install
 	@$(DOCKER) $(IMAGE) sh -c "cd src/lambda && bun install"
 
 .PHONY: lambda/build
-lambda/build:
+lambda/build: lambda/install
 	@$(DOCKER) -e BUN_RUNTIME_TRANSPILER_CACHE_PATH=/tmp $(IMAGE) sh -c "cd /tmp && cp -r /app/src/lambda /tmp/lambda && cp -r /app/src/lang /tmp/lang && cd /tmp/lang && bun install && cd /tmp/lambda && bun install && mkdir -p dist && bun build ./src/index.ts --compile --target=bun-linux-x64 --outfile=dist/bootstrap && mkdir -p /app/src/lambda/dist && cp /tmp/lambda/dist/bootstrap /app/src/lambda/dist/bootstrap"
 	@$(DOCKER) $(IMAGE) sh -c "apk --no-cache add zip && cd src/lambda && bun run package:layer"
 
