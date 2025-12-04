@@ -381,7 +381,7 @@ export class List implements ValueObj {
       const rest = list.rest();
 
       return recur(size - 1, rest)
-        .map(list => list.push(first))
+        .map(list => list.unshift(first))
         .concat(recur(size, rest));
     };
 
