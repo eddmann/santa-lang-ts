@@ -164,6 +164,7 @@ export const run = (source: string, io: O.IO): Result => {
 type TestCase = {
   partOne?: TestCaseResult;
   partTwo?: TestCaseResult;
+  slow: boolean;
 };
 
 type TestCaseResult = {
@@ -172,10 +173,19 @@ type TestCaseResult = {
   hasPassed: boolean;
 };
 
-export const runTests = (source: string, io: O.IO): TestCase[] => {
+export const runTests = (source: string, io: O.IO, includeSlow: boolean = false): TestCase[] => {
   const { environment, partOne, partTwo } = evaluateSource(source, io);
 
-  return environment.getSection('test').map(test => {
+  const results: TestCase[] = [];
+
+  for (const test of environment.getSection('test')) {
+    const isSlow = test.hasAttribute('slow');
+
+    // Skip slow tests unless explicitly requested
+    if (isSlow && !includeSlow) {
+      continue;
+    }
+
     const testEnvironment = new O.Environment(environment);
 
     const testResult = evaluateNode(test.section, testEnvironment);
@@ -191,7 +201,7 @@ export const runTests = (source: string, io: O.IO): TestCase[] => {
     const partTwoExpected = testEnvironment.getSection('part_two');
 
     if (partOneExpected.length === 0 && partTwoExpected.length === 0) {
-      return {};
+      continue;
     }
 
     if (partOneExpected.length > 1) {
@@ -222,7 +232,7 @@ export const runTests = (source: string, io: O.IO): TestCase[] => {
     const testInputResult =
       testInput.length === 1 ? evaluateSection(testInput[0], testEnvironment) : null;
 
-    const testCase: TestCase = {};
+    const testCase: TestCase = { slow: isSlow };
 
     if (partOne && partOneExpected.length === 1) {
       const partOneExpectedResult = evaluateSection(partOneExpected[0], testEnvironment);
@@ -246,6 +256,8 @@ export const runTests = (source: string, io: O.IO): TestCase[] => {
       };
     }
 
-    return testCase;
-  });
+    results.push(testCase);
+  }
+
+  return results;
 };

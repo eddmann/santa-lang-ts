@@ -186,22 +186,80 @@ export default class Parser {
   }
 
   private parseStatement(): AST.Statement {
+    // Parse any leading attributes (e.g., @slow)
+    const attributes = this.parseAttributes();
+
     switch (this.curToken.kind) {
       case TokenKind.Let:
+        if (attributes.length > 0) {
+          throw new ParserError(
+            'Unexpected attribute - attributes can only be applied to sections',
+            this.curToken
+          );
+        }
         return this.parseLetStatement();
       case TokenKind.Return:
+        if (attributes.length > 0) {
+          throw new ParserError(
+            'Unexpected attribute - attributes can only be applied to sections',
+            this.curToken
+          );
+        }
         return this.parseReturnStatement();
       case TokenKind.Break:
+        if (attributes.length > 0) {
+          throw new ParserError(
+            'Unexpected attribute - attributes can only be applied to sections',
+            this.curToken
+          );
+        }
         return this.parseBreakStatement();
       case TokenKind.Comment:
+        if (attributes.length > 0) {
+          throw new ParserError(
+            'Unexpected attribute - attributes can only be applied to sections',
+            this.curToken
+          );
+        }
         return this.parseComment();
       case TokenKind.Identifier:
         if (this.peekTokenIs(TokenKind.Colon)) {
-          return this.parseSectionStatement();
+          return this.parseSectionStatement(attributes);
         }
       default:
+        if (attributes.length > 0) {
+          throw new ParserError(
+            'Unexpected attribute - attributes can only be applied to sections',
+            this.curToken
+          );
+        }
         return this.parseExpressionStatement();
     }
+  }
+
+  private parseAttributes(): AST.Attribute[] {
+    const attributes: AST.Attribute[] = [];
+
+    while (this.curTokenIs(TokenKind.At)) {
+      const source = this.captureSourceLocation();
+      this.nextToken(); // consume @
+
+      if (!this.curTokenIs(TokenKind.Identifier)) {
+        throw new ParserError(
+          `Expected identifier after @, but received ${this.curToken.kind}`,
+          this.curToken
+        );
+      }
+
+      attributes.push({
+        name: this.curToken.literal,
+        source,
+      });
+
+      this.nextToken();
+    }
+
+    return attributes;
   }
 
   private parseLetStatement(): AST.LetStatement {
@@ -282,7 +340,7 @@ export default class Parser {
     };
   }
 
-  private parseSectionStatement(): AST.SectionStatement {
+  private parseSectionStatement(attributes: AST.Attribute[] = []): AST.SectionStatement {
     const source = this.captureSourceLocation();
 
     const name = this.parseIdentifier();
@@ -295,6 +353,7 @@ export default class Parser {
       : {
           kind: AST.ASTKind.BlockStatement,
           statements: [this.parseExpressionStatement()],
+          source: this.captureSourceLocation(),
         };
 
     if (this.peekTokenIs(TokenKind.Semicolon)) {
@@ -305,6 +364,7 @@ export default class Parser {
       kind: AST.ASTKind.Section,
       name,
       section,
+      attributes,
       source,
     };
   }
@@ -534,6 +594,29 @@ export default class Parser {
 
     if (this.peekTokenIs(TokenKind.Else)) {
       this.nextToken();
+
+      // Support else if syntax
+      if (this.peekTokenIs(TokenKind.If)) {
+        this.nextToken();
+        return {
+          kind: AST.ASTKind.IfExpression,
+          condition,
+          consequence,
+          alternative: {
+            kind: AST.ASTKind.BlockStatement,
+            statements: [
+              {
+                kind: AST.ASTKind.ExpressionStatement,
+                expression: this.parseIfExpression(),
+                source,
+              },
+            ],
+            source,
+          },
+          source,
+        };
+      }
+
       this.expectPeek(TokenKind.LBrace);
 
       return {
@@ -901,7 +984,7 @@ export default class Parser {
     return {
       kind: AST.ASTKind.RangeExpression,
       start: left,
-      end: this.parseExpression(Precedence.Identifier),
+      end: this.parseExpression(Precedence.Composition),
       isInclusive: false,
       source,
     };
@@ -915,7 +998,7 @@ export default class Parser {
     return {
       kind: AST.ASTKind.RangeExpression,
       start: left,
-      end: this.parseExpression(Precedence.Identifier),
+      end: this.parseExpression(Precedence.Composition),
       isInclusive: true,
       source,
     };

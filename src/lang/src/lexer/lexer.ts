@@ -113,6 +113,9 @@ export default class Lexer {
       case TokenKind.RBrace:
         return this.createToken(TokenKind.RBrace);
 
+      case TokenKind.At:
+        return this.createToken(TokenKind.At);
+
       case TokenKind.Hash:
         if (this.peekChar() === TokenKind.LBrace) {
           this.readChar();

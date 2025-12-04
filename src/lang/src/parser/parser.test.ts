@@ -1061,6 +1061,32 @@ test('if expression (with let binding)', () => {
   });
 });
 
+test('if else if expression', () => {
+  const source = 'if a { 1 } else if b { 2 } else { 3 }';
+
+  const ast = parse(source);
+
+  expect(ast.statements[0].expression.kind).toBe('IF_EXPRESSION');
+  expect(ast.statements[0].expression.condition.value).toBe('a');
+  expect(ast.statements[0].expression.consequence.statements[0].expression.value).toBe(1);
+  // The alternative should be a block containing another if expression
+  expect(ast.statements[0].expression.alternative.kind).toBe('BLOCK_STATEMENT');
+  expect(ast.statements[0].expression.alternative.statements[0].expression.kind).toBe(
+    'IF_EXPRESSION'
+  );
+  expect(ast.statements[0].expression.alternative.statements[0].expression.condition.value).toBe(
+    'b'
+  );
+  expect(
+    ast.statements[0].expression.alternative.statements[0].expression.consequence.statements[0]
+      .expression.value
+  ).toBe(2);
+  expect(
+    ast.statements[0].expression.alternative.statements[0].expression.alternative.statements[0]
+      .expression.value
+  ).toBe(3);
+});
+
 test('call expression', () => {
   const source = 'add(1, 2)';
 
@@ -1181,6 +1207,7 @@ test('sections', () => {
           ],
           source: { line: 0, column: 13 },
         },
+        attributes: [],
         source: { line: 0, column: 0 },
       },
       {
@@ -1195,7 +1222,9 @@ test('sections', () => {
               source: { line: 0, column: 40 },
             },
           ],
+          source: { line: 0, column: 40 },
         },
+        attributes: [],
         source: { line: 0, column: 25 },
       },
     ],
@@ -1233,17 +1262,76 @@ test('section with sub-section', () => {
                     source: { line: 0, column: 30 },
                   },
                 ],
+                source: { line: 0, column: 30 },
               },
+              attributes: [],
               source: { line: 0, column: 15 },
             },
           ],
           source: { line: 0, column: 13 },
         },
+        attributes: [],
         source: { line: 0, column: 0 },
       },
     ],
     source: { line: 0, column: 0 },
   });
+});
+
+test('section with attribute', () => {
+  const source = '@slow test: { 1 + 1 }';
+
+  const ast = parse(source);
+
+  expect(ast).toEqual({
+    kind: 'PROGRAM',
+    statements: [
+      {
+        kind: 'SECTION',
+        name: { kind: 'IDENTIFIER', value: 'test', source: { line: 0, column: 6 } },
+        section: {
+          kind: 'BLOCK_STATEMENT',
+          statements: [
+            {
+              kind: 'EXPRESSION',
+              expression: {
+                kind: 'INFIX_EXPRESSION',
+                function: { kind: 'IDENTIFIER', value: '+', source: { line: 0, column: 16 } },
+                arguments: [
+                  { kind: 'INTEGER', value: 1, source: { line: 0, column: 14 } },
+                  { kind: 'INTEGER', value: 1, source: { line: 0, column: 18 } },
+                ],
+                source: { line: 0, column: 16 },
+              },
+              source: { line: 0, column: 14 },
+            },
+          ],
+          source: { line: 0, column: 12 },
+        },
+        attributes: [{ name: 'slow', source: { line: 0, column: 0 } }],
+        source: { line: 0, column: 6 },
+      },
+    ],
+    source: { line: 0, column: 0 },
+  });
+});
+
+test('section with multiple attributes', () => {
+  const source = '@slow @custom test: 42';
+
+  const ast = parse(source);
+
+  expect(ast.statements[0].kind).toBe('SECTION');
+  expect(ast.statements[0].attributes).toEqual([
+    { name: 'slow', source: { line: 0, column: 0 } },
+    { name: 'custom', source: { line: 0, column: 6 } },
+  ]);
+});
+
+test('attribute on non-section throws error', () => {
+  const source = '@slow let x = 1';
+
+  expect(() => parse(source)).toThrow('attributes can only be applied to sections');
 });
 
 test('minus prefix/infix operation', () => {

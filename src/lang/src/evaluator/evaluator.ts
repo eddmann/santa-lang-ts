@@ -628,7 +628,7 @@ export const evaluate = (node: AST.Node, environment: O.Environment): O.Obj => {
       case AST.ASTKind.Section:
         return environment.addSection(
           node.name.value,
-          new O.Section(node.name, node.section, new O.Environment(environment))
+          new O.Section(node.name, node.section, new O.Environment(environment), node.attributes)
         );
 
       case AST.ASTKind.Integer:

@@ -883,3 +883,47 @@ const doEvaluate = (source: string): O.Obj => {
   const parser = new Parser(lexer);
   return evaluate(parser.parse(), new O.Environment());
 };
+
+describe('section attributes', () => {
+  test('section stores attributes', () => {
+    const source = '@slow test: { 1 }';
+    const environment = new O.Environment();
+
+    const lexer = new Lexer(source);
+    const parser = new Parser(lexer);
+    evaluate(parser.parse(), environment);
+
+    const sections = environment.getSection('test');
+    expect(sections).toHaveLength(1);
+    expect(sections[0].hasAttribute('slow')).toBe(true);
+    expect(sections[0].hasAttribute('fast')).toBe(false);
+  });
+
+  test('section without attributes has empty array', () => {
+    const source = 'test: { 1 }';
+    const environment = new O.Environment();
+
+    const lexer = new Lexer(source);
+    const parser = new Parser(lexer);
+    evaluate(parser.parse(), environment);
+
+    const sections = environment.getSection('test');
+    expect(sections).toHaveLength(1);
+    expect(sections[0].attributes).toEqual([]);
+    expect(sections[0].hasAttribute('slow')).toBe(false);
+  });
+
+  test('section with multiple attributes', () => {
+    const source = '@slow @experimental test: { 1 }';
+    const environment = new O.Environment();
+
+    const lexer = new Lexer(source);
+    const parser = new Parser(lexer);
+    evaluate(parser.parse(), environment);
+
+    const sections = environment.getSection('test');
+    expect(sections).toHaveLength(1);
+    expect(sections[0].hasAttribute('slow')).toBe(true);
+    expect(sections[0].hasAttribute('experimental')).toBe(true);
+  });
+});

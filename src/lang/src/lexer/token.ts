@@ -34,6 +34,7 @@ export enum TokenKind {
   DotDot = '..',
   DotDotEqual = '..=',
   Backtick = '`',
+  At = '@',
   Hash = '#',
   Pipe = '|',
   PipePipe = '||',

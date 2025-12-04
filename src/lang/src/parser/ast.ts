@@ -99,6 +99,7 @@ export type SectionStatement = {
   kind: ASTKind.Section;
   name: Identifier;
   section: BlockStatement;
+  attributes: Attribute[];
   source: SourceLocation;
 };
 
@@ -313,5 +314,10 @@ export type RestElement = {
 export type SpreadElement = {
   kind: ASTKind.SpreadElement;
   value: Expression;
+  source: SourceLocation;
+};
+
+export type Attribute = {
+  name: string;
   source: SourceLocation;
 };

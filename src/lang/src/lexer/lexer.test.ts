@@ -548,6 +548,20 @@ test('indexing', () => {
   ]);
 });
 
+test('attribute token', () => {
+  const source = '@slow @custom';
+
+  const tokens = tokenize(source);
+
+  expect(tokens).toEqual([
+    { kind: '@', literal: '@', line: 0, column: 0 },
+    { kind: 'IDENTIFIER', literal: 'slow', line: 0, column: 1 },
+    { kind: '@', literal: '@', line: 0, column: 6 },
+    { kind: 'IDENTIFIER', literal: 'custom', line: 0, column: 7 },
+    { kind: 'EOF', literal: '', line: 0, column: 13 },
+  ]);
+});
+
 const tokenize = (source: string): Token[] => {
   const lexer = new Lexer(source);
 
