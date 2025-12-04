@@ -22,7 +22,7 @@ jobs:
         run: |
           cd src/cli/dist
           for binary in santa-cli-*; do
-            mv "$binary" "santa-lang-cli-${{ inputs.release-tag }}-${binary#santa-cli-}"
+            sudo mv "$binary" "santa-lang-cli-${{ inputs.release-tag }}-${binary#santa-cli-}"
             gh release upload ${{ inputs.release-tag }} "santa-lang-cli-${{ inputs.release-tag }}-${binary#santa-cli-}" --clobber
           done
         env:
