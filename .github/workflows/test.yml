@@ -1,14 +1,34 @@
-name: 'Test'
+name: Test
 
-on: push
+on:
+  push:
+    branches-ignore:
+      - draft-release
 
 jobs:
   test:
-    name: 'Test'
+    name: Test
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - name: 'Install'
+      - name: Install
         run: make lang/install
-      - name: 'Test'
+      - name: Test
         run: make lang/test
+
+  update-draft-release-branch:
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    name: Update draft release branch
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Update
+        uses: alice-biometrics/github-push-action@v0.7.0
+        with:
+          branch: draft-release
+          force: true
+          github_token: ${{ secrets.RELEASE_TOKEN }}
