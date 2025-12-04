@@ -4,14 +4,10 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "esbuild": "^0.14.42",
     "santa-lang": "file:../lang"
   },
-  "devDependencies": {
-    "pkg": "^5.3.1"
-  },
   "scripts": {
-    "compile": "esbuild ./src --bundle --platform=node --target=node16.16.0 --outfile=build/bootstrap.js",
-    "package:layer": "pkg --targets node16.16.0-linux-x64 --output dist/bootstrap build/bootstrap.js && cd dist && zip layer.zip bootstrap"
+    "compile": "bun build ./src/index.ts --compile --target=bun-linux-x64 --outfile=dist/bootstrap",
+    "package:layer": "cd dist && zip layer.zip bootstrap"
   }
 }

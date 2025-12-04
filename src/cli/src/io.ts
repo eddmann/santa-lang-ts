@@ -1,6 +1,4 @@
 import { readFileSync, writeFileSync } from 'fs';
-import fetch from 'node-fetch';
-import { loopWhile } from 'deasync';
 
 const parseUrl = (path: string): URL | null => {
   try {
@@ -27,62 +25,29 @@ const readAoC = (url: URL, path: string): string => {
     );
   }
 
-  let content: string | undefined, error: string | undefined;
+  const result = Bun.spawnSync([
+    'curl',
+    '-sfL',
+    '-H',
+    `Cookie: session=${token}`,
+    `https://adventofcode.com/${year}/day/${day}/input`,
+  ]);
 
-  fetch(`https://adventofcode.com/${year}/day/${day}/input`, {
-    method: 'GET',
-    headers: {
-      Accepts: 'text/plain',
-      Cookie: `session=${token}`,
-    },
-  }).then(response => {
-    if (response.status !== 200) {
-      error = `Unable to read AOC input: ${path}, response: ${response.statusText}`;
-      return;
-    }
-
-    return response.text().then(body => {
-      content = body.trimEnd();
-    });
-  });
-
-  loopWhile(() => !content && !error);
-
-  if (error) {
-    throw new Error(error);
+  if (result.exitCode !== 0) {
+    throw new Error(`Unable to read AOC input: ${path}`);
   }
 
+  const content = new TextDecoder().decode(result.stdout).trimEnd();
   writeFileSync(filename, content);
-
   return content;
 };
 
 const readUrl = (path: string): string => {
-  let content: string | undefined, error: string | undefined;
-
-  fetch(path, {
-    method: 'GET',
-    headers: {
-      Accepts: 'text/plain',
-    },
-  }).then(response => {
-    if (response.status !== 200) {
-      error = `Unable to read HTTP input: ${path}, response: ${response.statusText}`;
-      return;
-    }
-
-    return response.text().then(body => {
-      content = body;
-    });
-  });
-
-  loopWhile(() => !content && !error);
-
-  if (error) {
-    throw new Error(error);
+  const result = Bun.spawnSync(['curl', '-sfL', path]);
+  if (result.exitCode !== 0) {
+    throw new Error(`Unable to read HTTP input: ${path}`);
   }
-
-  return content;
+  return new TextDecoder().decode(result.stdout);
 };
 
 export default {

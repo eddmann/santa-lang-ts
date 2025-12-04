@@ -1,4 +1,3 @@
-import Lexer from './lexer';
-import { TokenKind, Token } from './token';
-
-export { Lexer, TokenKind, Token };
+export { default as Lexer } from './lexer';
+export { TokenKind } from './token';
+export type { Token } from './token';

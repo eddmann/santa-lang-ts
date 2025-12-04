@@ -1,6 +1,5 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 
-import http from 'http';
 import { readFileSync } from 'fs';
 import { Lexer } from 'santa-lang/lexer';
 import { Parser } from 'santa-lang/parser';
@@ -22,7 +21,7 @@ const {
   AWS_LAMBDA_RUNTIME_API,
 } = process.env;
 
-const [HOST, PORT] = AWS_LAMBDA_RUNTIME_API.split(':');
+const [HOST, PORT] = AWS_LAMBDA_RUNTIME_API!.split(':');
 
 start();
 
@@ -47,6 +46,39 @@ async function start() {
   }
 }
 
+type RequestOptions = {
+  method?: string;
+  path: string;
+  headers?: Record<string, string>;
+  body?: string;
+};
+
+type RequestResponse = {
+  statusCode: number;
+  headers: Record<string, string>;
+  body: string;
+};
+
+async function request(options: RequestOptions): Promise<RequestResponse> {
+  const url = `http://${HOST}:${PORT}${options.path}`;
+  const response = await fetch(url, {
+    method: options.method || 'GET',
+    headers: options.headers,
+    body: options.body,
+  });
+
+  const headers: Record<string, string> = {};
+  response.headers.forEach((value, key) => {
+    headers[key] = value;
+  });
+
+  return {
+    statusCode: response.status,
+    headers,
+    body: await response.text(),
+  };
+}
+
 async function nextInvocation() {
   const res = await request({ path: `${RUNTIME_PATH}/invocation/next` });
 
@@ -60,7 +92,7 @@ async function nextInvocation() {
     delete process.env._X_AMZN_TRACE_ID;
   }
 
-  let context = {
+  let context: any = {
     awsRequestId: res.headers['lambda-runtime-aws-request-id'],
     invokedFunctionArn: res.headers['lambda-runtime-invoked-function-arn'],
     logGroupName: AWS_LAMBDA_LOG_GROUP_NAME,
@@ -83,7 +115,7 @@ async function nextInvocation() {
   return { event, context };
 }
 
-async function invokeResponse(result, context) {
+async function invokeResponse(result: any, context: any) {
   const res = await request({
     method: 'POST',
     path: `${RUNTIME_PATH}/invocation/${context.awsRequestId}/response`,
@@ -94,15 +126,15 @@ async function invokeResponse(result, context) {
   }
 }
 
-function initError(err) {
+function initError(err: any) {
   return postError(`${RUNTIME_PATH}/init/error`, err);
 }
 
-function invokeError(err, context) {
+function invokeError(err: any, context: any) {
   return postError(`${RUNTIME_PATH}/invocation/${context.awsRequestId}/error`, err);
 }
 
-async function postError(path, err) {
+async function postError(path: string, err: any) {
   const lambdaErr = toLambdaErr(err);
   const res = await request({
     method: 'POST',
@@ -119,11 +151,11 @@ async function postError(path, err) {
 }
 
 const io = {
-  input: path => readFileSync(path, { encoding: 'utf8' }),
-  output: args => console.log(...args),
+  input: (path: string) => readFileSync(path, { encoding: 'utf8' }),
+  output: (args: string[]) => console.log(...args),
 };
 
-function initHandler(scriptPath, sectionName) {
+function initHandler(scriptPath: string, sectionName: string) {
   const source = readFileSync(scriptPath, { encoding: 'utf8' });
   const lexer = new Lexer(source);
   const ast = new Parser(lexer).parse();
@@ -140,11 +172,11 @@ function initHandler(scriptPath, sectionName) {
 }
 
 function getHandler() {
-  const [scriptPath, sectionName] = _HANDLER.split('.');
+  const [scriptPath, sectionName] = _HANDLER!.split('.');
 
   const handler = initHandler(LAMBDA_TASK_ROOT + '/' + scriptPath + '.santa', sectionName);
 
-  return (event, context) =>
+  return (event: any, context: any) =>
     new Promise((resolve, reject) => {
       try {
         const environment = new O.Environment();
@@ -164,29 +196,7 @@ function getHandler() {
     });
 }
 
-function request(options) {
-  options.host = HOST;
-  options.port = PORT;
-
-  return new Promise((resolve, reject) => {
-    let req = http.request(options, res => {
-      let bufs = [];
-      res.on('data', data => bufs.push(data));
-      res.on('end', () =>
-        resolve({
-          statusCode: res.statusCode,
-          headers: res.headers,
-          body: Buffer.concat(bufs).toString(),
-        })
-      );
-      res.on('error', reject);
-    });
-    req.on('error', reject);
-    req.end(options.body);
-  });
-}
-
-function toLambdaErr(err) {
+function toLambdaErr(err: any) {
   const { name, message, stack } = err;
   return {
     errorType: name || typeof err,

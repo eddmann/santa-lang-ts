@@ -4,30 +4,17 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "deasync": "^0.1.28",
-    "esbuild": "^0.14.42",
-    "esbuild-jest": "^0.5.0",
-    "jest": "^28.1.0",
-    "node-fetch": "^3.2.10",
     "santa-lang": "file:../lang"
   },
-  "devDependencies": {
-    "pkg": "^5.3.1"
-  },
   "scripts": {
-    "compile": "esbuild ./src --bundle --platform=node --target=node16.16.0 --outfile=build/cli.js",
-    "package:binary": "pkg --config=pkg.json --output dist/santa-cli build/cli.js",
-    "package:binary:jitless": "pkg --options jitless,noexpose_wasm --config=pkg.json --output dist/santa-cli-jitless build/cli.js",
-    "test": "jest"
-  },
-  "jest": {
-    "transform": {
-      "^.+\\.tsx?$": [
-        "esbuild-jest",
-        {
-          "sourcemap": true
-        }
-      ]
-    }
+    "start": "bun run ./src/index.ts",
+    "compile": "bun build ./src/index.ts --outfile=build/cli.js --target=bun",
+    "package:binary": "bun build ./src/index.ts --compile --outfile=dist/santa-cli",
+    "package:all": "mkdir -p dist && bun run package:macos-amd64 && bun run package:macos-arm64 && bun run package:linux-amd64 && bun run package:linux-arm64",
+    "package:macos-amd64": "bun build ./src/index.ts --compile --target=bun-darwin-x64 --outfile=santa-cli-macos-amd64 && mv santa-cli-macos-amd64 dist/",
+    "package:macos-arm64": "bun build ./src/index.ts --compile --target=bun-darwin-arm64 --outfile=santa-cli-macos-arm64 && mv santa-cli-macos-arm64 dist/",
+    "package:linux-amd64": "bun build ./src/index.ts --compile --target=bun-linux-x64 --outfile=santa-cli-linux-amd64 && mv santa-cli-linux-amd64 dist/",
+    "package:linux-arm64": "bun build ./src/index.ts --compile --target=bun-linux-arm64 --outfile=santa-cli-linux-arm64 && mv santa-cli-linux-arm64 dist/",
+    "test": "bun test"
   }
 }

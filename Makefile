@@ -1,51 +1,46 @@
-IMAGE = node:16.16.0-alpine3.15
+IMAGE = oven/bun:alpine
 DOCKER = docker run --rm -v $(PWD):/app -w /app
-LANG_YARN = $(DOCKER) $(IMAGE) yarn --cwd src/lang
-CLI_YARN = $(DOCKER) $(IMAGE) yarn --cwd src/cli
-WEB_YARN = $(DOCKER) $(IMAGE) yarn --cwd src/web
-LAMBDA_YARN = $(DOCKER) $(IMAGE) yarn --cwd src/lambda
 
 .PHONY: lang/install
 lang/install:
-	@$(LANG_YARN) install --immutable
+	@$(DOCKER) $(IMAGE) sh -c "cd src/lang && bun install"
 
 .PHONY: lang/test
 lang/test:
-	@$(LANG_YARN) test
+	@$(DOCKER) $(IMAGE) sh -c "cd src/lang && bun test"
 
 .PHONY: cli/install
 cli/install:
-	@$(DOCKER) $(IMAGE) sh -c "apk add --no-cache python3 make g++ && yarn --cwd src/cli install --immutable"
+	@$(DOCKER) $(IMAGE) sh -c "cd src/cli && bun install"
 
 .PHONY: cli/test
 cli/test:
-	@$(CLI_YARN) test --passWithNoTests
+	@$(DOCKER) $(IMAGE) sh -c "cd src/cli && bun test"
 
 .PHONY: cli/build
 cli/build:
-	@$(CLI_YARN) compile
-	@$(CLI_YARN) package:binary
+	@$(DOCKER) -e BUN_RUNTIME_TRANSPILER_CACHE_PATH=/tmp $(IMAGE) sh -c "cd /tmp && cp -r /app/src/cli /tmp/cli && cp -r /app/src/lang /tmp/lang && cd /tmp/cli && bun run package:all && cp -r /tmp/cli/dist /app/src/cli/"
 
 .PHONY: web/install
 web/install:
-	@$(WEB_YARN) install --immutable
+	@$(DOCKER) $(IMAGE) sh -c "cd src/web && bun install"
 
 .PHONY: web/test
 web/test:
-	@$(WEB_YARN) lint
+	@$(DOCKER) $(IMAGE) sh -c "cd src/web && bun run lint"
 
 .PHONY: web/build
 web/build:
-	@$(WEB_YARN) build
+	@$(DOCKER) $(IMAGE) sh -c "cd src/web && bun run build"
 
 .PHONY: lambda/install
 lambda/install:
-	@$(LAMBDA_YARN) install --immutable
+	@$(DOCKER) $(IMAGE) sh -c "cd src/lambda && bun install"
 
 .PHONY: lambda/build
 lambda/build:
-	@$(LAMBDA_YARN) compile
-	$(DOCKER) $(IMAGE) sh -c "apk --no-cache add zip && yarn --cwd src/lambda package:layer"
+	@$(DOCKER) -e BUN_RUNTIME_TRANSPILER_CACHE_PATH=/tmp $(IMAGE) sh -c "cd /tmp && cp -r /app/src/lambda /tmp/lambda && cp -r /app/src/lang /tmp/lang && cd /tmp/lambda && mkdir -p dist && bun build ./src/index.ts --compile --target=bun-linux-x64 --outfile=dist/bootstrap && mkdir -p /app/src/lambda/dist && cp /tmp/lambda/dist/bootstrap /app/src/lambda/dist/bootstrap"
+	@$(DOCKER) $(IMAGE) sh -c "apk --no-cache add zip && cd src/lambda && bun run package:layer"
 
 .PHONY: lambda/publish
 lambda/publish:

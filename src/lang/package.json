@@ -4,23 +4,10 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "esbuild": "^0.14.42",
-    "esbuild-jest": "^0.5.0",
-    "immutable": "^4.1.0",
-    "jest": "^28.1.0"
+    "immutable": "^4.1.0"
   },
   "scripts": {
-    "test": "jest"
-  },
-  "jest": {
-    "transform": {
-      "^.+\\.tsx?$": [
-        "esbuild-jest",
-        {
-          "sourcemap": true
-        }
-      ]
-    }
+    "test": "bun test"
   },
   "exports": {
     "./lexer": "./src/lexer/index.ts",
