@@ -550,6 +550,37 @@ const destructureListPatternIntoEnv = (
 
 class NoPatternMatchError extends Error {}
 
+const matchSinglePattern = (
+  pattern: AST.Node,
+  value: O.Obj,
+  environment: O.Environment
+): void => {
+  if (pattern.kind === AST.ASTKind.Placeholder) {
+    return;
+  }
+
+  if (pattern.kind === AST.ASTKind.Identifier) {
+    environment.declareVariable(pattern.value, value, false);
+    return;
+  }
+
+  if (pattern.kind === AST.ASTKind.ListMatchPattern) {
+    matchListPatternIntoEnv(pattern, value, environment);
+    return;
+  }
+
+  const literal = evaluate(pattern, environment);
+
+  if (isError(literal)) {
+    throw new Error(literal);
+  }
+
+  if (literal instanceof O.Range && literal.includes(value).value) return;
+  else if (value.equals(literal)) return;
+
+  throw new NoPatternMatchError();
+};
+
 const matchListPatternIntoEnv = (
   { elements }: AST.ListMatchPattern,
   value: O.Obj,
@@ -571,52 +602,52 @@ const matchListPatternIntoEnv = (
     throw new NoPatternMatchError();
   }
 
-  let i = 0;
-  for (i = 0; i < elements.length; i++) {
-    if (i >= value.items.size) {
+  // Find the rest element position (if any)
+  const restIndex = elements.findIndex(el => el.kind === AST.ASTKind.RestElement);
+
+  if (restIndex === -1) {
+    // No rest pattern - exact match required
+    if (elements.length !== value.items.size) {
       throw new NoPatternMatchError();
     }
 
-    if (elements[i].kind === AST.ASTKind.Placeholder) {
-      continue;
+    for (let i = 0; i < elements.length; i++) {
+      matchSinglePattern(elements[i], value.get(new O.Integer(i)), environment);
     }
+    return;
+  }
 
-    if (elements[i].kind === AST.ASTKind.Identifier) {
-      environment.declareVariable(elements[i].value, value.get(new O.Integer(i)), false);
-      continue;
-    }
+  // Rest pattern exists - calculate how many elements go before and after
+  const patternsBefore = restIndex;
+  const patternsAfter = elements.length - restIndex - 1;
+  const minRequired = patternsBefore + patternsAfter;
 
-    if (elements[i].kind === AST.ASTKind.ListMatchPattern) {
-      matchListPatternIntoEnv(elements[i], value.get(new O.Integer(i)), environment);
-      continue;
-    }
-
-    if (elements[i].kind === AST.ASTKind.RestElement) {
-      environment.declareVariable(
-        elements[i].argument.value,
-        value.get(O.Range.fromExclusiveRange(i, Infinity, 1)),
-        false
-      );
-      return;
-    }
-
-    const literal = evaluate(elements[i], environment);
-
-    if (isError(literal)) {
-      throw new Error(literal);
-    }
-
-    const element = value.get(new O.Integer(i));
-
-    if (literal instanceof O.Range && literal.includes(element).value) continue;
-    else if (value.get(new O.Integer(i)).equals(literal)) continue;
-
+  if (value.items.size < minRequired) {
     throw new NoPatternMatchError();
   }
 
-  if (i < value.items.size) {
-    throw new NoPatternMatchError();
+  // Match patterns before the rest
+  for (let i = 0; i < patternsBefore; i++) {
+    matchSinglePattern(elements[i], value.get(new O.Integer(i)), environment);
   }
+
+  // Match patterns after the rest (from the end)
+  const valueSize = value.items.size;
+  for (let i = 0; i < patternsAfter; i++) {
+    const patternIdx = restIndex + 1 + i;
+    const valueIdx = valueSize - patternsAfter + i;
+    matchSinglePattern(elements[patternIdx], value.get(new O.Integer(valueIdx)), environment);
+  }
+
+  // Bind the rest element to remaining middle elements
+  const restElement = elements[restIndex] as AST.RestElement;
+  const restStart = patternsBefore;
+  const restEnd = valueSize - patternsAfter;
+  environment.declareVariable(
+    restElement.argument.value,
+    value.get(O.Range.fromExclusiveRange(restStart, restEnd, 1)),
+    false
+  );
 };
 
 export const evaluate = (node: AST.Node, environment: O.Environment): O.Obj => {

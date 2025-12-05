@@ -706,6 +706,169 @@ describe('list match expression', () => {
   });
 });
 
+describe('prefix rest pattern match expression', () => {
+  const sut = `
+    let sut = |x| match x {
+      [..init, last] { ["prefix", init, last] }
+      _ { "no match" }
+    };
+  `;
+
+  const cases = [
+    {
+      source: 'sut([1])',
+      expected: '["prefix", [], 1]',
+    },
+    {
+      source: 'sut([1, 2])',
+      expected: '["prefix", [1], 2]',
+    },
+    {
+      source: 'sut([1, 2, 3])',
+      expected: '["prefix", [1, 2], 3]',
+    },
+    {
+      source: 'sut([1, 2, 3, 4, 5])',
+      expected: '["prefix", [1, 2, 3, 4], 5]',
+    },
+    {
+      source: 'sut([])',
+      expected: '"no match"',
+    },
+  ];
+
+  cases.forEach(({ source, expected }) => {
+    test(source, () => {
+      expect(doEvaluate(`${sut} ${source}`).inspect()).toEqual(expected);
+    });
+  });
+});
+
+describe('prefix rest pattern with nested destructuring', () => {
+  const sut = `
+    let sut = |x| match x {
+      [..init, [a, b]] { ["nested", init, a, b] }
+      _ { "no match" }
+    };
+  `;
+
+  const cases = [
+    {
+      source: 'sut([[1, 2]])',
+      expected: '["nested", [], 1, 2]',
+    },
+    {
+      source: 'sut([1, 2, [3, 4]])',
+      expected: '["nested", [1, 2], 3, 4]',
+    },
+    {
+      source: 'sut([[1, 2], [3, 4], [5, 6]])',
+      expected: '["nested", [[1, 2], [3, 4]], 5, 6]',
+    },
+  ];
+
+  cases.forEach(({ source, expected }) => {
+    test(source, () => {
+      expect(doEvaluate(`${sut} ${source}`).inspect()).toEqual(expected);
+    });
+  });
+});
+
+describe('prefix rest pattern with guard', () => {
+  const sut = `
+    let sut = |x| match x {
+      [..init, last] if last > 10 { ["big", init, last] }
+      [..init, last] { ["small", init, last] }
+      _ { "no match" }
+    };
+  `;
+
+  const cases = [
+    {
+      source: 'sut([1, 2, 15])',
+      expected: '["big", [1, 2], 15]',
+    },
+    {
+      source: 'sut([1, 2, 5])',
+      expected: '["small", [1, 2], 5]',
+    },
+  ];
+
+  cases.forEach(({ source, expected }) => {
+    test(source, () => {
+      expect(doEvaluate(`${sut} ${source}`).inspect()).toEqual(expected);
+    });
+  });
+});
+
+describe('middle rest pattern match expression', () => {
+  const sut = `
+    let sut = |x| match x {
+      [first, ..middle, last] { ["middle", first, middle, last] }
+      _ { "no match" }
+    };
+  `;
+
+  const cases = [
+    {
+      source: 'sut([1, 2])',
+      expected: '["middle", 1, [], 2]',
+    },
+    {
+      source: 'sut([1, 2, 3])',
+      expected: '["middle", 1, [2], 3]',
+    },
+    {
+      source: 'sut([1, 2, 3, 4, 5])',
+      expected: '["middle", 1, [2, 3, 4], 5]',
+    },
+    {
+      source: 'sut([1])',
+      expected: '"no match"',
+    },
+  ];
+
+  cases.forEach(({ source, expected }) => {
+    test(source, () => {
+      expect(doEvaluate(`${sut} ${source}`).inspect()).toEqual(expected);
+    });
+  });
+});
+
+describe('middle rest pattern with multiple after elements', () => {
+  const sut = `
+    let sut = |x| match x {
+      [first, ..middle, second_last, last] { ["multi", first, middle, second_last, last] }
+      _ { "no match" }
+    };
+  `;
+
+  const cases = [
+    {
+      source: 'sut([1, 2, 3])',
+      expected: '["multi", 1, [], 2, 3]',
+    },
+    {
+      source: 'sut([1, 2, 3, 4])',
+      expected: '["multi", 1, [2], 3, 4]',
+    },
+    {
+      source: 'sut([1, 2, 3, 4, 5])',
+      expected: '["multi", 1, [2, 3], 4, 5]',
+    },
+    {
+      source: 'sut([1, 2])',
+      expected: '"no match"',
+    },
+  ];
+
+  cases.forEach(({ source, expected }) => {
+    test(source, () => {
+      expect(doEvaluate(`${sut} ${source}`).inspect()).toEqual(expected);
+    });
+  });
+});
+
 test('unexhaustive match returns nil', () => {
   const source = `
     match "unknown" {
