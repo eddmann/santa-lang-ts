@@ -55,6 +55,11 @@ describe('type', () => {
       expected: '"Bool"',
       description: 'boolean',
     },
+    {
+      source: 'type("hello")',
+      expected: '"String"',
+      description: 'string',
+    },
   ];
 
   cases.forEach(({ source, expected, description }) => {

@@ -454,7 +454,7 @@ export class Str implements ValueObj {
   }
 
   public getName(): string {
-    return 'Str';
+    return 'String';
   }
 
   public hashCode(): number {
