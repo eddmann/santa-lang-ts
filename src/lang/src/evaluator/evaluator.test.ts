@@ -981,6 +981,23 @@ test('match expression followed by list literal', () => {
   expect(result.inspect()).toEqual('[1, 2]');
 });
 
+test('match case scoping does not leak variables', () => {
+  const source = `
+    let x = "outer";
+    let result = match 1 {
+      1 {
+        let x = "inner";
+        x
+      }
+    };
+    [result, x]
+  `;
+
+  const result = doEvaluate(source);
+
+  expect(result.inspect()).toEqual('["inner", "outer"]');
+});
+
 test('ensure that multiple placeholders are ignored', () => {
   const source = `
     let [_, _, value] = [1, 2, 3];

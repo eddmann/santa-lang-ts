@@ -317,6 +317,25 @@ export const applyFunction = (fn: O.Obj, args: O.Obj[]): O.Obj => {
 };
 
 const evalInfixExpression = (node: AST.InfixExpression, environment: O.Environment): O.Obj => {
+  // Short-circuit evaluation for && and ||
+  if (node.function.value === '&&') {
+    const left = evaluate(node.arguments[0], environment);
+    if (isError(left)) return left;
+    if (!left.isTruthy()) return O.FALSE;
+    const right = evaluate(node.arguments[1], environment);
+    if (isError(right)) return right;
+    return right.isTruthy() ? O.TRUE : O.FALSE;
+  }
+
+  if (node.function.value === '||') {
+    const left = evaluate(node.arguments[0], environment);
+    if (isError(left)) return left;
+    if (left.isTruthy()) return O.TRUE;
+    const right = evaluate(node.arguments[1], environment);
+    if (isError(right)) return right;
+    return right.isTruthy() ? O.TRUE : O.FALSE;
+  }
+
   const fn = evaluate(node.function, environment);
 
   if (isError(fn)) {
@@ -379,13 +398,15 @@ const evalMatchExpression = (node: AST.MatchExpression, environment: O.Environme
     }
 
     if (case_.pattern.kind === AST.ASTKind.Placeholder) {
+      const matchEnvironment = new O.Environment(environment);
+
       if (case_.guard) {
-        const result = evaluate(case_.guard, environment);
+        const result = evaluate(case_.guard, matchEnvironment);
         if (isError(result)) return result;
         if (!result.isTruthy()) continue;
       }
 
-      return evaluate(case_.consequence, environment);
+      return evaluate(case_.consequence, matchEnvironment);
     }
 
     if (case_.pattern.kind === AST.ASTKind.ListMatchPattern) {
@@ -425,13 +446,15 @@ const evalMatchExpression = (node: AST.MatchExpression, environment: O.Environme
       }
     } else if (!subject.equals(value)) continue;
 
+    const matchEnvironment = new O.Environment(environment);
+
     if (case_.guard) {
-      const result = evaluate(case_.guard, environment);
+      const result = evaluate(case_.guard, matchEnvironment);
       if (isError(result)) return result;
       if (!result.isTruthy()) continue;
     }
 
-    return evaluate(case_.consequence, environment);
+    return evaluate(case_.consequence, matchEnvironment);
   }
 
   return O.NIL;

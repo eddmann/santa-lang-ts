@@ -255,6 +255,16 @@ describe('logical and &&', () => {
       expected: 'false',
       description: 'false',
     },
+    {
+      source: 'false && nil[0]',
+      expected: 'false',
+      description: 'short-circuit with nil access',
+    },
+    {
+      source: 'let x = nil; x && x[0]',
+      expected: 'false',
+      description: 'short-circuit nil variable',
+    },
   ];
 
   cases.forEach(({ source, expected, description }) => {
@@ -290,6 +300,16 @@ describe('logical or ||', () => {
       source: '1 != 1 || 2 != 2',
       expected: 'false',
       description: 'false',
+    },
+    {
+      source: 'true || nil[0]',
+      expected: 'true',
+      description: 'short-circuit with nil access',
+    },
+    {
+      source: 'let x = [1]; x || x[99]',
+      expected: 'true',
+      description: 'short-circuit truthy variable',
     },
   ];
 
