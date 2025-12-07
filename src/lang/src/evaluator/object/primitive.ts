@@ -690,6 +690,14 @@ export class Str implements ValueObj {
     throw new Error(`${this.getName()} > ${that.getName()} is not supported`);
   }
 
+  public lessThanEqual(that: Obj): Bool {
+    return this.lessThan(that) == TRUE ? TRUE : this.equals(that) ? TRUE : FALSE;
+  }
+
+  public greaterThanEqual(that: Obj): Bool {
+    return this.greaterThan(that) == TRUE ? TRUE : this.equals(that) ? TRUE : FALSE;
+  }
+
   public split(delimiter: Obj): List {
     if (delimiter instanceof Str) {
       return new List(this.value.split(delimiter.value).map(v => new Str(v)));

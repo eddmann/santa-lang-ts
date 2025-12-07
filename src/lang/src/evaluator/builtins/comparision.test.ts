@@ -65,6 +65,21 @@ describe('less than equal <=', () => {
       expected: 'true',
       description: 'decimal-integer',
     },
+    {
+      source: '"a" <= "b"',
+      expected: 'true',
+      description: 'string less than',
+    },
+    {
+      source: '"a" <= "a"',
+      expected: 'true',
+      description: 'string equal',
+    },
+    {
+      source: '"b" <= "a"',
+      expected: 'false',
+      description: 'string greater than',
+    },
   ];
 
   cases.forEach(({ source, expected, description }) => {
@@ -136,6 +151,21 @@ describe('greater than equal >=', () => {
       source: '2.5 >= 1',
       expected: 'true',
       description: 'decimal-integer',
+    },
+    {
+      source: '"b" >= "a"',
+      expected: 'true',
+      description: 'string greater than',
+    },
+    {
+      source: '"a" >= "a"',
+      expected: 'true',
+      description: 'string equal',
+    },
+    {
+      source: '"a" >= "b"',
+      expected: 'false',
+      description: 'string less than',
     },
   ];
 
