@@ -790,10 +790,6 @@ export default class Parser {
       cases.push({ pattern, guard, consequence });
     }
 
-    if (this.peekTokenIs(TokenKind.Semicolon)) {
-      this.nextToken();
-    }
-
     return {
       kind: AST.ASTKind.MatchExpression,
       subject,

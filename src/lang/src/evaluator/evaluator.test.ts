@@ -969,6 +969,18 @@ describe('match expression with guards', () => {
   });
 });
 
+test('match expression followed by list literal', () => {
+  const source = `
+    let a = 1;
+    let b = match a { 1 { 2 }, _ { 3 } };
+    [a, b]
+  `;
+
+  const result = doEvaluate(source);
+
+  expect(result.inspect()).toEqual('[1, 2]');
+});
+
 test('ensure that multiple placeholders are ignored', () => {
   const source = `
     let [_, _, value] = [1, 2, 3];
