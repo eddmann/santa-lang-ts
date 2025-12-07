@@ -1369,7 +1369,30 @@ export class Range implements ValueObj {
 
   public fold(fn: (acc: Obj, v: Obj) => Obj, initial: Obj): Obj {
     if (this.end === Infinity) {
-      throw new Error('Unable to fold an infinite range');
+      // For infinite ranges, iterate manually and require break to exit
+      try {
+        let acc = initial;
+        const iterator = this.items[Symbol.iterator]();
+        while (true) {
+          const { value, done } = iterator.next();
+          if (done) break;
+
+          const result = fn(acc, value);
+
+          if (result instanceof Err) {
+            throw result;
+          }
+
+          if (result instanceof BreakValue) {
+            return result.value;
+          }
+
+          acc = result;
+        }
+        return acc;
+      } catch (err) {
+        return err;
+      }
     }
 
     try {
