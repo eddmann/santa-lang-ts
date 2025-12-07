@@ -446,6 +446,21 @@ describe('bit operations', () => {
       expected: '8',
       description: 'shift right',
     },
+    {
+      source: 'bit_not(0)',
+      expected: '-1',
+      description: 'not zero',
+    },
+    {
+      source: 'bit_not(5)',
+      expected: '-6',
+      description: 'not positive',
+    },
+    {
+      source: 'bit_not(-1)',
+      expected: '0',
+      description: 'not negative one',
+    },
   ];
 
   cases.forEach(({ source, expected, description }) => {

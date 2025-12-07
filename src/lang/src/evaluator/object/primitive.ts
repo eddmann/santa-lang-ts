@@ -125,6 +125,10 @@ export class Integer implements ValueObj {
     return new Integer(this.value >> value.value);
   }
 
+  public bitNot(): Integer {
+    return new Integer(~this.value);
+  }
+
   public inspect(): string {
     return this.value.toString();
   }

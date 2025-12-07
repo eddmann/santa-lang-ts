@@ -275,6 +275,18 @@ const bit_shift_right: O.BuiltinFuncTemplate = {
   },
 };
 
+const bit_not: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'a',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment.getVariable('a').bitNot();
+  },
+};
+
 export default {
   bool,
   int,
@@ -294,4 +306,5 @@ export default {
   bit_xor,
   bit_shift_left,
   bit_shift_right,
+  bit_not,
 };
