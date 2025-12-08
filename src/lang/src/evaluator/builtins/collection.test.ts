@@ -186,9 +186,9 @@ describe('fold', () => {
       description: 'bounded range',
     },
     {
-      source: 'fold(0, +, 1..)',
-      expected: 'Runtime error: Unable to fold an infinite range',
-      description: 'unbounded range',
+      source: 'fold(0, |acc, v| if v > 5 { break acc } else { acc + v }, 1..)',
+      expected: '15',
+      description: 'unbounded range with break',
     },
   ];
 
