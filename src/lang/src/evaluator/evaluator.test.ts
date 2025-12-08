@@ -1119,3 +1119,67 @@ describe('section attributes', () => {
     expect(sections[0].hasAttribute('experimental')).toBe(true);
   });
 });
+
+describe('range iteration', () => {
+  test('ascending non-inclusive range', () => {
+    expect(doEvaluate('1..3 |> list').inspect()).toEqual('[1, 2]');
+  });
+
+  test('ascending inclusive range', () => {
+    expect(doEvaluate('1..=3 |> list').inspect()).toEqual('[1, 2, 3]');
+  });
+
+  test('descending non-inclusive range', () => {
+    expect(doEvaluate('3..1 |> list').inspect()).toEqual('[3, 2]');
+  });
+
+  test('descending inclusive range', () => {
+    expect(doEvaluate('3..=1 |> list').inspect()).toEqual('[3, 2, 1]');
+  });
+
+  test('crossing zero descending non-inclusive', () => {
+    expect(doEvaluate('1..-1 |> list').inspect()).toEqual('[1, 0]');
+  });
+
+  test('crossing zero descending inclusive', () => {
+    expect(doEvaluate('1..=-1 |> list').inspect()).toEqual('[1, 0, -1]');
+  });
+
+  test('crossing zero ascending non-inclusive', () => {
+    expect(doEvaluate('-1..1 |> list').inspect()).toEqual('[-1, 0]');
+  });
+
+  test('crossing zero ascending inclusive', () => {
+    expect(doEvaluate('-1..=1 |> list').inspect()).toEqual('[-1, 0, 1]');
+  });
+
+  test('empty non-inclusive range', () => {
+    expect(doEvaluate('3..3 |> list').inspect()).toEqual('[]');
+  });
+});
+
+describe('range map iteration', () => {
+  test('ascending non-inclusive with map', () => {
+    expect(doEvaluate('1..3 |> map(|x| x * 2)').inspect()).toEqual('[2, 4]');
+  });
+
+  test('ascending inclusive with map', () => {
+    expect(doEvaluate('1..=3 |> map(|x| x * 2)').inspect()).toEqual('[2, 4, 6]');
+  });
+
+  test('descending non-inclusive with map', () => {
+    expect(doEvaluate('3..1 |> map(|x| x * 2)').inspect()).toEqual('[6, 4]');
+  });
+
+  test('descending inclusive with map', () => {
+    expect(doEvaluate('3..=1 |> map(|x| x * 2)').inspect()).toEqual('[6, 4, 2]');
+  });
+
+  test('crossing zero descending with map', () => {
+    expect(doEvaluate('1..-1 |> map(|x| x * 2)').inspect()).toEqual('[2, 0]');
+  });
+
+  test('crossing zero ascending with map', () => {
+    expect(doEvaluate('-1..1 |> map(|x| x * 2)').inspect()).toEqual('[-2, 0]');
+  });
+});
