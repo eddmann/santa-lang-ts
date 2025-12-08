@@ -31,7 +31,20 @@ const read: O.BuiltinFuncTemplate = {
   },
 };
 
+const env: O.BuiltinFuncTemplate = {
+  parameters: [],
+  body: (environment: O.Environment) => {
+    const output = environment.getIO().output;
+    output(['Environment:']);
+    for (const [name, { value }] of Object.entries(environment.variables)) {
+      output([`  ${name} = ${value.inspect()}`]);
+    }
+    return O.NIL;
+  },
+};
+
 export default {
   puts,
   read,
+  env,
 };
