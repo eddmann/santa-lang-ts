@@ -16,18 +16,18 @@ jobs:
         uses: actions/checkout@v4
       - name: Download
         run: |
-          gh release download ${{ github.event.release.tag_name }} -p 'santa-lang-cli-${{ github.event.release.tag_name }}-docker.tar'
+          gh release download ${{ github.event.release.tag_name }} -p 'santa-lang-prancer-cli-${{ github.event.release.tag_name }}-docker.tar'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Load
         run: |
-          docker load -i santa-lang-cli-${{ github.event.release.tag_name }}-docker.tar
-          docker tag ghcr.io/eddmann/santa-lang-ts:cli-latest ghcr.io/eddmann/santa-lang-ts:cli-${{ github.event.release.tag_name }}
+          docker load -i santa-lang-prancer-cli-${{ github.event.release.tag_name }}-docker.tar
+          docker tag ghcr.io/eddmann/santa-lang-prancer:cli-latest ghcr.io/eddmann/santa-lang-prancer:cli-${{ github.event.release.tag_name }}
       - name: Publish
         run: |
           echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-          docker push ghcr.io/eddmann/santa-lang-ts:cli-latest
-          docker push ghcr.io/eddmann/santa-lang-ts:cli-${{ github.event.release.tag_name }}
+          docker push ghcr.io/eddmann/santa-lang-prancer:cli-latest
+          docker push ghcr.io/eddmann/santa-lang-prancer:cli-${{ github.event.release.tag_name }}
 
   web:
     name: Publish Web
@@ -39,9 +39,9 @@ jobs:
         uses: actions/checkout@v4
       - name: Download
         run: |
-          gh release download ${{ github.event.release.tag_name }} -p 'santa-lang-web-${{ github.event.release.tag_name }}.tar.gz'
+          gh release download ${{ github.event.release.tag_name }} -p 'santa-lang-prancer-web-${{ github.event.release.tag_name }}.tar.gz'
           mkdir -p out
-          tar -xzvf santa-lang-web-${{ github.event.release.tag_name }}.tar.gz -C out
+          tar -xzvf santa-lang-prancer-web-${{ github.event.release.tag_name }}.tar.gz -C out
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Publish
@@ -59,7 +59,7 @@ jobs:
   #       uses: actions/checkout@v4
   #     - name: Download
   #       run: |
-  #         gh release download ${{ github.event.release.tag_name }} -p 'santa-lang-lambda-${{ github.event.release.tag_name }}.zip'
+  #         gh release download ${{ github.event.release.tag_name }} -p 'santa-lang-prancer-lambda-${{ github.event.release.tag_name }}.zip'
   #       env:
   #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   #     - name: Publish
@@ -68,7 +68,7 @@ jobs:
   #           aws lambda publish-layer-version \
   #             --region eu-west-1 \
   #             --layer-name "santa-lang" \
-  #             --zip-file "fileb://santa-lang-lambda-${{ github.event.release.tag_name }}.zip" \
+  #             --zip-file "fileb://santa-lang-prancer-lambda-${{ github.event.release.tag_name }}.zip" \
   #             --compatible-runtimes provided.al2 \
   #             --license-info MIT \
   #             --output text \

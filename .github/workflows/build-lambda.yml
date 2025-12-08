@@ -20,7 +20,7 @@ jobs:
         run: make lambda/build
       - name: Upload
         run: |
-          sudo mv src/lambda/dist/layer.zip santa-lang-lambda-${{ inputs.release-tag }}.zip
-          gh release upload ${{ inputs.release-tag }} santa-lang-lambda-${{ inputs.release-tag }}.zip --clobber
+          sudo mv src/lambda/dist/layer.zip santa-lang-prancer-lambda-${{ inputs.release-tag }}.zip
+          gh release upload ${{ inputs.release-tag }} santa-lang-prancer-lambda-${{ inputs.release-tag }}.zip --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

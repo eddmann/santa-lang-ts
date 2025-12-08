@@ -20,7 +20,7 @@ jobs:
         run: make web/build
       - name: Upload
         run: |
-          tar -czvf santa-lang-web-${{ inputs.release-tag }}.tar.gz -C src/web/out .
-          gh release upload ${{ inputs.release-tag }} santa-lang-web-${{ inputs.release-tag }}.tar.gz --clobber
+          tar -czvf santa-lang-prancer-web-${{ inputs.release-tag }}.tar.gz -C src/web/out .
+          gh release upload ${{ inputs.release-tag }} santa-lang-prancer-web-${{ inputs.release-tag }}.tar.gz --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
