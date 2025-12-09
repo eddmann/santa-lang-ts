@@ -594,29 +594,6 @@ export default class Parser {
 
     if (this.peekTokenIs(TokenKind.Else)) {
       this.nextToken();
-
-      // Support else if syntax
-      if (this.peekTokenIs(TokenKind.If)) {
-        this.nextToken();
-        return {
-          kind: AST.ASTKind.IfExpression,
-          condition,
-          consequence,
-          alternative: {
-            kind: AST.ASTKind.BlockStatement,
-            statements: [
-              {
-                kind: AST.ASTKind.ExpressionStatement,
-                expression: this.parseIfExpression(),
-                source,
-              },
-            ],
-            source,
-          },
-          source,
-        };
-      }
-
       this.expectPeek(TokenKind.LBrace);
 
       return {

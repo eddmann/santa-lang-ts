@@ -1061,32 +1061,6 @@ test('if expression (with let binding)', () => {
   });
 });
 
-test('if else if expression', () => {
-  const source = 'if a { 1 } else if b { 2 } else { 3 }';
-
-  const ast = parse(source);
-
-  expect(ast.statements[0].expression.kind).toBe('IF_EXPRESSION');
-  expect(ast.statements[0].expression.condition.value).toBe('a');
-  expect(ast.statements[0].expression.consequence.statements[0].expression.value).toBe(1);
-  // The alternative should be a block containing another if expression
-  expect(ast.statements[0].expression.alternative.kind).toBe('BLOCK_STATEMENT');
-  expect(ast.statements[0].expression.alternative.statements[0].expression.kind).toBe(
-    'IF_EXPRESSION'
-  );
-  expect(ast.statements[0].expression.alternative.statements[0].expression.condition.value).toBe(
-    'b'
-  );
-  expect(
-    ast.statements[0].expression.alternative.statements[0].expression.consequence.statements[0]
-      .expression.value
-  ).toBe(2);
-  expect(
-    ast.statements[0].expression.alternative.statements[0].expression.alternative.statements[0]
-      .expression.value
-  ).toBe(3);
-});
-
 test('call expression', () => {
   const source = 'add(1, 2)';
 
