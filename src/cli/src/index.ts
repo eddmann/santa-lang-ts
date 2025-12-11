@@ -9,6 +9,7 @@ import { Parser } from 'santa-lang/parser';
 import { evaluate, O } from 'santa-lang/evaluator';
 import printSourcePreview from './printSourcePreview';
 import io from './io';
+import pkg from '../package.json';
 
 // Parse command line arguments
 const args = process.argv.slice(2);
@@ -97,6 +98,12 @@ function runRepl() {
 // Check for help flag
 if (args.includes('-h') || args.includes('--help')) {
   printHelp();
+  process.exit(0);
+}
+
+// Check for version flag
+if (args.includes('-v') || args.includes('--version')) {
+  console.log(`santa-lang Prancer ${pkg.version}`);
   process.exit(0);
 }
 

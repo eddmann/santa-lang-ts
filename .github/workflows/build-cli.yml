@@ -16,6 +16,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Set version
+        run: |
+          cd src/cli
+          jq '.version = "${{ inputs.release-tag }}"' package.json > tmp.json && mv tmp.json package.json
       - name: Build
         run: make cli/build
       - name: Upload
