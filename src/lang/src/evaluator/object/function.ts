@@ -20,7 +20,7 @@ export class Func implements Obj {
   }
 
   public getName(): string {
-    return 'Func';
+    return 'Function';
   }
 }
 

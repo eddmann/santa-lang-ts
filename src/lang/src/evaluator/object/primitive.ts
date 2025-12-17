@@ -24,7 +24,7 @@ export class Bool implements ValueObj {
   }
 
   public getName(): string {
-    return 'Bool';
+    return 'Boolean';
   }
 
   public hashCode(): number {

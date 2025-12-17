@@ -623,7 +623,7 @@ export class Dictionary {
   }
 
   public includes(subject: Obj): Bool {
-    return this.items.includes(subject) ? TRUE : FALSE;
+    return this.items.has(subject) ? TRUE : FALSE;
   }
 
   public find(fn: (v: Obj, k: Obj) => Obj): Obj {
@@ -1201,7 +1201,7 @@ export class Range implements ValueObj {
   }
 
   public getName(): string {
-    return 'Range';
+    return this.end === Infinity ? 'UnboundedRange' : 'BoundedRange';
   }
 
   public hashCode(): number {
@@ -1258,24 +1258,31 @@ export class Range implements ValueObj {
     return this.items.first() || NIL;
   }
 
-  public rest(): Range {
-    return new Range(this.start, this.end, this.items.rest(), this.isInclusive);
+  public rest(): List | Sequence {
+    // Bounded ranges return List, unbounded return Sequence
+    return this.end === Infinity
+      ? new Sequence(this.items.rest())
+      : new List(this.items.rest().toList());
   }
 
   public last(): Obj | Nil {
     if (this.end === Infinity) {
-      throw new Error('Unable to find last item within an infinite range');
+      throw new Error('last is not supported for unbounded sequences');
     }
 
     return this.items.last() || NIL;
   }
 
-  public take(total: Integer): Range {
-    return new Range(this.start, 0, this.items.take(total.value), this.isInclusive);
+  public take(total: Integer): List {
+    // take always returns List (finite result)
+    return new List(this.items.take(total.value).toList());
   }
 
-  public skip(total: Integer): Range {
-    return new Range(this.start, this.end, this.items.skip(total.value), this.isInclusive);
+  public skip(total: Integer): List | Sequence {
+    // Bounded ranges return List, unbounded return Sequence
+    return this.end === Infinity
+      ? new Sequence(this.items.skip(total.value))
+      : new List(this.items.skip(total.value).toList());
   }
 
   public find(fn: (v: Obj) => Obj): Obj {
@@ -1296,54 +1303,50 @@ export class Range implements ValueObj {
     }
   }
 
-  public zip(collections: List): List | Range {
+  public zip(collections: List): List | Sequence {
     const zipped = this.items.zipWith(
       (...values) => new List(values),
       ...collections.getInteralSeq().map(collection => collection.getInteralSeq())
     );
 
     return zipped.size === Infinity || zipped.size === undefined
-      ? new Range(this.start, Infinity, zipped, this.isInclusive)
+      ? new Sequence(zipped)
       : new List(zipped);
   }
 
-  public map(fn: (v: Obj) => Obj): Range {
+  public map(fn: (v: Obj) => Obj): List | Sequence {
     try {
-      return new Range(
-        this.start,
-        this.end,
-        this.items.map(v => {
-          const result = fn(v);
+      const mapped = this.items.map(v => {
+        const result = fn(v);
 
-          if (result instanceof Err) {
-            throw result;
-          }
+        if (result instanceof Err) {
+          throw result;
+        }
 
-          return result;
-        }),
-        this.isInclusive
-      );
+        return result;
+      });
+
+      // Bounded ranges return List, unbounded return Sequence
+      return this.end === Infinity ? new Sequence(mapped) : new List(mapped.toList());
     } catch (err) {
       return err;
     }
   }
 
-  public filter(fn: (v: Obj) => Obj): Range {
+  public filter(fn: (v: Obj) => Obj): List | Sequence {
     try {
-      return new Range(
-        this.start,
-        this.end,
-        this.items.filter(v => {
-          const result = fn(v);
+      const filtered = this.items.filter(v => {
+        const result = fn(v);
 
-          if (result instanceof Err) {
-            throw result;
-          }
+        if (result instanceof Err) {
+          throw result;
+        }
 
-          return result.isTruthy();
-        }),
-        this.isInclusive
-      );
+        return result.isTruthy();
+      });
+
+      // Bounded ranges return List, unbounded return Sequence
+      return this.end === Infinity ? new Sequence(filtered) : new List(filtered.toList());
     } catch (err) {
       return err;
     }
@@ -1537,6 +1540,17 @@ export class Sequence implements ValueObj {
   }
 
   public inspect(): string {
+    if (this.items.size === Infinity || this.items.size === undefined) {
+      return (
+        '[' +
+        this.items
+          .take(3)
+          .map(item => item.inspect())
+          .join(', ') +
+        ', ..∞]'
+      );
+    }
+
     return '[' + this.items.map(item => item.inspect()).join(', ') + ']';
   }
 
@@ -1545,7 +1559,7 @@ export class Sequence implements ValueObj {
   }
 
   public getName(): string {
-    return 'Sequence';
+    return 'LazySequence';
   }
 
   public hashCode(): number {
@@ -1587,6 +1601,10 @@ export class Sequence implements ValueObj {
   }
 
   public last(): Obj | Nil {
+    if (this.items.size === Infinity || this.items.size === undefined) {
+      throw new Error('last is not supported for unbounded sequences');
+    }
+
     return this.items.last() || NIL;
   }
 

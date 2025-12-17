@@ -578,9 +578,9 @@ describe('includes?', () => {
       description: 'list',
     },
     {
-      source: '#{"a": 1, "b": 2, "c": 3} `includes?` 1',
+      source: '#{"a": 1, "b": 2, "c": 3} `includes?` "a"',
       expected: 'true',
-      description: 'dictionary (using value)',
+      description: 'dictionary (using key)',
     },
     {
       source: '{1, 2, 3} `includes?` 1',
@@ -591,6 +591,37 @@ describe('includes?', () => {
       source: '"hello" `includes?` "h"',
       expected: 'true',
       description: 'string',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source)).toEqual(expected);
+    });
+  });
+});
+
+describe('excludes?', () => {
+  const cases = [
+    {
+      source: '[1, 2, 3] `excludes?` 4',
+      expected: 'true',
+      description: 'list',
+    },
+    {
+      source: '#{"a": 1, "b": 2, "c": 3} `excludes?` "d"',
+      expected: 'true',
+      description: 'dictionary (using key)',
+    },
+    {
+      source: '#{"a": 1, "b": 2, "c": 3} `excludes?` "a"',
+      expected: 'false',
+      description: 'dictionary (key exists)',
+    },
+    {
+      source: '{1, 2, 3} `excludes?` 4',
+      expected: 'true',
+      description: 'set',
     },
   ];
 
@@ -780,8 +811,13 @@ describe('last', () => {
     },
     {
       source: 'last(1..)',
-      expected: 'Runtime error: Unable to find last item within an infinite range',
-      description: 'range',
+      expected: 'Runtime error: last is not supported for unbounded sequences',
+      description: 'unbounded range',
+    },
+    {
+      source: 'last(1.. |> map(_ + 1))',
+      expected: 'Runtime error: last is not supported for unbounded sequences',
+      description: 'lazy sequence from unbounded range',
     },
     {
       source: 'last("hello")',

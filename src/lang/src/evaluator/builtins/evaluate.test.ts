@@ -52,13 +52,33 @@ describe('type', () => {
     },
     {
       source: 'type(true)',
-      expected: '"Bool"',
+      expected: '"Boolean"',
       description: 'boolean',
     },
     {
       source: 'type("hello")',
       expected: '"String"',
       description: 'string',
+    },
+    {
+      source: 'type(1..5)',
+      expected: '"BoundedRange"',
+      description: 'bounded range',
+    },
+    {
+      source: 'type(1..)',
+      expected: '"UnboundedRange"',
+      description: 'unbounded range',
+    },
+    {
+      source: 'type(1.. |> map(_ + 1))',
+      expected: '"LazySequence"',
+      description: 'lazy sequence',
+    },
+    {
+      source: 'type(|x| x)',
+      expected: '"Function"',
+      description: 'function',
     },
   ];
 

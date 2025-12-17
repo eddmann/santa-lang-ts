@@ -109,42 +109,6 @@ const greaterThanEqual: O.BuiltinFuncTemplate = {
   },
 };
 
-const and: O.BuiltinFuncTemplate = {
-  parameters: [
-    {
-      kind: AST.ASTKind.Identifier,
-      value: 'a',
-    },
-    {
-      kind: AST.ASTKind.Identifier,
-      value: 'b',
-    },
-  ],
-  body: (environment: O.Environment) => {
-    return environment.getVariable('a').isTruthy() && environment.getVariable('b').isTruthy()
-      ? O.TRUE
-      : O.FALSE;
-  },
-};
-
-const or: O.BuiltinFuncTemplate = {
-  parameters: [
-    {
-      kind: AST.ASTKind.Identifier,
-      value: 'a',
-    },
-    {
-      kind: AST.ASTKind.Identifier,
-      value: 'b',
-    },
-  ],
-  body: (environment: O.Environment) => {
-    return environment.getVariable('a').isTruthy() || environment.getVariable('b').isTruthy()
-      ? O.TRUE
-      : O.FALSE;
-  },
-};
-
 const not: O.BuiltinFuncTemplate = {
   parameters: [
     {
@@ -180,8 +144,6 @@ export default {
   '>=': greaterThanEqual,
   '==': equals,
   '!=': notEquals,
-  '&&': and,
-  '||': or,
   'unary_!': not,
   assert,
   id: id,
