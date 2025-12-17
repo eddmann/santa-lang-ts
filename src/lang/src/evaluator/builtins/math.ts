@@ -106,6 +106,18 @@ const abs: O.BuiltinFuncTemplate = {
   },
 };
 
+const signum: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'a',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment.getVariable('a').signum();
+  },
+};
+
 export default {
   '+': add,
   '-': subtract,
@@ -114,4 +126,5 @@ export default {
   '%': modulo,
   'unary_-': negative,
   abs,
+  signum,
 };

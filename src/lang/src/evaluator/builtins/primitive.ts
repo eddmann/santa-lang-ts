@@ -287,6 +287,18 @@ const bit_not: O.BuiltinFuncTemplate = {
   },
 };
 
+const md5: O.BuiltinFuncTemplate = {
+  parameters: [
+    {
+      kind: AST.ASTKind.Identifier,
+      value: 'value',
+    },
+  ],
+  body: (environment: O.Environment) => {
+    return environment.getVariable('value').md5();
+  },
+};
+
 export default {
   bool,
   int,
@@ -307,4 +319,5 @@ export default {
   bit_shift_left,
   bit_shift_right,
   bit_not,
+  md5,
 };

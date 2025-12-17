@@ -82,7 +82,7 @@ describe('int', () => {
     },
     {
       source: 'int(1.5)',
-      expected: '1',
+      expected: '2',
       description: 'positive decimal',
     },
     {

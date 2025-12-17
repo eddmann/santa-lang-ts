@@ -71,7 +71,10 @@ export class Integer implements ValueObj {
     }
 
     if (value instanceof Decimal) {
-      return new Integer(Math.floor(value.value));
+      // Round half away from zero
+      const absValue = Math.abs(value.value);
+      const rounded = Math.floor(absValue + 0.5);
+      return new Integer(value.value < 0 ? -rounded : rounded);
     }
 
     if (value instanceof Str) {
@@ -273,6 +276,12 @@ export class Integer implements ValueObj {
   public abs(): Integer {
     return new Integer(Math.abs(this.value));
   }
+
+  public signum(): Integer {
+    if (this.value > 0) return new Integer(1);
+    if (this.value < 0) return new Integer(-1);
+    return new Integer(0);
+  }
 }
 
 export class Decimal implements ValueObj {
@@ -431,6 +440,12 @@ export class Decimal implements ValueObj {
 
   public abs(): Decimal {
     return new Decimal(Math.abs(this.value));
+  }
+
+  public signum(): Integer {
+    if (this.value > 0) return new Integer(1);
+    if (this.value < 0) return new Integer(-1);
+    return new Integer(0);
   }
 }
 
@@ -746,6 +761,12 @@ export class Str implements ValueObj {
 
   public replace(subject: Str, replacement: Str): Str {
     return new Str(this.value.replace(new RegExp(subject.value, 'g'), replacement.value));
+  }
+
+  public md5(): Str {
+    const crypto = require('crypto');
+    const hash = crypto.createHash('md5').update(this.value).digest('hex');
+    return new Str(hash);
   }
 
   public isImmutable(): boolean {
