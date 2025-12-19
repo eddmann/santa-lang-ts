@@ -34,6 +34,16 @@ describe('map', () => {
       expected: '[2, 3, 4, ..∞]',
       description: 'unbounded range',
     },
+    {
+      source: 'map(max, [[1, 2], [3, 4], [5, 6]])',
+      expected: '[2, 4, 6]',
+      description: 'arity-aware (function with single param)',
+    },
+    {
+      source: 'map(|v, k| k, #{"a": 1, "b": 2, "c": 3})',
+      expected: '#{"a": "a", "b": "b", "c": "c"}',
+      description: 'arity-aware (function with two params)',
+    },
   ];
 
   cases.forEach(({ source, expected, description }) => {
@@ -105,6 +115,11 @@ describe('filter', () => {
       source: 'filter(|v| v % 2 == 0, 1..)',
       expected: '[2, 4, 6, ..∞]',
       description: 'unbounded range',
+    },
+    {
+      source: 'let is_even = |x| x % 2 == 0; filter(is_even, [1, 2, 3, 4])',
+      expected: '[2, 4]',
+      description: 'arity-aware (function with single param)',
     },
   ];
 
@@ -189,6 +204,16 @@ describe('fold', () => {
       source: 'fold(0, |acc, v| if v > 5 { break acc } else { acc + v }, 1..)',
       expected: '15',
       description: 'unbounded range with break',
+    },
+    {
+      source: 'fold(0, |acc, v| if v > 10 { break acc } else { acc + v }, 1.. |> map(_ * 2))',
+      expected: '30',
+      description: 'infinite sequence with break',
+    },
+    {
+      source: 'fold(0, |acc, v| if v > 10 { break acc } else { acc + v }, 1.. |> filter(|v| v % 2 == 0))',
+      expected: '30',
+      description: 'infinite filtered sequence with break',
     },
   ];
 
@@ -1226,6 +1251,31 @@ describe('cycle', () => {
       expected: '2',
       description: 'nth from cycle',
     },
+    {
+      source: 'cycle("")',
+      expected: '[]',
+      description: 'empty string',
+    },
+    {
+      source: 'take(5, cycle("abc"))',
+      expected: '["a", "b", "c", "a", "b"]',
+      description: 'string cycle',
+    },
+    {
+      source: 'take(3, cycle("👨‍👩‍👧‍👦x"))',
+      expected: '["👨‍👩‍👧‍👦", "x", "👨‍👩‍👧‍👦"]',
+      description: 'string cycle with grapheme clusters',
+    },
+    {
+      source: 'cycle(1..=3)',
+      expected: '[1, 2, 3, ..∞]',
+      description: 'bounded range cycle',
+    },
+    {
+      source: 'take(5, cycle(1..=3))',
+      expected: '[1, 2, 3, 1, 2]',
+      description: 'take from range cycle',
+    },
   ];
 
   cases.forEach(({ source, expected, description }) => {
@@ -1395,6 +1445,21 @@ describe('all?', () => {
       source: 'all?(_ > 1, [0, 1, 2])',
       expected: 'false',
       description: 'list value does not match predicate',
+    },
+    {
+      source: 'all?(_ != "x", "hello")',
+      expected: 'true',
+      description: 'string values match predicate',
+    },
+    {
+      source: 'all?(_ == "l", "hello")',
+      expected: 'false',
+      description: 'string value does not match predicate',
+    },
+    {
+      source: 'all?(_ != "x", "")',
+      expected: 'true',
+      description: 'empty string',
     },
   ];
 
@@ -1568,6 +1633,21 @@ describe('reverse', () => {
       source: 'reverse([1, 2, 3])',
       expected: '[3, 2, 1]',
       description: 'list with multiple elements',
+    },
+    {
+      source: 'reverse("")',
+      expected: '""',
+      description: 'empty string',
+    },
+    {
+      source: 'reverse("hello")',
+      expected: '"olleh"',
+      description: 'string',
+    },
+    {
+      source: 'reverse("👨‍👩‍👧‍👦abc")',
+      expected: '"cba👨‍👩‍👧‍👦"',
+      description: 'string with grapheme clusters',
     },
   ];
 

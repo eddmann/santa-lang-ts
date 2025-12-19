@@ -131,6 +131,21 @@ describe('multiply *', () => {
       expected: '[1, 1, 1]',
       description: 'list-integer',
     },
+    {
+      source: '"hello" * 3',
+      expected: '"hellohellohello"',
+      description: 'string-integer',
+    },
+    {
+      source: '"x" * 0',
+      expected: '""',
+      description: 'string-zero',
+    },
+    {
+      source: '"ab" * 1',
+      expected: '"ab"',
+      description: 'string-one',
+    },
   ];
 
   cases.forEach(({ source, expected, description }) => {
