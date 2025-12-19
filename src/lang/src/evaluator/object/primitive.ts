@@ -545,6 +545,11 @@ export class Str implements ValueObj {
     return new Str(graphemes.slice(total.value).join(''));
   }
 
+  public reverse(): Str {
+    const graphemes = this.getGraphemes();
+    return new Str(graphemes.reverse().join(''));
+  }
+
   public find(fn: (v: Obj) => Obj): Obj {
     try {
       const result = this.getInteralSeq().find(v => {
@@ -567,7 +572,7 @@ export class Str implements ValueObj {
     return new List(
       this.getInteralSeq().zipWith(
         (...values) => new List(values),
-        ...collections.getInteralSeq().map(collection => collection.getInteralSeq())
+        ...[...collections.getInteralSeq().map(collection => collection.getInteralSeq())]
       )
     );
   }
@@ -587,6 +592,17 @@ export class Str implements ValueObj {
       Immutable.Range(0, chars.count(), size.value)
         .map(start => new List(chars.slice(start, start + size.value)))
         .toList()
+    );
+  }
+
+  public cycle(): List | Range {
+    const graphemes = this.getGraphemes();
+    if (graphemes.length === 0) {
+      return new List([]);
+    }
+
+    return Range.fromExclusiveRange(0, Infinity, 1).map(
+      idx => new Str(graphemes[idx.value % graphemes.length])
     );
   }
 
@@ -708,6 +724,14 @@ export class Str implements ValueObj {
     const parsed = Str.parse(that);
 
     return new Str(this.value + parsed.value);
+  }
+
+  public multiply(that: Obj): Str {
+    if (that instanceof Integer) {
+      return new Str(this.value.repeat(that.value));
+    }
+
+    throw new Error(`${this.getName()} * ${that.getName()} is not supported`);
   }
 
   public lessThan(that: Obj): Bool {

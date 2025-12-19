@@ -138,7 +138,7 @@ export class List implements ValueObj {
     return new List(
       this.items.zipWith(
         (...values) => new List(values),
-        ...collections.getInteralSeq().map(collection => collection.getInteralSeq())
+        ...[...collections.getInteralSeq().map(collection => collection.getInteralSeq())]
       )
     );
   }
@@ -1310,7 +1310,7 @@ export class Range implements ValueObj {
   public zip(collections: List): List | Sequence {
     const zipped = this.items.zipWith(
       (...values) => new List(values),
-      ...collections.getInteralSeq().map(collection => collection.getInteralSeq())
+      ...[...collections.getInteralSeq().map(collection => collection.getInteralSeq())]
     );
 
     return zipped.size === Infinity || zipped.size === undefined
@@ -1521,6 +1521,26 @@ export class Range implements ValueObj {
     return this.items;
   }
 
+  public cycle(): List | Sequence {
+    if (this.end !== Infinity) {
+      this.items.cacheResult();
+      if (this.items.size === 0) {
+        return new List([]);
+      }
+    }
+
+    const items = this.items;
+    return new Sequence(
+      Immutable.Seq(
+        (function* () {
+          while (true) {
+            yield* items;
+          }
+        })()
+      )
+    );
+  }
+
   public isImmutable(): boolean {
     return true;
   }
@@ -1641,7 +1661,7 @@ export class Sequence implements ValueObj {
   public zip(collections: List): List | Sequence {
     const zipped = this.items.zipWith(
       (...values) => new List(values),
-      ...collections.getInteralSeq().map(collection => collection.getInteralSeq())
+      ...[...collections.getInteralSeq().map(collection => collection.getInteralSeq())]
     );
 
     return zipped.size === Infinity || zipped.size === undefined
@@ -1704,6 +1724,33 @@ export class Sequence implements ValueObj {
   }
 
   public fold(fn: (acc: Obj, v: Obj) => Obj, initial: Obj): Obj {
+    // For infinite sequences, iterate manually and require break to exit
+    if (this.items.size === Infinity || this.items.size === undefined) {
+      try {
+        let acc = initial;
+        const iterator = this.items[Symbol.iterator]();
+        while (true) {
+          const { value, done } = iterator.next();
+          if (done) break;
+
+          const result = fn(acc, value);
+
+          if (result instanceof Err) {
+            throw result;
+          }
+
+          if (result instanceof BreakValue) {
+            return result.value;
+          }
+
+          acc = result;
+        }
+        return acc;
+      } catch (err) {
+        return err;
+      }
+    }
+
     try {
       return this.items.reduce((acc, v) => {
         const result = fn(acc, v);
@@ -1802,6 +1849,19 @@ export class Sequence implements ValueObj {
 
   public getInteralSeq(): Immutable.Seq {
     return this.items;
+  }
+
+  public cycle(): Sequence {
+    const items = this.items;
+    return new Sequence(
+      Immutable.Seq(
+        (function* () {
+          while (true) {
+            yield* items;
+          }
+        })()
+      )
+    );
   }
 
   public isImmutable(): boolean {
