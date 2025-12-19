@@ -40,6 +40,10 @@ export class List implements ValueObj {
       return new List(collection.items);
     }
 
+    if (collection instanceof Str) {
+      return collection.toList();
+    }
+
     throw new Error(`Unable to convert ${collection.getName()} into a List`);
   }
 

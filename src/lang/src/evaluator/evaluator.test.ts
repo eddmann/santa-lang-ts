@@ -558,6 +558,92 @@ describe('string indexing', () => {
   });
 });
 
+describe('string grapheme clusters', () => {
+  const cases = [
+    {
+      source: '"👨‍👩‍👧‍👦"[0]',
+      expected: '"👨‍👩‍👧‍👦"',
+      description: 'family emoji is single grapheme',
+    },
+    {
+      source: 'size("👨‍👩‍👧‍👦")',
+      expected: '1',
+      description: 'family emoji has size 1',
+    },
+    {
+      source: '"a👨‍👩‍👧‍👦b"[1]',
+      expected: '"👨‍👩‍👧‍👦"',
+      description: 'emoji in middle of string',
+    },
+    {
+      source: 'size("a👨‍👩‍👧‍👦b")',
+      expected: '3',
+      description: 'mixed ascii and emoji size',
+    },
+    {
+      source: '"🇬🇧"[0]',
+      expected: '"🇬🇧"',
+      description: 'flag emoji is single grapheme',
+    },
+    {
+      source: 'size("🇬🇧🇺🇸")',
+      expected: '2',
+      description: 'two flag emojis',
+    },
+    {
+      source: 'first("👨‍👩‍👧‍👦abc")',
+      expected: '"👨‍👩‍👧‍👦"',
+      description: 'first returns entire emoji',
+    },
+    {
+      source: 'last("abc👨‍👩‍👧‍👦")',
+      expected: '"👨‍👩‍👧‍👦"',
+      description: 'last returns entire emoji',
+    },
+    {
+      source: 'rest("👨‍👩‍👧‍👦abc")',
+      expected: '"abc"',
+      description: 'rest skips entire emoji',
+    },
+    {
+      source: 'take(2, "👨‍👩‍👧‍👦ab")',
+      expected: '"👨‍👩‍👧‍👦a"',
+      description: 'take with graphemes',
+    },
+    {
+      source: 'skip(1, "👨‍👩‍👧‍👦ab")',
+      expected: '"ab"',
+      description: 'skip with graphemes',
+    },
+    {
+      source: 'size("🇬🇧🇺🇸🇫🇷")',
+      expected: '3',
+      description: 'multiple flag emojis',
+    },
+    {
+      source: 'list("👨‍👩‍👧‍👦🇬🇧a")',
+      expected: '["👨‍👩‍👧‍👦", "🇬🇧", "a"]',
+      description: 'list conversion preserves graphemes',
+    },
+    {
+      source: '"é"[0]',
+      expected: '"é"',
+      description: 'combining character as single grapheme',
+    },
+    {
+      source: 'size("café")',
+      expected: '4',
+      description: 'word with combining character',
+    },
+  ];
+
+  cases.forEach(({ source, expected, description }) => {
+    test(`${description}: ${source}`, () => {
+      expect(doEvaluate(source).inspect()).toEqual(expected);
+    });
+  });
+});
+
 describe('ranges', () => {
   const cases = [
     {

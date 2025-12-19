@@ -452,6 +452,11 @@ export class Decimal implements ValueObj {
 export class Str implements ValueObj {
   constructor(public value: string) {}
 
+  private getGraphemes(): string[] {
+    const segmenter = new Intl.Segmenter('en', { granularity: 'grapheme' });
+    return [...segmenter.segment(this.value)].map(s => s.segment);
+  }
+
   public static parse(value: Obj): Str {
     if (value instanceof Str) {
       return value;
@@ -482,22 +487,25 @@ export class Str implements ValueObj {
 
   public get(index: Obj): Obj {
     if (index instanceof Integer) {
-      const char = this.value[index.value < 0 ? this.value.length + index.value : index.value];
+      const graphemes = this.getGraphemes();
+      const char = graphemes[index.value < 0 ? graphemes.length + index.value : index.value];
 
       return char !== undefined ? new Str(char) : NIL;
     }
 
     if (index instanceof Range) {
+      const graphemes = this.getGraphemes();
+
       if (index.end < 0) {
-        return new Str(this.value.substring(index.start, this.value.length + index.end));
+        return new Str(graphemes.slice(index.start, graphemes.length + index.end).join(''));
       }
 
       if (index.start < 0) {
-        return new Str(this.value.substring(this.value.length + index.start, index.end + 1));
+        return new Str(graphemes.slice(graphemes.length + index.start, index.end + 1).join(''));
       }
 
       return new Str(
-        this.value.substring(index.start, index.isInclusive ? index.end + 1 : index.end)
+        graphemes.slice(index.start, index.isInclusive ? index.end + 1 : index.end).join('')
       );
     }
 
@@ -505,7 +513,7 @@ export class Str implements ValueObj {
   }
 
   public size(): Err | Integer {
-    return new Integer(this.value.length);
+    return new Integer(this.getGraphemes().length);
   }
 
   public includes(subject: Obj): Bool {
@@ -513,23 +521,28 @@ export class Str implements ValueObj {
   }
 
   public first(): Obj | Nil {
-    return new Str(this.value[0] || '');
+    const graphemes = this.getGraphemes();
+    return new Str(graphemes[0] || '');
   }
 
   public rest(): Str {
-    return new Str(this.value.substring(1));
+    const graphemes = this.getGraphemes();
+    return new Str(graphemes.slice(1).join(''));
   }
 
   public last(): Obj | Nil {
-    return new Str(this.value[this.value.length - 1] || '');
+    const graphemes = this.getGraphemes();
+    return new Str(graphemes[graphemes.length - 1] || '');
   }
 
   public take(total: Integer): Str {
-    return new Str(this.value.substring(0, total.value));
+    const graphemes = this.getGraphemes();
+    return new Str(graphemes.slice(0, total.value).join(''));
   }
 
   public skip(total: Integer): Str {
-    return new Str(this.value.substring(total.value));
+    const graphemes = this.getGraphemes();
+    return new Str(graphemes.slice(total.value).join(''));
   }
 
   public find(fn: (v: Obj) => Obj): Obj {
@@ -560,7 +573,11 @@ export class Str implements ValueObj {
   }
 
   public getInteralSeq(): Immutable.Seq {
-    return Immutable.List([...this.value]).map(v => new Str(v));
+    return Immutable.List(this.getGraphemes()).map(v => new Str(v));
+  }
+
+  public toList(): List {
+    return new List(this.getGraphemes().map(g => new Str(g)));
   }
 
   public chunk(size: Integer): List {
