@@ -15,8 +15,10 @@ const map: O.BuiltinFuncTemplate = {
   ],
   body: (environment: O.Environment) => {
     const mapper = environment.getVariable('mapper');
+    // Only pass the key if the mapper expects 2+ parameters
+    const passKey = (mapper instanceof O.Func || mapper instanceof O.BuiltinFunc) && mapper.parameters.length >= 2;
 
-    return environment.getVariable('collection').map((v, k) => applyFunction(mapper, [v, k]));
+    return environment.getVariable('collection').map((v, k) => applyFunction(mapper, passKey ? [v, k] : [v]));
   },
 };
 
@@ -33,8 +35,10 @@ const filter: O.BuiltinFuncTemplate = {
   ],
   body: (environment: O.Environment) => {
     const predicate = environment.getVariable('predicate');
+    // Only pass the key if the predicate expects 2+ parameters
+    const passKey = (predicate instanceof O.Func || predicate instanceof O.BuiltinFunc) && predicate.parameters.length >= 2;
 
-    return environment.getVariable('collection').filter((v, k) => applyFunction(predicate, [v, k]));
+    return environment.getVariable('collection').filter((v, k) => applyFunction(predicate, passKey ? [v, k] : [v]));
   },
 };
 
@@ -956,12 +960,13 @@ const all: O.BuiltinFuncTemplate = {
     },
   ],
   body: (environment: O.Environment) => {
-    return environment
+    // Find any element that doesn't satisfy the predicate
+    // If found, return false; otherwise return true
+    const predicate = environment.getVariable('predicate');
+    const result = environment
       .getVariable('collection')
-      .filter((v, k) => applyFunction(environment.getVariable('predicate'), [v, k]))
-      .equals(environment.getVariable('collection'))
-      ? O.TRUE
-      : O.FALSE;
+      .find((v, k) => (applyFunction(predicate, [v, k]).isTruthy() ? O.FALSE : O.TRUE));
+    return result === O.NIL ? O.TRUE : O.FALSE;
   },
 };
 
