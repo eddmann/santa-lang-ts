@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-santa-lang-ts is a TypeScript implementation of santa-lang, a functional, C-like programming language designed for solving Advent of Code puzzles. The language supports special `part_one:`, `part_two:`, `input:`, and `test:` sections for structuring AoC solutions.
+santa-lang-prancer is a TypeScript implementation of santa-lang, a functional, C-like programming language designed for solving Advent of Code puzzles. The language supports special `part_one:`, `part_two:`, `input:`, and `test:` sections for structuring AoC solutions.
 
 ## Repository Structure
 

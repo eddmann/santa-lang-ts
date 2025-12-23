@@ -28,20 +28,20 @@ jobs:
   cli:
     needs: update-draft-release
     name: Build CLI
-    uses: eddmann/santa-lang-ts/.github/workflows/build-cli.yml@draft-release
+    uses: eddmann/santa-lang-prancer/.github/workflows/build-cli.yml@draft-release
     with:
       release-tag: ${{ needs.update-draft-release.outputs.tag_name }}
 
   lambda:
     needs: update-draft-release
     name: Build Lambda
-    uses: eddmann/santa-lang-ts/.github/workflows/build-lambda.yml@draft-release
+    uses: eddmann/santa-lang-prancer/.github/workflows/build-lambda.yml@draft-release
     with:
       release-tag: ${{ needs.update-draft-release.outputs.tag_name }}
 
   web:
     needs: update-draft-release
     name: Build Web
-    uses: eddmann/santa-lang-ts/.github/workflows/build-web.yml@draft-release
+    uses: eddmann/santa-lang-prancer/.github/workflows/build-web.yml@draft-release
     with:
       release-tag: ${{ needs.update-draft-release.outputs.tag_name }}

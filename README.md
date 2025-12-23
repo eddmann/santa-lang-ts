@@ -27,7 +27,7 @@ docker run --rm ghcr.io/eddmann/santa-lang-prancer:cli-latest --help
 
 ### Release Binaries
 
-Download pre-built binaries from [GitHub Releases](https://github.com/eddmann/santa-lang-ts/releases):
+Download pre-built binaries from [GitHub Releases](https://github.com/eddmann/santa-lang-prancer/releases):
 
 | Platform              | Artifact                                       |
 | --------------------- | ---------------------------------------------- |
@@ -38,7 +38,7 @@ Download pre-built binaries from [GitHub Releases](https://github.com/eddmann/sa
 
 ### Web Editor
 
-Try santa-lang in your browser: [eddmann.com/santa-lang-ts](https://eddmann.com/santa-lang-ts/)
+Try santa-lang in your browser: [eddmann.com/santa-lang-prancer](https://eddmann.com/santa-lang-prancer/)
 
 ### AWS Lambda
 
@@ -143,6 +143,6 @@ make lambda/build  # Build Lambda layer
 
 - [eddmann/santa-lang](https://github.com/eddmann/santa-lang) - Language specification/documentation
 - [eddmann/santa-lang-editor](https://github.com/eddmann/santa-lang-editor) - Web-based editor
-- [eddmann/santa-lang-ts](https://github.com/eddmann/santa-lang-ts) - Tree-walking interpreter in TypeScript (Prancer)
-- [eddmann/santa-lang-rs](https://github.com/eddmann/santa-lang-rs) - Tree-walking interpreter in Rust (Comet)
+- [eddmann/santa-lang-prancer](https://github.com/eddmann/santa-lang-prancer) - Tree-walking interpreter in TypeScript (Prancer)
+- [eddmann/santa-lang-comet](https://github.com/eddmann/santa-lang-comet) - Tree-walking interpreter in Rust (Comet)
 - [eddmann/santa-lang-blitzen](https://github.com/eddmann/santa-lang-blitzen) - Bytecode VM in Rust (Blitzen)
