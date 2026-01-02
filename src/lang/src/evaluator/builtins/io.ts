@@ -35,8 +35,22 @@ const env: O.BuiltinFuncTemplate = {
   parameters: [],
   body: (environment: O.Environment) => {
     const output = environment.getIO().output;
+
+    // Collect all variables from the environment chain
+    const allVariables: { [key: string]: O.Obj } = {};
+    let current: O.Environment | null = environment;
+    while (current !== null) {
+      for (const [name, { value }] of Object.entries(current.variables)) {
+        // Don't override - child scope variables take precedence
+        if (!(name in allVariables)) {
+          allVariables[name] = value;
+        }
+      }
+      current = current.parent;
+    }
+
     output(['Environment:']);
-    for (const [name, { value }] of Object.entries(environment.variables)) {
+    for (const [name, value] of Object.entries(allVariables)) {
       output([`  ${name} = ${value.inspect()}`]);
     }
     return O.NIL;
