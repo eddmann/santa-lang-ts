@@ -29,27 +29,27 @@ function readStdinSync(): string | null {
 }
 
 function printHelp() {
-  console.log('santa-lang CLI - Prancer');
+  console.log(`santa-lang CLI - Prancer ${pkg.version}`);
   console.log();
   console.log('USAGE:');
-  console.log('    santa-cli <SCRIPT>             Run solution file');
-  console.log('    santa-cli -e <CODE>            Evaluate inline script');
-  console.log('    santa-cli -t <SCRIPT>          Run test suite');
-  console.log('    santa-cli -t -s <SCRIPT>       Run test suite including @slow tests');
-  console.log('    santa-cli -r                   Start REPL');
-  console.log('    santa-cli -h                   Show this help');
-  console.log('    cat file | santa-cli           Read script from stdin');
+  console.log('    santa-cli <SCRIPT>              Run solution file');
+  console.log('    santa-cli -e <CODE>             Evaluate inline script');
+  console.log('    santa-cli -t <SCRIPT>           Run test suite');
+  console.log('    santa-cli -t -s <SCRIPT>        Run tests including @slow');
+  console.log('    santa-cli -r                    Start REPL');
+  console.log('    santa-cli -h                    Show this help');
+  console.log('    cat file | santa-cli            Read from stdin');
   console.log();
   console.log('OPTIONS:');
-  console.log('    -e, --eval <CODE>              Evaluate inline script');
-  console.log('    -t, --test                     Run the solution\'s test suite');
-  console.log('    -s, --slow                     Include @slow tests (use with -t)');
-  console.log('    -r, --repl                     Begin an interactive REPL session');
-  console.log('    -h, --help                     Show this help message');
-  console.log('    -v, --version                  Display version information');
+  console.log('    -e, --eval <CODE>    Evaluate inline script');
+  console.log('    -t, --test           Run the solution\'s test suite');
+  console.log('    -s, --slow           Include @slow tests (use with -t)');
+  console.log('    -r, --repl           Start interactive REPL');
+  console.log('    -h, --help           Show this help message');
+  console.log('    -v, --version        Display version information');
   console.log();
   console.log('ENVIRONMENT:');
-  console.log('    SANTA_CLI_SESSION_TOKEN        AOC session token for aoc:// URLs');
+  console.log('    SANTA_CLI_SESSION_TOKEN    AOC session token for aoc:// URLs');
 }
 
 function runRepl() {
@@ -208,7 +208,7 @@ if (args.includes('-r') || args.includes('--repl')) {
             testCase.partOne.actual,
             testCase.partOne.expected
           );
-          exitCode = 1;
+          exitCode = 3;
         }
       }
 
@@ -221,7 +221,7 @@ if (args.includes('-r') || args.includes('--repl')) {
             testCase.partTwo.actual,
             testCase.partTwo.expected
           );
-          exitCode = 1;
+          exitCode = 3;
         }
       }
     }
@@ -230,6 +230,6 @@ if (args.includes('-r') || args.includes('--repl')) {
   } catch (err: any) {
     printSourcePreview(filename || '<stdin>', source, err.line, err.column);
     console.log('\x1b[32m%s\x1b[0m', err.message);
-    process.exit(1);
+    process.exit(2);
   }
 }
